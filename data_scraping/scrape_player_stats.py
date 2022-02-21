@@ -1,3 +1,11 @@
+"""this was the first file i created to scrape the data
+and therefore it has a lot of minor changes itneeds. Mainly that
+chrome will crash after running it for a while so the drivers should be parallelized
+and retried if it crashs similar to the other files. it also takes quite a while to run.
+I had to run it in chunks restarting it when it crashed and total run time was a few hours.
+
+Braden Eberhard, braden.ultimate@gmail.com, 2/21/22
+"""
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait

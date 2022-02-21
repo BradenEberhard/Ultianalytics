@@ -1,10 +1,12 @@
 """This file scrapes all the game quarter data from the audl game quarter stats
 from the advanced stat page for each game. there are just over 250 games with 
 this information at the moment. 
-Run time is around 1000 seconds
+Run time is around 900 seconds for all pages but you can change the PAGE_END to 15 
+since there aren't any older stats and it takes around 450 seconds.
 
 Braden Eberhard, braden.ultimate@gmail.com, 2/21/22
 """
+from numpy import column_stack
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -24,7 +26,7 @@ PAGE_START = 1
 PAGE_END = 19
 AUDL_GAME_STAT_URL = 'https://theaudl.com/league/game-search?page='
 CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
-FILE_PATH = '../data_csv/game_quarter_stats.csv'
+FILE_PATH = '../data_csv/game_team_stats.csv'
 
 
 
@@ -108,26 +110,34 @@ def get_game_quarter_stats(page):
             if soup.find("div", {"class": "error-container"}) is None:
                 print(f'problem with url: https://theaudl.com/stats/game/{advanced_stat_url}')
             continue
+            
 
         # create a soup parser for HTML
         advanced_soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        # load the table colums as names, change the first item to 'TEAM' and add 'GAME_INFO' to the end
-        col_names = [el.text for el in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("thead").find("tr").find_all("td")]
-        col_names[0] = 'TEAM'
-        col_names.append('GAME_INFO')
-        rows = []
+        # load the table colums as names, add 'GAME_INFO' to the end
+        teams = [el for el in advanced_soup.find("div", {"class": "team-stats"}).find("thead").find("tr").find_all("th")]
+        team1 = [teams[1].text]
+        team2 = [teams[2].text]
+
+        col_names = ['TEAM']
+
 
         # iterate over both rows in the quarter breakdown table
-        for tr in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("tbody").find_all("tr"):
+        for tr in advanced_soup.find("div", {"class": "team-stats"}).find("tbody").find_all("tr"):
+            tds = tr.find_all("td")
+            col_names.append(tr.find("th").text)
+            team1.append(tds[0].text)
+            team2.append(tds[1].text)
 
-            # make a list of all the elements
-            row = [el.text for el in tr.find_all("td")]
-            # add the game info to the end
-            row.append(advanced_stat_url)
-            rows.append(row)
+        # add the game info to the end
+        team1.append(advanced_stat_url)
+        team2.append(advanced_stat_url)
+        col_names.append('GAME_INFO')
+
         # create a list of dfs
-        all_dfs.append(pd.DataFrame(rows, columns=col_names))
+        all_dfs.append(pd.DataFrame([team1], columns=col_names))
+        all_dfs.append(pd.DataFrame([team2], columns=col_names))
     # return 1 df
     return pd.concat(all_dfs)
 

@@ -21,7 +21,7 @@ points to the executable chrome driver and the file path outputs to the
 right spot
 """
 PAGE_START = 1
-PAGE_END = 130
+PAGE_END = 19
 AUDL_GAME_STAT_URL = 'https://theaudl.com/league/game-search?page='
 CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
 FILE_PATH = '../data_csv/game_stats.csv'
