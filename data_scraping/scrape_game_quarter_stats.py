@@ -1,9 +1,9 @@
-"""This file scrapes all the tabular data from the audl team stats
-website as listed below. For some reason the waiting isn't perfect
-and sometimes it takes a couple of tries to run all the way through.
-Run time is around 450 seconds
+"""This file scrapes all the game quarter data from the audl game quarter stats
+from the advanced stat page for each game. there are just over 250 games with 
+this information at the moment. 
+Run time is around 1000 seconds
 
-Braden Eberhard, braden.ultimate@gmail.com, 2/19/22
+Braden Eberhard, braden.ultimate@gmail.com, 2/21/22
 """
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -29,7 +29,7 @@ FILE_PATH = '../data_csv/advanced_game_stats.csv'
 
 
 def main():
-    """This is the main function to scrape the AUDL game
+    """This is the main function to scrape the AUDL game quarter
     stats data and save the output to a csv
     """
     start = timeit.default_timer()
@@ -38,7 +38,7 @@ def main():
     # loop over every page, get dfs and merge
     with ThreadPoolExecutor() as executor:
         for page in tqdm(range(PAGE_START, PAGE_END), total=PAGE_END - 1):
-            futures.append(get_game_stats(page))
+            futures.append(executor.submit(get_game_quarter_stats, page))
 
     # output to file
     with open(FILE_PATH) as f:
@@ -53,38 +53,38 @@ def main():
     print('Time: ', stop - start)  
     
 
-def get_driver():
-    """gets the chrome driver and returns it. It also
-    adds options to not load images and unneccessary info
+def get_driver(page, counter):
+    """gets the chrome driver and returns it. it will wait for the page to load.
+    It also adds options to not load images and unneccessary info. If an attempt
+    fails, it will retry 2 more times.
     """
+    if counter >= 3:
+        return None
     options = webdriver.ChromeOptions()
     prefs = {'profile.default_content_setting_values': {'images': 2}}
     options.add_experimental_option('prefs', prefs)
     options.add_argument("start-maximized")
     options.add_argument("disable-infobars")
     options.add_argument("--disable-extensions")
-    return webdriver.Chrome(chrome_options=options, executable_path=CHROME_PATH)
+    driver =  webdriver.Chrome(chrome_options=options, executable_path=CHROME_PATH)
+    driver.get(f'{AUDL_GAME_STAT_URL}{page}')
+    # wait if necessary
+    try:
+       WebDriverWait(driver,5).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "svelte-game")))
+    except:
+        print(f'problem with page: {page} number: {counter}')
+        return get_driver(page, counter + 1)
+    return driver
 
 
-def get_game_stats(page):
+def get_game_quarter_stats(page):
     """This function scrapes the actual data from the website
 
     Returns:
         df: dataframe of scraped data
     """
     # gets a driver instance
-    driver = get_driver()
-    # gets the url based on parameters
-    driver.get(f'{AUDL_GAME_STAT_URL}{page}')
-
-    # wait if necessary
-    try:
-       WebDriverWait(driver,5).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "svelte-game")))
-    except:
-        print(f'problem with page: {page}')
-        return None
-
-    col_names = ['TEAM', 'Q1', 'Q2', 'Q3', 'Q4', 'TOTAL']
+    driver = get_driver(page, 1)
     
     # get parser
     soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -93,23 +93,47 @@ def get_game_stats(page):
     all_dfs = []
     # iterate over every table on the page
     for link in soup.find_all("div", {"class": "svelte-game-header-links"}):
+
+        # get the link for the advanced stat page
         advanced_stat_url = link.find("a")['href'].split('/')[-1]
         driver.get(f'https://theaudl.com/stats/game/{advanced_stat_url}')
+
+        # wait for the information to load
         try:
             WebDriverWait(driver,5).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "quarter-breakdown")))
         except:
-            print(f'problem with page: {page}')
+            # if it doesn't load, create a new soup object and check if the information exists
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+            # if the advanced stat page doesn't exist return None
+            if soup.find("div", {"class": "error-container"}) is not None:
+                return None
+
+            # otherwise print the page that isn't loading and return None
+            print(f'problem with url: https://theaudl.com/stats/game/{advanced_stat_url}')
             return None
+
+        # create a soup parser for HTML
         advanced_soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+        # load the table colums as names, change the first item to 'TEAM' and add 'GAME_INFO' to the end
         col_names = [el.text for el in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("thead").find("tr").find_all("td")]
         col_names[0] = 'TEAM'
+        col_names.append('GAME_INFO')
         rows = []
-        for tr in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("tbody").find_all("tr"):
-            row = [el.text for el in tr.find_all("td")]
-            rows.append(row)
-        all_dfs.append(pd.DataFrame(rows, columns=col_names))
-    return all_dfs
 
+        # iterate over both rows in the quarter breakdown table
+        for tr in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("tbody").find_all("tr"):
+
+            # make a list of all the elements
+            row = [el.text for el in tr.find_all("td")]
+            # add the game info to the end
+            row.append(advanced_stat_url)
+            rows.append(row)
+        # create a list of dfs
+        all_dfs.append(pd.DataFrame(rows, columns=col_names))
+    # return 1 df
+    return pd.concat(all_dfs)
 
 if __name__ == '__main__':
     main()
