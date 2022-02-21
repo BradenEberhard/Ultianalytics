@@ -24,7 +24,7 @@ PAGE_START = 1
 PAGE_END = 130
 AUDL_GAME_STAT_URL = 'https://theaudl.com/league/game-search?page='
 CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
-FILE_PATH = '../data_csv/game_stats.csv'
+FILE_PATH = '../data_csv/advanced_game_stats.csv'
 
 
 
@@ -38,7 +38,7 @@ def main():
     # loop over every page, get dfs and merge
     with ThreadPoolExecutor() as executor:
         for page in tqdm(range(PAGE_START, PAGE_END), total=PAGE_END - 1):
-            futures.append(executor.submit(get_game_stats, page))
+            futures.append(get_game_stats(page))
 
     # output to file
     with open(FILE_PATH) as f:
@@ -84,54 +84,31 @@ def get_game_stats(page):
         print(f'problem with page: {page}')
         return None
 
-    col_names = ['GAME_INFO', 'LOCATION', 'TEAM1_NAME', 'TEAM1_SCORE', 'TEAM2_NAME', 'TEAM2_SCORE']
+    col_names = ['TEAM', 'Q1', 'Q2', 'Q3', 'Q4', 'TOTAL']
     
     # get parser
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
     # navigate to table headers
-    all_rows = []
+    all_dfs = []
     # iterate over every table on the page
-    for table in soup.find_all("div", {"class": "svelte-game"}):
-        data_row = []
-        # append the game info
-        data_row.append(get_game_info(table))
-        
-        # append the game location
-        game_location = table.find("div", {"class": "svelte-game-info-location"}).text
-        data_row.append(game_location)
-        
-        # iterate over both teams
-        for team in table.find_all("a", {"class": "svelte-game-team"}):
-            
-            # append the team name
-            data_row.append(team.find("div", {"class": "svelte-game-team-info"}).text)
-            # append the team score
-            data_row.append(team.find("span", {"class": "svelte-game-team-score"}).text)
-        # add completed row with all info to list
-        all_rows.append(data_row)
-
-    
-    # convert the list to dataframe and return
-    return pd.DataFrame(all_rows, columns=col_names)
-
-
-def get_game_info(table):
-    """get date information from the header. Account for bad inputs
-
-    Args:
-        table (soup obj): the table holding all game info
-
-    Returns:
-        datetime: datetime of game
-    """
-    game_header = table.find("div", {"class": "svelte-game-header-info"}).text
-    try:
-        return datetime.strptime(game_header, '%a, %m/%d %Y %I:%M %p')
-    # some games have TBD which case don't pull the time
-    except ValueError as e:
-        print('Value error, no gametime for date: {game_header}')
-        return datetime.strptime(game_header, '%a, %m/%d %Y TBD')
+    for link in soup.find_all("div", {"class": "svelte-game-header-links"}):
+        advanced_stat_url = link.find("a")['href'].split('/')[-1]
+        driver.get(f'https://theaudl.com/stats/game/{advanced_stat_url}')
+        try:
+            WebDriverWait(driver,5).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "quarter-breakdown")))
+        except:
+            print(f'problem with page: {page}')
+            return None
+        advanced_soup = BeautifulSoup(driver.page_source, 'html.parser')
+        col_names = [el.text for el in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("thead").find("tr").find_all("td")]
+        col_names[0] = 'TEAM'
+        rows = []
+        for tr in advanced_soup.find("div", {"class": "quarter-breakdown"}).find("tbody").find_all("tr"):
+            row = [el.text for el in tr.find_all("td")]
+            rows.append(row)
+        all_dfs.append(pd.DataFrame(rows, columns=col_names))
+    return all_dfs
 
 
 if __name__ == '__main__':
