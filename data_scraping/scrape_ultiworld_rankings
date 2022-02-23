@@ -1,0 +1,138 @@
+"""
+
+Braden Eberhard, braden.ultimate@gmail.com, 2/22/22
+"""
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from concurrent.futures import ThreadPoolExecutor, wait
+from bs4 import BeautifulSoup
+import pandas as pd
+from tqdm import tqdm
+from datetime import datetime
+import timeit
+import re
+
+"""these variables are self explanatory, just make sure the chrome path
+points to the executable chrome driver and the file path outputs to the
+right spot
+"""
+
+D1_WOMENS_START = 'https://ultiworld.com/ranking/18945/college-d-i-womens-division-power-rankings-season-2014-week-9/'
+D1_MENS_START = 'https://ultiworld.com/ranking/26605/college-d-i-mens-division-power-rankings-season-2015-11-10-14/'
+D3_MENS_START = 'https://ultiworld.com/ranking/66336/college-d-iii-mens-rankings-2018-season-week-of-5-9-18/'
+D3_WOMENS_START = 'https://ultiworld.com/ranking/18629/college-d-iii-womens-power-rankings-season-2014-week-9/'
+CLUB_WOMENS_START = 'https://ultiworld.com/ranking/25244/club-womens-division-power-rankings-season-2014-10-9/'
+CLUB_MIXED_START = 'https://ultiworld.com/ranking/72317/club-mixed-power-rankings-2018-season-final/'
+CLUB_MENS_START = 'https://ultiworld.com/ranking/25196/club-mens-division-power-rankings-season-2014-10-8/'
+CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
+FILE_PATH = '../data_csv/ultiworld_rankings.csv'
+
+
+
+def main():
+    """This is the main function to scrape the AUDL game quarter
+    stats data and save the output to a csv
+    """
+    start = timeit.default_timer()
+    futures = []
+
+    # loop over every page, get dfs and merge
+    with ThreadPoolExecutor() as executor:
+        [D1_WOMENS_START, D1_MENS_START, D3_MENS_START, D3_WOMENS_START, CLUB_MIXED_START, CLUB_MENS_START, CLUB_WOMENS_START]
+        for start_page in [D1_WOMENS_START, D1_MENS_START, D3_MENS_START, D3_WOMENS_START]:
+            futures.append(executor.submit(get_ultiworld_rankings, start_page))
+
+    # output to file
+    with open(FILE_PATH) as f:
+        # wait for all threads to complete
+        futures, _ = wait(futures)
+
+        # get the resulting dataframes
+        all_dfs = [future.result() for future in futures]
+        # combine data frames and output to FILE_PATH
+        pd.concat(all_dfs).to_csv(FILE_PATH)
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)  
+    
+
+def get_driver(url, counter):
+    """gets the chrome driver and returns it. it will wait for the page to load.
+    It also adds options to not load images and unneccessary info. If an attempt
+    fails, it will retry 2 more times.
+    """
+    if counter >= 3:
+        return None
+    options = webdriver.ChromeOptions()
+    prefs = {'profile.default_content_setting_values': {'images': 2}}
+    options.add_experimental_option('prefs', prefs)
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+    options.add_argument('--no-sandbox')
+    options.add_argument("start-maximized")
+    options.add_argument("disable-infobars")
+    options.add_argument("--disable-extensions")
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--headless')
+    driver =  webdriver.Chrome(options=options, service=Service(CHROME_PATH))
+    driver.get(url)
+    # wait if necessary
+    try:
+       WebDriverWait(driver,5).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "description-table")))
+    except:
+        print(f'problem with url: {url} number: {counter}')
+        return get_driver(url, counter + 1)
+    return driver
+
+
+def get_ultiworld_rankings(start):
+    """This function scrapes the actual data from the website
+
+    Returns:
+        df: dataframe of scraped data
+    """
+    # gets a driver instance
+    driver = get_driver(start, 1)
+    
+    # get parser
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    year_dfs = []
+    for link in soup.find("th",text="Years").parent.find_all("a"):
+        url = link['href']
+        driver = get_driver(url, 1)
+        print(f'accesed url: {url}')
+        soup3 = BeautifulSoup(driver.page_source, 'html.parser')
+        year_dfs.append(get_year_stats(soup3))
+    return pd.concat(year_dfs)
+
+
+
+def get_year_stats(soup):
+    # navigate to table headers
+    all_dfs = []
+    # iterate over every table on the page
+    for link in soup.find("th",text=re.compile(r'\d*\sRankings')).parent.find_all("a"):
+        driver = get_driver(link['href'], 1)
+
+        # create a soup parser for HTML
+        soup2 = BeautifulSoup(driver.page_source, 'html.parser')
+
+        # load the table colums as names, change the first item to 'TEAM' and add 'GAME_INFO' to the end
+        ranking_df = pd.read_html(str(soup2.find("table", {"class":"table table-hover ranking"})))[0]
+        date = datetime.strptime(soup.find("div", {"class":"reference-heading__datetime"}).text, 'Published on %B %d, %Y')
+        if 'Rank' not in ranking_df:
+            ranking_df.columns = ['Rank', 'Team']
+        ranking_df['Date'] = date
+        division = soup.find("div", {"class":"reference-heading"}).text
+        ranking_df['Division'] = division
+        if 25 in ranking_df.index:
+            ranking_df.drop(25, inplace=True)
+        all_dfs.append(ranking_df)
+
+    # return 1 df
+    return pd.concat(all_dfs)
+
+if __name__ == '__main__':
+    main()
