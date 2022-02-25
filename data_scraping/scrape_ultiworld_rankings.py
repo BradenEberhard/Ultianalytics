@@ -28,7 +28,8 @@ CLUB_WOMENS_START = 'https://ultiworld.com/ranking/25244/club-womens-division-po
 CLUB_MIXED_START = 'https://ultiworld.com/ranking/72317/club-mixed-power-rankings-2018-season-final/'
 CLUB_MENS_START = 'https://ultiworld.com/ranking/25196/club-mens-division-power-rankings-season-2014-10-8/'
 CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
-FILE_PATH = '../data_csv/ultiworld_rankings.csv'
+DIVISION = 'CLUB_MEN'
+FILE_PATH = f'../data_csv/ultiworld_rankings_{DIVISION}.csv'
 
 
 
@@ -36,17 +37,27 @@ def main():
     """This is the main function to scrape the AUDL game quarter
     stats data and save the output to a csv
     """
+    df = pd.concat(
+    map(pd.read_csv, ['./data_csv/ultiworld_rankings_CLUB_MEN.csv',
+                      './data_csv/ultiworld_rankings_CLUB_WOMEN.csv',
+                      './data_csv/ultiworld_rankings_CLUB_MIXED.csv',
+                      './data_csv/ultiworld_rankings_D1_MEN.csv',
+                      './data_csv/ultiworld_rankings_D3_MEN.csv',
+                      './data_csv/ultiworld_rankings_D1_WOMEN.csv',
+                      './data_csv/ultiworld_rankings_D3_WOMEN.csv'
+                      ]), ignore_index=True)
+    with open('../ultiworld_rankings_all.csv', 'w+') as f:
+        df.to_csv('../ultiworld_rankings_all.csv')
     start = timeit.default_timer()
     futures = []
 
     # loop over every page, get dfs and merge
     with ThreadPoolExecutor() as executor:
-        [D1_WOMENS_START, D1_MENS_START, D3_MENS_START, D3_WOMENS_START, CLUB_MIXED_START, CLUB_MENS_START, CLUB_WOMENS_START]
-        for start_page in [D1_WOMENS_START, D1_MENS_START, D3_MENS_START, D3_WOMENS_START]:
-            futures.append(executor.submit(get_ultiworld_rankings, start_page))
+        futures.append(executor.submit(get_ultiworld_rankings, CLUB_MENS_START))
 
     # output to file
-    with open(FILE_PATH) as f:
+    
+    with open(FILE_PATH, 'w+') as f:
         # wait for all threads to complete
         futures, _ = wait(futures)
 
@@ -125,8 +136,7 @@ def get_year_stats(soup):
         if 'Rank' not in ranking_df:
             ranking_df.columns = ['Rank', 'Team']
         ranking_df['Date'] = date
-        division = soup.find("div", {"class":"reference-heading"}).text
-        ranking_df['Division'] = division
+        ranking_df['Division'] = DIVISION
         if 25 in ranking_df.index:
             ranking_df.drop(25, inplace=True)
         all_dfs.append(ranking_df)
