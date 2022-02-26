@@ -10,9 +10,9 @@ from numpy import column_stack
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from concurrent.futures import ThreadPoolExecutor, wait
+from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 import pandas as pd
 from tqdm import tqdm
@@ -27,7 +27,7 @@ PAGE_START = 16
 PAGE_END = 30
 AUDL_GAME_STAT_URL = 'https://theaudl.com/league/game-search?page='
 CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
-FILE_PATH = '../data_csv/play_by_play_stats.csv'
+FILE_PATH = '../data_csv/game_player_stats.csv'
 
 
 
@@ -40,17 +40,17 @@ def main():
 
     # loop over every page, get dfs and merge
     with ThreadPoolExecutor() as executor:
-        for page in range(PAGE_START, PAGE_END):
+        for page in tqdm(range(PAGE_START, PAGE_END), total=PAGE_END - 1):
             futures.append(executor.submit(get_play_by_play_stats, page))
-    # for page in tqdm(range(PAGE_START, PAGE_END), total=PAGE_END - PAGE_START):
-    #         futures.append(get_play_by_play_stats(page))
+    # for page in tqdm(range(PAGE_START, PAGE_END), total=PAGE_END - 1):
+    #     futures.append(get_play_by_play_stats(page))
     # output to file
     with open(FILE_PATH, 'w+') as f:
         # wait for all threads to complete
         futures, _ = wait(futures)
 
         # get the resulting dataframes
-        all_dfs = [future.result() for future in futures if future is not None]
+        all_dfs = [future.result() for future in futures]
         # combine data frames and output to FILE_PATH
         pd.concat(all_dfs).to_csv(FILE_PATH)
     stop = timeit.default_timer()
@@ -102,7 +102,7 @@ def get_play_by_play_stats(page):
     # get parser
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-    # iterate over every table on the page
+    # iterate over every game on the page
     for link in soup.find_all("div", {"class": "svelte-game-header-links"}):
         advanced_stat_url = link.find("a")['href'].split('/')[-1]
         if '2021' not in advanced_stat_url:
@@ -111,38 +111,21 @@ def get_play_by_play_stats(page):
         # get the link for the advanced stat page
        
         url = f'https://theaudl.com/stats/game/{advanced_stat_url}'
-        driver2 = get_driver(url, 1, 'play-by-play-quarter')
+        driver2 = get_driver(url, 1, 'ReactTable')
         if driver2 is None:
             return None
         print(f'accessed game: {advanced_stat_url}')
 
         # create a soup parser for HTML
-        advanced_soup = BeautifulSoup(driver2.page_source, 'html.parser')
-        quarters = []
-        for count, quarter in enumerate(advanced_soup.find_all("div", {"class": "play-by-play-quarter"})):
-            quarter_df = get_play_row(quarter)
-            quarter_df['quarter'] = f'q{count + 1}'
-            quarters.append(quarter_df)
-        driver2.find_element(By.XPATH, "//div[@class='play-by-play']").find_element(By.XPATH, "//label[@class='btn btn-primary']").click()
-        for count, quarter in enumerate(advanced_soup.find_all("div", {"class": "play-by-play-quarter"})):
-            quarter_df = get_play_row(quarter)
-            quarter_df['quarter'] = f'q{count + 1}'
-            quarters.append(quarter_df)
-        all_dfs.append(pd.concat(quarters))
+        advanced_soup = BeautifulSoup(driver2.page_source, 'html.parser').find("div",{"class":"ReactTable"})
+        column_names = [el.text for el in advanced_soup.find_all("div", {"class":"rt-th"})]
+        rows = []
+        for table_row in advanced_soup.find_all("div", {"class": "rt-tr-group"}):
+            rows.append([el.text for el in table_row.find_all("div", {"class","rt-td"})])
+        all_dfs.append(pd.DataFrame(rows, columns=column_names[2:]))
+        
     # return 1 df
     return pd.concat(all_dfs)
-
-
-def get_play_row(quarter):
-    plays = []
-    for play in quarter.find_all("div", {"class": "title"}):
-        play_row = []
-        for element in play.find_all("span"):
-            play_row.append(element.text)
-        plays.append(play_row)
-    cols = ['score', 'line', 'time_left', 'point_time', 'players']
-    return pd.DataFrame(plays, columns=cols)
-
 
 if __name__ == '__main__':
     main()

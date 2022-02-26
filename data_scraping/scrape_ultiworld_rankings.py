@@ -1,6 +1,10 @@
 """
+This file iterates over all ultiworld club and college rankings. It also reads
+the prior ranking and the change. for some reason it works better doing one division
+at a time and a for loop with all of them was crashing for me so i did each individually
+and added a function to concat at the end.
 
-Braden Eberhard, braden.ultimate@gmail.com, 2/22/22
+Braden Eberhard, braden.ultimate@gmail.com, 2/25/22
 """
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -17,7 +21,7 @@ import re
 
 """these variables are self explanatory, just make sure the chrome path
 points to the executable chrome driver and the file path outputs to the
-right spot
+right spot. 
 """
 
 D1_WOMENS_START = 'https://ultiworld.com/ranking/18945/college-d-i-womens-division-power-rankings-season-2014-week-9/'
@@ -28,26 +32,16 @@ CLUB_WOMENS_START = 'https://ultiworld.com/ranking/25244/club-womens-division-po
 CLUB_MIXED_START = 'https://ultiworld.com/ranking/72317/club-mixed-power-rankings-2018-season-final/'
 CLUB_MENS_START = 'https://ultiworld.com/ranking/25196/club-mens-division-power-rankings-season-2014-10-8/'
 CHROME_PATH = "/Users/bradeneberhard/Documents/chromedriver"
+# these are the variables to change
 DIVISION = 'CLUB_MEN'
 FILE_PATH = f'../data_csv/ultiworld_rankings_{DIVISION}.csv'
 
 
 
 def main():
-    """This is the main function to scrape the AUDL game quarter
-    stats data and save the output to a csv
+    """This is the main function to scrape the Ultiworld ranking data and save the output to a csv
     """
-    df = pd.concat(
-    map(pd.read_csv, ['./data_csv/ultiworld_rankings_CLUB_MEN.csv',
-                      './data_csv/ultiworld_rankings_CLUB_WOMEN.csv',
-                      './data_csv/ultiworld_rankings_CLUB_MIXED.csv',
-                      './data_csv/ultiworld_rankings_D1_MEN.csv',
-                      './data_csv/ultiworld_rankings_D3_MEN.csv',
-                      './data_csv/ultiworld_rankings_D1_WOMEN.csv',
-                      './data_csv/ultiworld_rankings_D3_WOMEN.csv'
-                      ]), ignore_index=True)
-    with open('../ultiworld_rankings_all.csv', 'w+') as f:
-        df.to_csv('../ultiworld_rankings_all.csv')
+    
     start = timeit.default_timer()
     futures = []
 
@@ -110,6 +104,7 @@ def get_ultiworld_rankings(start):
     # get parser
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     year_dfs = []
+    # iterrate over every year provided by ultiworld
     for link in soup.find("th",text="Years").parent.find_all("a"):
         url = link['href']
         driver = get_driver(url, 1)
@@ -123,26 +118,42 @@ def get_ultiworld_rankings(start):
 def get_year_stats(soup):
     # navigate to table headers
     all_dfs = []
-    # iterate over every table on the page
+    # iterate over every date on the page
     for link in soup.find("th",text=re.compile(r'\d*\sRankings')).parent.find_all("a"):
         driver = get_driver(link['href'], 1)
 
         # create a soup parser for HTML
         soup2 = BeautifulSoup(driver.page_source, 'html.parser')
 
-        # load the table colums as names, change the first item to 'TEAM' and add 'GAME_INFO' to the end
+        # load the table colums as names
         ranking_df = pd.read_html(str(soup2.find("table", {"class":"table table-hover ranking"})))[0]
         date = datetime.strptime(soup.find("div", {"class":"reference-heading__datetime"}).text, 'Published on %B %d, %Y')
+        # Some early pages don't have column headers
         if 'Rank' not in ranking_df:
             ranking_df.columns = ['Rank', 'Team']
+        # include the date and division
         ranking_df['Date'] = date
         ranking_df['Division'] = DIVISION
+        # drop the last row where teams that left the top 25 are listed
         if 25 in ranking_df.index:
             ranking_df.drop(25, inplace=True)
         all_dfs.append(ranking_df)
 
     # return 1 df
     return pd.concat(all_dfs)
+
+def combine_files():
+    df = pd.concat(
+    map(pd.read_csv, ['./data_csv/ultiworld_rankings_CLUB_MEN.csv',
+                    './data_csv/ultiworld_rankings_CLUB_WOMEN.csv',
+                    './data_csv/ultiworld_rankings_CLUB_MIXED.csv',
+                    './data_csv/ultiworld_rankings_D1_MEN.csv',
+                    './data_csv/ultiworld_rankings_D3_MEN.csv',
+                    './data_csv/ultiworld_rankings_D1_WOMEN.csv',
+                    './data_csv/ultiworld_rankings_D3_WOMEN.csv'
+                    ]), ignore_index=True)
+    with open('../ultiworld_rankings_all.csv', 'w+') as f:
+        df.to_csv('../ultiworld_rankings_all.csv')
 
 if __name__ == '__main__':
     main()
