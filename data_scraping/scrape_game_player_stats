@@ -119,9 +119,12 @@ def get_play_by_play_stats(page):
         # create a soup parser for HTML
         advanced_soup = BeautifulSoup(driver2.page_source, 'html.parser').find("div",{"class":"ReactTable"})
         column_names = [el.text for el in advanced_soup.find_all("div", {"class":"rt-th"})]
+        column_names.append('game_info')
         rows = []
         for table_row in advanced_soup.find_all("div", {"class": "rt-tr-group"}):
-            rows.append([el.text for el in table_row.find_all("div", {"class","rt-td"})])
+            row = [el.text for el in table_row.find_all("div", {"class","rt-td"})]
+            row.append(advanced_stat_url)
+            rows.append(row)
         all_dfs.append(pd.DataFrame(rows, columns=column_names[2:]))
         
     # return 1 df
