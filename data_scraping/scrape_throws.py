@@ -200,6 +200,7 @@ def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, c
         receiver = new_origin['player']
         destination_x = new_origin['origin_x']
         destination_y = new_origin['origin_y']
+    score = str(DynamicGlobals.home_score) + '-' + str(DynamicGlobals.away_score)
     output = {
         'thrower': thrower,
         'origin_x': origin_x,
