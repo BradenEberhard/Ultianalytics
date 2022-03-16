@@ -1,4 +1,4 @@
-from datacache import event_types, DynamicGlobals
+from datacache import event_types, GameInfo, Data
 
 
 def parse_pull(event):
@@ -17,7 +17,7 @@ def parse_pull(event):
         if event['r'] == -1:
             thrower_id = None
         else:
-            thrower_id = DynamicGlobals.rosters[event['r']]
+            thrower_id = GameInfo.rosters[event['r']]
     output = {
         'pull_type': event_name,
         'time': time,
@@ -25,4 +25,4 @@ def parse_pull(event):
         'pull_y': pull_y,
         'thrower_id': thrower_id
     }
-    return output
+    Data.pulls.append(output)

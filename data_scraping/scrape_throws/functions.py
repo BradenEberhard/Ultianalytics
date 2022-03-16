@@ -1,4 +1,4 @@
-from datacache import event_types, DynamicGlobals
+from datacache import event_types, GameInfo, Iterators, Data
 
 
 def penalty_origin(event, origin):
@@ -12,29 +12,28 @@ def penalty_origin(event, origin):
     return origin
 
 
-def add_score(entry, home_players, away_players):
-    entry['home_players'] = home_players
-    entry['away_players'] = away_players
-    entry['home_score'] = DynamicGlobals.home_score
-    entry['away_score'] = DynamicGlobals.away_score
-    entry['game_id'] = DynamicGlobals.current_game_id
-    entry['quarter_id'] = DynamicGlobals.quarter
-    return entry
+def add_throw(entry):
+    entry['home_players'] = GameInfo.home_players
+    entry['away_players'] = GameInfo.away_players
+    entry['home_score'] = GameInfo.home_score
+    entry['away_score'] = GameInfo.away_score
+    entry['game_id'] = GameInfo.current_game_id
+    entry['quarter_id'] = GameInfo.quarter
+    Data.throws.append(entry)
 
 
-def add_goal(current_iter, home_iterator, callahan=False):
-    if current_iter == home_iterator and not callahan:
-        DynamicGlobals.home_score += 1
+def add_goal(current_iter, callahan=False):
+    if current_iter == Iterators.home_iterator and not callahan:
+        GameInfo.home_score += 1
     else:
-        DynamicGlobals.away_score += 1
+        GameInfo.away_score += 1
 
 
-def get_players(current_iter, home_iterator, event, home_players, away_players):
-    if current_iter == home_iterator:
-        home_players = [DynamicGlobals.rosters[x] for x in event['l']]
+def get_players(current_iter, event):
+    if current_iter == Iterators.home_iterator:
+        GameInfo.home_players = [GameInfo.rosters[x] for x in event['l']]
     else:
-        away_players = [DynamicGlobals.rosters[x] for x in event['l']]
-    return home_players, away_players
+        GameInfo.away_players = [GameInfo.rosters[x] for x in event['l']]
 
 
 def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, callahan=False, block=False, drop=False, time_elapsed=None):
@@ -54,14 +53,14 @@ def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, c
         receiver = new_origin['player']
         destination_x = new_origin['origin_x']
         destination_y = new_origin['origin_y']
-    score = str(DynamicGlobals.home_score) + '-' + str(DynamicGlobals.away_score)
-    if DynamicGlobals.time_left == -380:
+    score = str(GameInfo.home_score) + '-' + str(GameInfo.away_score)
+    if GameInfo.time_left == -380:
         time = 0
     else:
-        time = DynamicGlobals.time_left
-    if DynamicGlobals.time_left == -301:
+        time = GameInfo.time_left
+    if GameInfo.time_left == -301:
         time = 529
-    if DynamicGlobals.time_left == -691:
+    if GameInfo.time_left == -691:
         time = 529
     output = {
         'thrower': thrower,
@@ -77,10 +76,10 @@ def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, c
         'block': block,
         'score': score,
         'time_left': time,
-        'motion': DynamicGlobals.motion
+        'motion': GameInfo.motion
     }
-    if DynamicGlobals.motion != 'motion':
-        DynamicGlobals.motion = 'motion'
+    if GameInfo.motion != 'motion':
+        GameInfo.motion = 'motion'
     return output
 
 
@@ -92,10 +91,40 @@ def get_new_origin(event):
         if event['r'] == -1:
             player = None
         else:
-            player = DynamicGlobals.rosters[event['r']]
+            player = GameInfo.rosters[event['r']]
     output = {
         'origin_x': origin_x,
         'origin_y': origin_y,
         'player': player
     }
     return output
+
+
+def update_blocker(event):
+    if 'r' in event:
+        if event['r'] == -1:
+            Data.throws[-1]['blocker'] = 'none_listed'
+        else:
+            Data.throws[-1]['blocker'] = GameInfo.rosters[event['r']]
+    else:
+        Data.throws[-1]['blocker'] = 'none_listed'
+    if 's' in event:
+        GameInfo.time_left = event['s']
+
+
+def update_quarter(event):
+    if (event_types[event['t']]) == 'END_OF_Q1':
+        GameInfo.quarter = 'Q2'
+        GameInfo.time_left = 720
+    elif (event_types[event['t']]) == 'HALFTIME':
+        GameInfo.quarter = 'Q3'
+        GameInfo.time_left = 720
+    elif (event_types[event['t']]) == 'END_OF_Q3':
+        GameInfo.quarter = 'Q4'
+        GameInfo.time_left = 720
+    elif (event_types[event['t']]) == 'GAME_OVER':
+        GameInfo.quarter = 'OT1'
+        GameInfo.time_left = 300
+    elif (event_types[event['t']]) == 'END_OF_OT1':
+        GameInfo.quarter = 'OT2'
+        GameInfo.time_left = -1

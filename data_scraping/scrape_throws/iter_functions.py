@@ -1,14 +1,16 @@
-from datacache import event_types, DynamicGlobals
+from datacache import event_types, Iterators
 
-def switch_iter(home, away, current):
-    if home == current:
-        return away
-    return home
+def switch_iter(current):
+    if Iterators.home_iterator == current:
+        return Iterators.away_iterator
+    return Iterators.home_iterator
 
 
-def get_iter_starter(event, home, away):
-    if (event_types[event['t']]) in ['END_OF_Q1', 'END_OF_Q3'] and DynamicGlobals.start_team == 'home':
-        return home
-    elif (event_types[event['t']]) in ['HALFTIME'] and DynamicGlobals.start_team == 'away':
-        return home
-    return away
+def get_iter_starter():
+    if Iterators.home_event['t'] == 1:
+        return Iterators.home_iterator, Iterators.home_event
+    elif Iterators.away_event['t'] == 1:
+        return Iterators.away_iterator, Iterators.away_event
+    else:
+        print('No event to start')
+        return None
