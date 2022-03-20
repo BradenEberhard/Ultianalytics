@@ -56,7 +56,7 @@ def parse_point(point):
             elif 'GOAL' in (event_types[event['t']]):
                 new_origin = get_new_origin(event)
                 add_goal(current_iter)
-                goal = get_throw_row(origin=origin, new_origin=new_origin)
+                goal = get_throw_row(origin=origin, new_origin=new_origin, goal=True)
                 add_throw(goal)
                 origin, GameInfo.time_left= None, event['s']
                 break
@@ -121,6 +121,8 @@ def parse_point(point):
     except StopIteration as e:
         current_iter = switch_iter(current_iter)
         event = next(current_iter)
+        if (event_types[event['t']]) == 'D_PENALTY_ON_US':
+            event = next(current_iter)
         if (event_types[event['t']]) not in ['SCORED_ON', 'HALFTIME', 'END_OF_Q1', 'END_OF_Q3', 'GAME_OVER', 'END_OF_OT1', 'END_OF_OT2']: 
             print(f'error with point {GameInfo.home_score}-{GameInfo.away_score} of game {GameInfo.current_game_id}')
             print('home')

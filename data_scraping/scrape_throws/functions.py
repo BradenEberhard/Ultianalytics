@@ -36,7 +36,7 @@ def get_players(current_iter, event):
         GameInfo.away_players = [GameInfo.rosters[x] for x in event['l']]
 
 
-def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, callahan=False, block=False, drop=False, time_elapsed=None):
+def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, callahan=False, block=False, drop=False, goal=False):
     if origin is None:
         thrower = None
         origin_x = None
@@ -74,6 +74,7 @@ def get_throw_row(origin=None, new_origin=None, blocker=None, throwaway=False, c
         'callahan': callahan,
         'drop': drop,
         'block': block,
+        'goal': goal,
         'score': score,
         'time_left': time,
         'motion': GameInfo.motion

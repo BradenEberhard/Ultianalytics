@@ -119,5 +119,6 @@ def set_iterators(home_events, away_events):
         elif (event_types[Iterators.away_event['t']]) == 'END_OF_OT1':
             GameInfo.quarter = 'OT2'
             GameInfo.time_left = -1
-    print('bad first event')
+    else:
+        print('bad first event')
     return None

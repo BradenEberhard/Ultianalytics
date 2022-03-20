@@ -36,7 +36,7 @@ def main():
     # all_games = [future.result() for future in futures if future is not None]
 
 
-    game_ids = '2021-08-07-TB-ATL'
+    game_ids = '2021-08-08-DC-PIT'
     all_games = [get_game(game_ids)]
     # clear the files to write to
     # with open(THROW_FILEPATH, 'w+') as file:
