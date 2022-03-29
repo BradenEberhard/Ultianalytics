@@ -101,7 +101,7 @@ def parse_point(point):
             elif 'OUR_MIDPOINT_TIMEOUT' in (event_types[event['t']]):
                 # FIXME this is an interesting point. i'm not sure if we should count time elapsed during timeouts
                 GameInfo.time_left, GameInfo.motion = event['s'], 'timeout'
-                current_iter = switch_iter(current_iter)
+                current_iter, origin = switch_iter(current_iter), None
             elif 'SET_D_LINE_NO_PULL' in (event_types[event['t']]):
                 if 'INJURY_ON_D' not in (event_types[previous_event['t']]):
                     get_players(current_iter, event)
