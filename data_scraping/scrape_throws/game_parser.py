@@ -1,7 +1,7 @@
 from this import d
 from datacache import reset_globals, GameInfo, event_types, Iterators, set_iterators, Data
 from functions import get_players, add_throw, get_new_origin, get_throw_row, add_goal, penalty_origin, update_blocker, update_quarter
-from iter_functions import get_iter_starter, switch_iter
+from iter_functions import switch_iter
 from pull_parser import parse_pull
 import json
 import pandas as pd
@@ -29,11 +29,16 @@ def parse_game(game):
 
 
 def parse_point(point):
+    GameInfo.current_possession, GameInfo.current_point = [], []
     current_iter = set_iterators(point[0], point[1])
     if current_iter is None:
         return None
+    
+    team_on_offense = 'home' if current_iter == Iterators.home_iterator else 'away'
     origin = None
     previous_event = None
+    num_timeouts = 0
+    scoring_team = None
     try:
         while True:
             event = next(current_iter)
@@ -49,31 +54,38 @@ def parse_point(point):
                 # if no player had the disc before, don't add a throw
                 if origin is not None:
                     throw = get_throw_row(origin=origin, new_origin=new_origin)
-                    add_throw(throw)
+                    add_throw(throw, current_iter)
                 origin = new_origin
 
             # if a goal occured, get the new origin, update the schore, get the throw, reset origin, update time
             elif 'GOAL' in (event_types[event['t']]):
+                scoring_team = 'home' if current_iter == Iterators.home_iterator else 'away'
                 new_origin = get_new_origin(event)
                 add_goal(current_iter)
                 goal = get_throw_row(origin=origin, new_origin=new_origin, goal=True)
-                add_throw(goal)
+                add_throw(goal, current_iter)
                 origin, GameInfo.time_left= None, event['s']
+                add_possession_data('goal')
+                add_point_data(scoring_team, num_timeouts, team_on_offense)
+                
                 break
             
             # if a callahan occured, get the new origin, update the score, get the throw, update time
             elif 'CALLAHAN_THROWN' in (event_types[event['t']]):
+                scoring_team = 'home' if current_iter == Iterators.home_iterator else 'away'
                 new_origin = get_new_origin(event)
                 add_goal(current_iter, callahan=True)
                 goal = get_throw_row(origin=origin, new_origin=new_origin)
-                add_throw(goal)
+                add_throw(goal, current_iter)
+                add_possession_data('callahan')
                 origin, GameInfo.time_left, current_iter = None, event['s'], switch_iter(current_iter)
             
             # if a throwaway occured, get the new origin, get the throw, reset origin, switch iterators, mark as turnover
             elif (event_types[event['t']]) == 'THROWAWAY':
                 new_origin = get_new_origin(event)
                 throw = get_throw_row(origin=origin, new_origin=new_origin, throwaway=True)
-                add_throw(throw)
+                add_throw(throw, current_iter)
+                add_possession_data('turnover')
                 origin, current_iter, GameInfo.motion = None, switch_iter(current_iter), 'turnover'
 
             # if a penalty was called update the origin, mark as penalty
@@ -89,7 +101,8 @@ def parse_point(point):
             elif 'DROP' in (event_types[event['t']]):
                 new_origin = get_new_origin(event)
                 drop = get_throw_row(origin=origin, new_origin=new_origin, drop=True)
-                add_throw(drop)
+                add_throw(drop, current_iter)
+                add_possession_data('turnover')
                 origin, current_iter, GameInfo.motion = None, switch_iter(current_iter), 'turnover'
             
             # if a stall occurs, reset the origin, switch iterators, mark as turnover
@@ -102,6 +115,7 @@ def parse_point(point):
                 # FIXME this is an interesting point. i'm not sure if we should count time elapsed during timeouts
                 GameInfo.time_left, GameInfo.motion = event['s'], 'timeout'
                 current_iter, origin = switch_iter(current_iter), None
+                num_timeouts = num_timeouts + 1
             elif 'SET_D_LINE_NO_PULL' in (event_types[event['t']]):
                 if 'INJURY_ON_D' not in (event_types[previous_event['t']]):
                     get_players(current_iter, event)
@@ -112,6 +126,7 @@ def parse_point(point):
             elif  (event_types[event['t']]) in ['THROWAWAY_CAUSED', 'STALL_CAUSED', 'INJURY_ON_D', 'INJURY_ON_O', 'THEIR_MIDPOINT_TIMEOUT', 'O_PENALTY_ON_THEM', 'D_PENALTY_ON_US']:
                 pass 
             elif  (event_types[event['t']]) in ['HALFTIME', 'END_OF_Q1', 'END_OF_Q3', 'GAME_OVER', 'END_OF_OT1', 'END_OF_OT2']:
+                add_possession_data('end_of_quarter')
                 update_quarter(event)
                 pass         
             else:
@@ -120,7 +135,12 @@ def parse_point(point):
             previous_event = event
     except StopIteration as e:
         current_iter = switch_iter(current_iter)
-        event = next(current_iter)
+        add_possession_data('None')
+        add_point_data(scoring_team, num_timeouts, team_on_offense)
+        try:
+            event = next(current_iter)
+        except StopIteration as e:
+            return
         if (event_types[event['t']]) == 'D_PENALTY_ON_US':
             event = next(current_iter)
         if (event_types[event['t']]) not in ['SCORED_ON', 'HALFTIME', 'END_OF_Q1', 'END_OF_Q3', 'GAME_OVER', 'END_OF_OT1', 'END_OF_OT2']: 
@@ -149,3 +169,17 @@ def get_next_point():
         away_point.append(Iterators.away_event)
         
     return (home_point, away_point)
+
+
+def add_point_data(scoring_team, num_timeouts, team_on_offense):
+    for row in GameInfo.current_point:
+        row['scoring_team'] = scoring_team
+        row['num_timeouts'] = num_timeouts
+        row['team_on_offense'] = team_on_offense
+        Data.throws.append(row)
+
+def add_possession_data(result):
+    for row in GameInfo.current_possession:
+        row['poss_result'] = result
+        GameInfo.current_point.append(row)
+    GameInfo.current_possession = []

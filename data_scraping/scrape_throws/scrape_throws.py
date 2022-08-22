@@ -4,8 +4,10 @@ one is of every throw made and the other is every pull.
 from game_parser import parse_game
 import pandas as pd
 import requests as reqs
+import json
 from concurrent.futures import ThreadPoolExecutor, wait
 from datacache import GameInfo, Data
+from datacache import corrections
 
 PULL_FILEPATH = '../../data_csv/pulls.csv'
 THROW_FILEPATH = '../../data_csv/throws.csv'
@@ -26,18 +28,20 @@ def main():
         response = reqs.get(f'https://audl-stat-server.herokuapp.com/web-api/games?limit=10&years={year}&page={page}') 
         game_ids.update(list(map(lambda game: game['gameID'], response.json()['games'])))
 
-    # #  for each game id grab all the home and away events for each team
-    # futures = []
-    # with ThreadPoolExecutor() as executor:
-    #     for game_id in game_ids:
-    #         futures.append(executor.submit(get_game, game_id))
+    # game_ids = '2021-07-24-IND-DET'
+    # all_games = [get_game(game_ids)]
+
+    #  for each game id grab all the home and away events for each team
+    futures = []
+    with ThreadPoolExecutor() as executor:
+        for game_id in game_ids:
+            futures.append(executor.submit(get_game, game_id))
             
-    # futures, _ = wait(futures)
-    # all_games = [future.result() for future in futures if future is not None]
+    futures, _ = wait(futures)
+    all_games = [future.result() for future in futures if future is not None]
 
 
-    game_ids = '2021-08-15-MIN-IND'
-    all_games = [get_game(game_ids)]
+    
     # clear the files to write to
     with open(THROW_FILEPATH, 'w+') as file:
         file.truncate(0)
@@ -70,7 +74,12 @@ def main():
 
 def get_game(game_id):
     response = reqs.get(f'https://audl-stat-server.herokuapp.com/stats-pages/game/{game_id}')
-    game_dict = response.json()
+    response_text = response.text
+
+    for key, value in corrections.dict.items():
+        response_text = response_text.replace(key, value)
+
+    game_dict = json.loads(response_text)
     return {game_id: game_dict}
 
     
@@ -81,7 +90,6 @@ def reset_globals():
     GameInfo.time_left = 720
     GameInfo.start_team = None
     GameInfo.quarter = 'Q1'
-    
 
 if __name__ == '__main__':
     main()

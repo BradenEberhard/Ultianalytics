@@ -12,14 +12,15 @@ def penalty_origin(event, origin):
     return origin
 
 
-def add_throw(entry):
+def add_throw(entry, current_iter):
     entry['home_players'] = GameInfo.home_players
     entry['away_players'] = GameInfo.away_players
     entry['home_score'] = GameInfo.home_score
     entry['away_score'] = GameInfo.away_score
     entry['game_id'] = GameInfo.current_game_id
     entry['quarter_id'] = GameInfo.quarter
-    Data.throws.append(entry)
+    entry['team_with_possession'] = 'home' if current_iter == Iterators.home_iterator else 'away'
+    GameInfo.current_possession.append(entry)
 
 
 def add_goal(current_iter, callahan=False):
@@ -104,11 +105,11 @@ def get_new_origin(event):
 def update_blocker(event):
     if 'r' in event:
         if event['r'] == -1:
-            Data.throws[-1]['blocker'] = 'none_listed'
-        else:
-            Data.throws[-1]['blocker'] = GameInfo.rosters[event['r']]
+            GameInfo.current_point[-1]['blocker'] = 'none_listed'
+        elif len(GameInfo.current_point) > 0:
+            GameInfo.current_point[-1]['blocker'] = GameInfo.rosters[event['r']]
     else:
-        Data.throws[-1]['blocker'] = 'none_listed'
+        GameInfo.current_point[-1]['blocker'] = 'none_listed'
     if 's' in event:
         GameInfo.time_left = event['s']
 
