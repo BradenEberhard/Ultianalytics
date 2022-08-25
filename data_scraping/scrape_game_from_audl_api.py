@@ -50,7 +50,7 @@ def main():
         home_roster = {x['id']: x['player']['ext_player_id'] for x in game['rostersHome']}
         away_roster = {x['id']: x['player']['ext_player_id'] for x in game['rostersAway']}
         home_roster.update(away_roster)
-        print(f'parsing game: {id}')
+        #print(f'parsing game: {id}')
 
 
 def get_game(game_id):

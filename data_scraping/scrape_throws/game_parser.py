@@ -131,7 +131,8 @@ def parse_point(point):
                 pass         
             else:
                 event_str = event_types[event['t']]
-                print(f'event {event_str} not supported')     
+                if event_str not in ['SCORED_ON']:
+                    print(f'event {event_str} not supported')     
             previous_event = event
     except StopIteration as e:
         current_iter = switch_iter(current_iter)
@@ -145,12 +146,14 @@ def parse_point(point):
             event = next(current_iter)
         if (event_types[event['t']]) not in ['SCORED_ON', 'HALFTIME', 'END_OF_Q1', 'END_OF_Q3', 'GAME_OVER', 'END_OF_OT1', 'END_OF_OT2']: 
             print(f'error with point {GameInfo.home_score}-{GameInfo.away_score} of game {GameInfo.current_game_id}')
-            print('home')
-            for el in point[0]: 
-                print(event_types[el['t']])
-            print('away')
-            for el in point[1]: 
-                print(event_types[el['t']])
+            with open(f'error_files/{GameInfo.home_score}-{GameInfo.away_score}-{GameInfo.current_game_id}.txt', 'w+') as file:
+                file.write(' '.join(point[0]))
+            # print('home')
+            # for el in point[0]: 
+            #     print(event_types[el['t']])
+            # print('away')
+            # for el in point[1]: 
+            #     print(event_types[el['t']])
 
 
 def get_next_point():

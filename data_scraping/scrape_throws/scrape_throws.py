@@ -8,15 +8,18 @@ import json
 from concurrent.futures import ThreadPoolExecutor, wait
 from datacache import GameInfo, Data
 from datacache import corrections
+import time
+from bitdotio_proxy import insert_table
 
-PULL_FILEPATH = '../../data_csv/pulls.csv'
-THROW_FILEPATH = '../../data_csv/throws.csv'
+PULL_FILEPATH = '/Users/bradeneberhard/Ultianalytics/data_csv/pulls.csv'
+THROW_FILEPATH = '/Users/bradeneberhard/Ultianalytics/data_csv/throws.csv'
 
 def main():
-    year = '2021'
+    start_time = time.time()
+    years = ['2021']
 
     # if you want data for a different year you will likely need to adjust this page_count
-    page_count = 15
+    page_count = 8
 
     # a set containing every game_id for the specified year
     game_ids = set()
@@ -24,12 +27,10 @@ def main():
     # loop through each page of games and throw the game ids into a set
     # for some reason the audl stat server doesn't like large numbers for limit
     # so you can't just grab all the data at once
-    for page in range(0, page_count):
-        response = reqs.get(f'https://audl-stat-server.herokuapp.com/web-api/games?limit=10&years={year}&page={page}') 
-        game_ids.update(list(map(lambda game: game['gameID'], response.json()['games'])))
-
-    # game_ids = '2021-07-24-IND-DET'
-    # all_games = [get_game(game_ids)]
+    for year in years:
+        for page in range(1, page_count):
+            response = reqs.get(f'https://audl-stat-server.herokuapp.com/web-api/games?limit=20&years={year}&page={page}') 
+            game_ids.update(list(map(lambda game: game['gameID'], response.json()['games'])))
 
     #  for each game id grab all the home and away events for each team
     futures = []
@@ -39,14 +40,6 @@ def main():
             
     futures, _ = wait(futures)
     all_games = [future.result() for future in futures if future is not None]
-
-
-    
-    # clear the files to write to
-    with open(THROW_FILEPATH, 'w+') as file:
-        file.truncate(0)
-    with open(PULL_FILEPATH, 'w+') as file:
-        file.truncate(0)
 
     # iterate over every game
     games = {list(game.items())[0][0]: list(game.items())[0][1] for game in all_games}
@@ -64,12 +57,9 @@ def main():
         parse_game(game)
 
   
-
-    # output the data to files
-    with open(THROW_FILEPATH, 'w+') as file:
-        pd.DataFrame(Data.throws).to_csv(file, index=False)
-    with open(PULL_FILEPATH, 'w+') as file:
-        pd.DataFrame(Data.pulls).to_csv(file, index=False)
+    insert_table(pd.DataFrame(Data.throws), 'throws')
+    insert_table(pd.DataFrame(Data.pulls), 'pulls')
+    print(time.time() - start_time)
 
 
 def get_game(game_id):
