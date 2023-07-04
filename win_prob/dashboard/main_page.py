@@ -9,28 +9,6 @@ from mpld3 import plugins
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 
-css = """
-table
-{
-  border-collapse: collapse;
-}
-th
-{
-  color: #ffffff;
-  background-color: #000000;
-}
-td
-{
-  background-color: #cccccc;
-}
-table, th, td
-{
-  font-family:Arial, Helvetica, sans-serif;
-  border: 1px solid black;
-  text-align: right;
-}
-"""
-
 def plot_game2(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
     home_team = test_game.home_teamID.iloc[0]
@@ -96,14 +74,8 @@ def main():
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
-    game_prob = GameProbability('./data/processed/throwing_0627.csv')
-    game_prob.load_model()
-
-    # WEEKEND_GAMES = pd.read_csv('../data/processed/games_0630.csv')
-    # ALL_GAMES = pd.read_csv('../data/processed/all_games_0703.csv')
-    # gameIDs = list([x for x in ALL_GAMES.gameID.unique() if 'SLC' in x and '2023' in x][0])
-    # fig, axs = game_prob.plot_games(ALL_GAMES[ALL_GAMES.gameID.isin(gameIDs)], features)
-
+    game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
+    game_prob.load_model(path='./win_prob/saved_models/accuracy_loss_model.h5')
 
 
     modification_container = st.container()
