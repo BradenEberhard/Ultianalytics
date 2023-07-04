@@ -59,10 +59,11 @@ def plot_game(game_prob, gameID, features, max_length = 629):
         showlegend=False,
         customdata=txts
     ))
+    fig.add_hline(y=0.5, line_width=3, line_color="grey")
     fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
-    fig.update_layout(title=f'{home_team} at {away_team} on {gameID[:10]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
+    fig.update_layout(title=f'{away_team} at {home_team} on {gameID[:10]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
     return fig
@@ -70,7 +71,7 @@ def plot_game(game_prob, gameID, features, max_length = 629):
 def main():
     st.title("Win Probability Archive")
     with st.expander("Instructions"):
-        st.write("""Since game event data is only available starting in 2021 you can filter by the year and by team. Once both these fields are chosen you can pick which game(s) you would like to see. Click the checkbox to immediately select every possible game with the provided filters. Hover over the plots to see the score and time left in the quarter. Between my rudimentary front-end skills and the basic framework I am using each graph takes a few seconds to load.""")
+        st.write("""Since game event data is only available starting in 2021 you can filter by the year after that point and by team. Once both these fields are chosen you can pick which game(s) you would like to see. Click the checkbox to immediately select every possible game with the provided filters. Hover over the plots to see the score and time left in the quarter. Between my rudimentary front-end skills and the basic framework I am using each graph takes a few seconds to load.""")
     with st.expander("Model Workings"):
         st.write("""
 The model was generated using an LSTM neural network, a powerful type of recurrent neural network known for its ability to capture sequential patterns. It leverages the inherent sequential nature of the game by considering a range of features related to the gameplay dynamics. These features include the thrower's coordinates, the possession number, the type of possession throw, the game quarter, the quarter point, whether the team is playing at home, the home team's score, the away team's score, the total points scored so far, the number of times the prediction has been made, and the score difference between the two teams.
@@ -105,7 +106,7 @@ During the model development process, other approaches such as Logistic Regressi
             else:
                 team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
 
-        for team in team_options:
+        for team in sorted(team_options):
             fig = plot_game(game_prob, team, features)
             st.plotly_chart(fig)
 
