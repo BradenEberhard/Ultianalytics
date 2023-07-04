@@ -81,7 +81,7 @@ def main():
     modification_container = st.container()
     with modification_container:
         st.sidebar.write('Filter Options')
-        container = st.beta_container()
+        container = st.container()
         all = st.checkbox("Select all")
         year_filter = st.sidebar.multiselect('Year(s)', ['2021', '2022', '2023'])
         team_filter = st.sidebar.multiselect('Team(s)', ['union', 'shred', 'spiders', 'sol', 'cascades', 'mechanix', 'windchill', 'aviators', 'royal', 'breeze', 'rush', 'phoenix', 'hustle', 'alleycats', 'legion', 'havoc', 'flyers', 'nitro', 'thunderbirds', 'empire', 'glory', 'summit', 'outlaws', 'growlers', 'radicals', 'cannons'])
