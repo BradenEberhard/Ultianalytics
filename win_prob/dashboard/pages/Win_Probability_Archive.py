@@ -69,6 +69,8 @@ def plot_game(game_prob, gameID, features, max_length = 629):
 
 def main():
     st.title("Win Probability Archive")
+    with st.expander("Instructions"):
+        st.write("""Since game event data is only available starting in 2021 you can filter by the year and by team. Once both these fields are chosen you can pick which game(s) you would like to see. Click the checkbox to immediately select every possible game with the provided filters. Hover over the plots to see the score and time left in the quarter. Between my rudimentary front-end skills and the basic framework I am using each graph takes a few seconds to load.""")
     with st.expander("Model Workings"):
         st.write("""
 The model was generated using an LSTM neural network, a powerful type of recurrent neural network known for its ability to capture sequential patterns. It leverages the inherent sequential nature of the game by considering a range of features related to the gameplay dynamics. These features include the thrower's coordinates, the possession number, the type of possession throw, the game quarter, the quarter point, whether the team is playing at home, the home team's score, the away team's score, the total points scored so far, the number of times the prediction has been made, and the score difference between the two teams.
@@ -90,9 +92,6 @@ During the model development process, other approaches such as Logistic Regressi
 
     modification_container = st.container()
     with modification_container:
-        st.sidebar.write('Filter Options')
-        
-        
         year_filter = st.multiselect('Year(s)', ['2021', '2022', '2023'])
         team_filter = st.multiselect('Team(s)', ['union', 'shred', 'spiders', 'sol', 'cascades', 'mechanix', 'windchill', 'aviators', 'royal', 'breeze', 'rush', 'phoenix', 'hustle', 'alleycats', 'legion', 'havoc', 'flyers', 'nitro', 'thunderbirds', 'empire', 'glory', 'summit', 'outlaws', 'growlers', 'radicals', 'cannons'])
         DATA = game_prob.data
