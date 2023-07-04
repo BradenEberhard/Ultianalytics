@@ -96,7 +96,7 @@ def main():
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
-    game_prob = GameProbability('../../data/processed/throwing_0627.csv')
+    game_prob = GameProbability('./data/processed/throwing_0627.csv')
     game_prob.load_model()
 
     # WEEKEND_GAMES = pd.read_csv('../data/processed/games_0630.csv')
