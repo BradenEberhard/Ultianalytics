@@ -69,28 +69,17 @@ def plot_game(game_prob, gameID, features, max_length = 629):
 
 def main():
     st.title("Win Probability Archive")
-    st.text('Use this page to see how ')
     with st.expander("Model Workings"):
-        st.write("""The model was generated using an LSTM neural network, a type of recurrent neural network that excels at 
-        capturing sequential patterns. It takes into account various features related to the game, such as the coordinates of the thrower, 
-        the possession number, the type of possession throw, the game quarter, the quarter point, whether the team is playing at home, 
-        the home team's score, the away team's score, the total points scored so far, the number of times the prediction has been made, and 
-        the score difference between the two teams.
+        st.write("""
+The model was generated using an LSTM neural network, a powerful type of recurrent neural network known for its ability to capture sequential patterns. It leverages the inherent sequential nature of the game by considering a range of features related to the gameplay dynamics. These features include the thrower's coordinates, the possession number, the type of possession throw, the game quarter, the quarter point, whether the team is playing at home, the home team's score, the away team's score, the total points scored so far, the number of times the prediction has been made, and the score difference between the two teams.
 
-        The data was split into testing and training sets to evaluate and validate the model's performance. This division allows the model 
-        to learn from a subset of the data during training and assess its accuracy on unseen data during testing.
+To ensure the model's reliability and effectiveness, the dataset was carefully divided into testing and training sets. This division allows for the evaluation and validation of the model's performance by training it on a subset of the data and assessing its accuracy on unseen data during testing.
 
-        In addition to the split, the dataset was augmented to enhance the model's training process. 
-        Data augmentation involves creating new synthetic samples by applying various transformations or perturbations to the existing data. 
-        I decided to flip the home and away teams and flip the side of the field the disc is on. 
-        By augmenting the dataset, the model becomes more robust to variations and can better generalize to unseen scenarios.
-        The augmented dataset provides a diverse range of examples for the model to learn from, enabling it to capture different patterns and variations in the game dynamics. 
+To further enhance the training process, data augmentation techniques were applied to the dataset. In particular, the dataset was augmented by flipping the home and away teams and changing the side of the field the disc is on. These transformations introduce additional variations and scenarios for the model to learn from, making it more robust and better able to generalize to unseen situations.
 
-        I also attempted other models including Logistic Regression and XGBoost. All models performed similary with around 74 percent accuracy and 0.89 AUC
-        I chose to use the LSTM because its inherent ability to capture nonlinear relationships and rely on the sequential format of the data. 
-        Visually it also provided additional intuitive advantages including graphs that are much smoother while the other models frequently have sharp changes when a
-        point is scored and a slightly better understanding that small leads matter less in the beginning of the game and more near the end.
-        """)
+During the model development process, other approaches such as Logistic Regression and XGBoost were explored. However, the LSTM model consistently demonstrated similar performance with around 74 percent accuracy and 0.89 AUC (Area Under the Curve). The LSTM's inherent ability to capture nonlinear relationships and effectively handle sequential data, combined with its visually smoother output, particularly in response to scoring events, made it the preferred choice. Additionally, the LSTM model exhibited a better understanding of the game dynamics, recognizing that small leads matter less in the beginning of the game and gain more significance as the game progresses.
+
+**NOTE: many games have issues with the data especially with timing such as a later point having more time left than a previous point. In these cases, the data was excluded. Because of this, some points and/or games are not available""")
 
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
