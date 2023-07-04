@@ -4,3 +4,4 @@ scikit-learn
 matplotlib
 textalloc
 plotly
+mpld3
