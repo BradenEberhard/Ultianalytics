@@ -9,7 +9,7 @@ from mpld3 import plugins
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 
-def plot_game2(game_prob, gameID, features, max_length = 629):
+def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
     home_team = test_game.home_teamID.iloc[0]
     away_team = test_game.away_teamID.iloc[0]
@@ -81,13 +81,21 @@ def main():
     modification_container = st.container()
     with modification_container:
         st.sidebar.write('Filter Options')
+        container = st.beta_container()
+        all = st.checkbox("Select all")
         year_filter = st.sidebar.multiselect('Year(s)', ['2021', '2022', '2023'])
         team_filter = st.sidebar.multiselect('Team(s)', ['union', 'shred', 'spiders', 'sol', 'cascades', 'mechanix', 'windchill', 'aviators', 'royal', 'breeze', 'rush', 'phoenix', 'hustle', 'alleycats', 'legion', 'havoc', 'flyers', 'nitro', 'thunderbirds', 'empire', 'glory', 'summit', 'outlaws', 'growlers', 'radicals', 'cannons'])
         DATA = game_prob.data
         DATA = DATA[(DATA.home_teamID.isin(team_filter)) | (DATA.away_teamID.isin(team_filter))]
-        team_options = st.sidebar.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+        team_options = container.sidebar.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+        if all:
+            team_options = container.multiselect("Select one or more options:",
+                [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)],[element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+        else:
+            team_options = container.sidebar.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+
         for team in team_options:
-            fig = plot_game2(game_prob, team, features)
+            fig = plot_game(game_prob, team, features)
             st.plotly_chart(fig)
 
 
