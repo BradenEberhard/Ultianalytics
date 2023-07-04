@@ -83,8 +83,8 @@ def main():
         st.sidebar.write('Filter Options')
         container = st.container()
         all = st.checkbox("Select all")
-        year_filter = st.sidebar.multiselect('Year(s)', ['2021', '2022', '2023'])
-        team_filter = st.sidebar.multiselect('Team(s)', ['union', 'shred', 'spiders', 'sol', 'cascades', 'mechanix', 'windchill', 'aviators', 'royal', 'breeze', 'rush', 'phoenix', 'hustle', 'alleycats', 'legion', 'havoc', 'flyers', 'nitro', 'thunderbirds', 'empire', 'glory', 'summit', 'outlaws', 'growlers', 'radicals', 'cannons'])
+        year_filter = st.multiselect('Year(s)', ['2021', '2022', '2023'])
+        team_filter = st.multiselect('Team(s)', ['union', 'shred', 'spiders', 'sol', 'cascades', 'mechanix', 'windchill', 'aviators', 'royal', 'breeze', 'rush', 'phoenix', 'hustle', 'alleycats', 'legion', 'havoc', 'flyers', 'nitro', 'thunderbirds', 'empire', 'glory', 'summit', 'outlaws', 'growlers', 'radicals', 'cannons'])
         DATA = game_prob.data
         DATA = DATA[(DATA.home_teamID.isin(team_filter)) | (DATA.away_teamID.isin(team_filter))]
         team_options = container.sidebar.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
@@ -92,7 +92,7 @@ def main():
             team_options = container.multiselect("Select one or more options:",
                 [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)],[element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
         else:
-            team_options = container.sidebar.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+            team_options = container.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
 
         for team in team_options:
             fig = plot_game(game_prob, team, features)
