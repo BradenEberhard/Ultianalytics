@@ -59,7 +59,7 @@ def plot_game(game_prob, gameID, features, max_length = 629):
         showlegend=False,
         customdata=txts
     ))
-    fig.add_hline(y=0.5, line_width=3, line_color="grey")
+    fig.add_hline(y=0.5, line_width=1, line_color="grey")
     fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
