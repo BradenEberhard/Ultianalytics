@@ -51,8 +51,8 @@ def main():
 
     
     game = games_df[games_df.name == game_filter]
-    st.write(game.iloc[0].gameID)
-    get_box_scores(game.iloc[0].gameID)
+    st.write(get_box_scores(game.iloc[0].gameID))
+    
 
 
 if __name__ == '__main__':
