@@ -12,7 +12,7 @@ def get_name_from_id(row):
 @st.cache_data
 def get_box_scores(gameID):
     game_stats = GameStats(gameID)
-    return game_stats.get_box_scores()
+    return game_stats.get_boxscores()
 
 @st.cache_data
 def get_roster_stats(gameID):
@@ -52,7 +52,7 @@ def main():
     
     game = games_df[games_df.name == game_filter]
     st.write(game.iloc[0].gameID)
-    get_roster_stats(game.iloc[0].gameID)
+    get_box_scores(game.iloc[0].gameID)
 
 
 if __name__ == '__main__':
