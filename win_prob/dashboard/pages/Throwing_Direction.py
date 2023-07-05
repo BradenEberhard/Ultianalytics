@@ -89,9 +89,12 @@ def main():
     modification_container = st.container()
     with modification_container:
         player_filter = st.multiselect('Year(s)', throws_df.thrower.unique())
+        col1, col2 = st.columns(2)
         for player in player_filter:
-            fig = create_player_bar_polar_chart(throws_df, player)
-            st.write(fig)
+            fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
+            col1.write(fig)
+            fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
+            col2.write(fig)
 
 
     
