@@ -112,10 +112,10 @@ def main():
         with st.container():
             # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
             if all:
-                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()),
+                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'].strip() + ' ' + new_players['lastName'].strip()).unique()),
                                                sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
             else:
-                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'].strip() + ' ' + new_players['lastName'].strip()).unique()))
 
 
         throw_year_filter = st.multiselect('Year(s) for Throws', years_to_date)
