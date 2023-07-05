@@ -49,8 +49,9 @@ def main():
         team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
         game_filter = st.selectbox('Game', sorted(team_games.name, key= lambda x:x[-8:]))
 
-    st.write(game_filter)
+    
     game = games_df[games_df.name == game_filter]
+    st.write(game.iloc[0].gameID)
     get_roster_stats(game.iloc[0].gameID)
 
 
