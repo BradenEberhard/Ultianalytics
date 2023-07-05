@@ -51,7 +51,7 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
         title=f'{player[1]} Catches'
     hover_text = [text.replace('<br>trace=bar', '') for text in hover_text]
 
-
+    title = title + f'Total: {count}'
     fig = go.Figure(data=go.Barpolar(
         r=count,
         theta=calculate_midpoints(plot),
