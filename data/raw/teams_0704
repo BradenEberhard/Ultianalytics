@@ -1,0 +1,232 @@
+,teamID,year,city,name_x,fullName,abbrev,wins,losses,ties,standing,divisionID,name_y
+0,allstars1,2000,Rowan's,All-Stars,Rowan's All-Stars,Rowan,0,0,0,1,east,East
+1,union,2013,Chicago,Union,Chicago Union,CHI,14,3,0,2,midwest,Midwest
+2,allstars2,2000,KPS',All-Stars,KPS' All-Stars,KPS,0,0,0,2,midwest,Midwest
+3,empire,2022,New York,Empire,New York Empire,NY,15,0,0,1,east,East
+4,breeze,2022,DC,Breeze,DC Breeze,DC,11,3,0,2,east,East
+5,allstars1,2022,East-Central,All-Stars,East-Central All-Stars,EC,0,0,0,1,allstars,All Stars
+6,radicals,2023,Madison,Radicals,Madison Radicals,MAD,1,7,0,5,central,Central
+7,flyers,2022,Carolina,Flyers,Carolina Flyers,CAR,12,2,0,1,south,South
+8,sol,2022,Austin,Sol,Austin Sol,ATX,9,4,0,2,south,South
+9,royal,2021,Montreal,Royal,Montreal Royal,MTL,7,2,0,2,canada,Canada
+10,outlaws,2021,Ottawa,Outlaws,Ottawa Outlaws,OTT,3,5,0,3,canada,Canada
+11,rush,2021,Toronto,Rush,Toronto Rush,TOR,3,6,0,1,canada,Canada
+12,flyers,2019,Raleigh,Flyers,Raleigh Flyers,RAL,10,3,0,2,south,South
+13,legion,2019,Dallas,Legion,Dallas Legion,DAL,10,5,0,1,south,South
+14,hustle,2019,Atlanta,Hustle,Atlanta Hustle,ATL,5,7,0,3,south,South
+15,cannons,2019,Tampa Bay,Cannons,Tampa Bay Cannons,TB,4,8,0,4,south,South
+16,sol,2019,Austin,Sol,Austin Sol,AUS,3,9,0,5,south,South
+17,growlers,2019,San Diego,Growlers,San Diego Growlers,SD,11,3,0,1,west,West
+18,aviators,2019,LA,Aviators,LA Aviators,LA,9,4,0,2,west,West
+19,spiders,2019,San Jose,Spiders,San Jose Spiders,SJ,3,9,0,3,west,West
+20,cascades,2019,Seattle,Cascades,Seattle Cascades,SEA,2,10,0,4,west,West
+21,empire,2019,New York,Empire,New York Empire,NY,15,0,0,1,east,East
+22,rush,2019,Toronto,Rush,Toronto Rush,TOR,8,6,0,2,east,East
+23,breeze,2019,DC,Breeze,DC Breeze,DC,7,6,0,3,east,East
+24,royal,2019,Montreal,Royal,Montreal Royal,MTL,4,8,0,4,east,East
+25,phoenix,2019,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,4,8,0,5,east,East
+26,outlaws,2019,Ottawa,Outlaws,Ottawa Outlaws,OTT,3,9,0,6,east,East
+27,alleycats,2019,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,9,5,0,1,midwest,Midwest
+28,thunderbirds,2019,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,9,5,0,2,midwest,Midwest
+29,union,2019,Chicago,Union,Chicago Union,CHI,7,6,0,3,midwest,Midwest
+30,radicals,2019,Madison,Radicals,Madison Radicals,MAD,6,6,0,5,midwest,Midwest
+31,windchill,2019,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,6,6,0,4,midwest,Midwest
+32,mechanix,2019,Detroit,Mechanix,Detroit Mechanix,DET,0,12,0,6,midwest,Midwest
+33,spinners,2012,Philadelphia,Spinners,Philadelphia Spinners,PHS,15,2,0,1,east,East
+34,constitution,2012,Connecticut,Constitution,Connecticut Constitution,CON,8,4,0,3,east,East
+35,rampage,2012,Rhode Island,Rampage,Rhode Island Rampage,RIR,6,9,0,2,east,East
+36,dragons,2012,Rochester,Dragons,Rochester Dragons,ROC,3,12,0,4,east,East
+37,revolution,2012,Cincinnati,Revolution,Cincinnati Revolution,CIN,8,8,0,2,midwest,Midwest
+38,alleycats,2012,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,8,8,0,1,midwest,Midwest
+39,cranes,2012,Columbus,Cranes,Columbus Cranes,CLB,7,9,0,3,midwest,Midwest
+40,mechanix,2012,Detroit,Mechanix,Detroit Mechanix,DET,6,9,0,4,midwest,Midwest
+41,rush,2013,Toronto,Rush,Toronto Rush,TOR,18,0,0,1,east,East
+42,empire,2013,New York,Empire,New York Empire,NY,12,6,0,2,east,East
+43,phoenix,2013,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,9,8,0,3,east,East
+44,dragons,2013,Rochester,Dragons,Rochester Dragons,ROC,6,10,0,4,east,East
+45,breeze,2013,DC,Breeze,DC Breeze,DC,4,12,0,5,east,East
+46,hammerheads,2013,New Jersey,Hammerheads,New Jersey Hammerheads,NJH,2,14,0,6,east,East
+47,radicals,2013,Madison,Radicals,Madison Radicals,MAD,15,4,0,1,midwest,Midwest
+48,alleycats,2013,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,9,8,0,3,midwest,Midwest
+49,mechanix,2013,Detroit,Mechanix,Detroit Mechanix,DET,4,12,0,6,midwest,Midwest
+50,windchill,2013,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,4,12,0,4,midwest,Midwest
+51,revolution,2013,Cincinnati,Revolution,Cincinnati Revolution,CIN,4,12,0,5,midwest,Midwest
+52,radicals,2014,Madison,Radicals,Madison Radicals,MAD,13,3,0,1,midwest,Midwest
+53,alleycats,2014,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,9,6,0,3,midwest,Midwest
+54,union,2014,Chicago,Union,Chicago Union,CHI,9,6,0,2,midwest,Midwest
+55,windchill,2014,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,8,6,0,4,midwest,Midwest
+56,hustle,2022,Atlanta,Hustle,Atlanta Hustle,ATL,8,4,0,3,south,South
+57,mechanix,2022,Detroit,Mechanix,Detroit Mechanix,DET,0,12,0,6,central,Central
+58,legion,2022,Dallas,Legion,Dallas Legion,DAL,1,11,0,4,south,South
+59,cannons,2022,Tampa Bay,Cannons,Tampa Bay Cannons,TB,1,11,0,5,south,South
+60,aviators,2023,LA,Aviators,LA Aviators,LA,6,4,0,4,west,West
+61,revolution,2014,Cincinnati,Revolution,Cincinnati Revolution,CIN,4,10,0,5,midwest,Midwest
+62,mechanix,2014,Detroit,Mechanix,Detroit Mechanix,DET,0,14,0,6,midwest,Midwest
+63,rush,2016,Toronto,Rush,Toronto Rush,TOR,13,3,0,1,east,East
+64,breeze,2016,DC,Breeze,DC Breeze,DC,11,5,0,2,east,East
+65,empire,2016,New York,Empire,New York Empire,NY,7,8,0,3,east,East
+66,outlaws,2016,Ottawa,Outlaws,Ottawa Outlaws,OTT,7,7,0,4,east,East
+67,royal,2016,Montreal,Royal,Montreal Royal,MTL,6,8,0,5,east,East
+68,phoenix,2016,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,0,14,0,6,east,East
+69,rush,2015,Toronto,Rush,Toronto Rush,TOR,14,2,0,1,east,East
+70,empire,2015,New York,Empire,New York Empire,NY,12,4,0,2,east,East
+71,royal,2015,Montreal,Royal,Montreal Royal,MTL,9,6,0,3,east,East
+72,breeze,2015,DC,Breeze,DC Breeze,DC,7,7,0,5,east,East
+73,outlaws,2015,Ottawa,Outlaws,Ottawa Outlaws,OTT,7,7,0,4,east,East
+74,dragons,2015,Rochester,Dragons,Rochester Dragons,ROC,1,13,0,7,east,East
+75,phoenix,2015,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,1,13,0,6,east,East
+76,rush,2017,Toronto,Rush,Toronto Rush,TOR,13,4,0,1,east,East
+77,breeze,2017,DC,Breeze,DC Breeze,DC,11,5,0,2,east,East
+78,royal,2017,Montreal,Royal,Montreal Royal,MTL,9,6,0,3,east,East
+79,empire,2017,New York,Empire,New York Empire,NY,6,8,0,4,east,East
+80,phoenix,2017,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,4,10,0,5,east,East
+81,outlaws,2017,Ottawa,Outlaws,Ottawa Outlaws,OTT,2,12,0,6,east,East
+82,spiders,2015,San Jose,Spiders,San Jose Spiders,SJ,13,4,0,1,west,West
+83,cascades,2015,Seattle,Cascades,Seattle Cascades,SEA,9,7,0,2,west,West
+84,flamethrowers,2015,San Francisco,FlameThrowers,San Francisco FlameThrowers,SF,8,7,0,3,west,West
+85,growlers,2015,San Diego,Growlers,San Diego Growlers,SD,7,7,0,4,west,West
+86,aviators,2015,LA,Aviators,LA Aviators,LA,5,9,0,5,west,West
+87,riptide,2015,Vancouver,Riptide,Vancouver Riptide,VAN,4,10,0,6,west,West
+88,flamethrowers,2017,San Francisco,FlameThrowers,San Francisco FlameThrowers,SF,13,4,0,1,west,West
+89,aviators,2017,LA,Aviators,LA Aviators,LA,10,6,0,2,west,West
+90,spiders,2017,San Jose,Spiders,San Jose Spiders,SJ,8,7,0,3,west,West
+91,cascades,2017,Seattle,Cascades,Seattle Cascades,SEA,7,7,0,5,west,West
+92,growlers,2017,San Diego,Growlers,San Diego Growlers,SD,7,7,0,4,west,West
+93,riptide,2017,Vancouver,Riptide,Vancouver Riptide,VAN,1,13,0,6,west,West
+94,flamethrowers,2016,San Francisco,FlameThrowers,San Francisco FlameThrowers,SF,11,4,0,2,west,West
+95,aviators,2016,LA,Aviators,LA Aviators,LA,9,6,0,3,west,West
+96,cascades,2016,Seattle,Cascades,Seattle Cascades,SEA,12,6,0,1,west,West
+97,riptide,2016,Vancouver,Riptide,Vancouver Riptide,VAN,6,8,0,4,west,West
+98,spiders,2016,San Jose,Spiders,San Jose Spiders,SJ,5,9,0,5,west,West
+99,growlers,2016,San Diego,Growlers,San Diego Growlers,SD,2,12,0,6,west,West
+100,legion,2016,Dallas,Legion,Dallas Legion,DAL,17,0,0,1,south,South
+101,flyers,2016,Raleigh,Flyers,Raleigh Flyers,RAL,9,6,0,3,south,South
+102,hustle,2016,Atlanta,Hustle,Atlanta Hustle,ATL,8,8,0,2,south,South
+103,sol,2016,Austin,Sol,Austin Sol,AUS,7,7,0,4,south,South
+104,cannons,2016,Jacksonville,Cannons,Jacksonville Cannons,JAX,5,9,0,5,south,South
+105,express,2016,Charlotte,Express,Charlotte Express,CHA,4,10,0,6,south,South
+106,nightwatch,2016,Nashville,Nightwatch,Nashville Nightwatch,NSH,3,11,0,7,south,South
+107,radicals,2017,Madison,Radicals,Madison Radicals,MAD,13,3,0,1,midwest,Midwest
+108,windchill,2017,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,11,4,0,3,midwest,Midwest
+109,thunderbirds,2017,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,10,6,0,2,midwest,Midwest
+110,alleycats,2017,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,5,9,0,4,midwest,Midwest
+111,union,2017,Chicago,Union,Chicago Union,CHI,3,11,0,5,midwest,Midwest
+112,mechanix,2017,Detroit,Mechanix,Detroit Mechanix,DET,1,13,0,6,midwest,Midwest
+113,radicals,2016,Madison,Radicals,Madison Radicals,MAD,15,1,0,1,midwest,Midwest
+114,thunderbirds,2016,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,11,5,0,2,midwest,Midwest
+115,windchill,2016,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,9,6,0,3,midwest,Midwest
+116,alleycats,2016,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,8,6,0,4,midwest,Midwest
+117,mechanix,2016,Detroit,Mechanix,Detroit Mechanix,DET,4,10,0,6,midwest,Midwest
+118,union,2016,Chicago,Union,Chicago Union,CHI,4,10,0,5,midwest,Midwest
+119,revolution,2016,Cincinnati,Revolution,Cincinnati Revolution,CIN,0,14,0,7,midwest,Midwest
+120,flyers,2015,Raleigh,Flyers,Raleigh Flyers,RAL,12,4,0,1,south,South
+121,cannons,2015,Jacksonville,Cannons,Jacksonville Cannons,JAX,10,5,0,2,south,South
+122,hustle,2015,Atlanta,Hustle,Atlanta Hustle,ATL,10,4,0,3,south,South
+123,express,2015,Charlotte,Express,Charlotte Express,CHA,2,12,0,5,south,South
+124,nightwatch,2015,Nashville,Nightwatch,Nashville Nightwatch,NSH,2,12,0,4,south,South
+125,flyers,2017,Raleigh,Flyers,Raleigh Flyers,RAL,13,2,0,2,south,South
+126,legion,2017,Dallas,Legion,Dallas Legion,DAL,13,4,0,1,south,South
+127,cannons,2017,Jacksonville,Cannons,Jacksonville Cannons,JAX,10,5,0,3,south,South
+128,hustle,2017,Atlanta,Hustle,Atlanta Hustle,ATL,5,9,0,4,south,South
+129,sol,2017,Austin,Sol,Austin Sol,AUS,4,10,0,5,south,South
+130,nightwatch,2017,Nashville,Nightwatch,Nashville Nightwatch,NSH,0,14,0,6,south,South
+131,growlers,2021,San Diego,Growlers,San Diego Growlers,SD,11,3,0,1,west,West
+132,legion,2021,Dallas,Legion,Dallas Legion,DAL,8,5,0,2,west,West
+133,sol,2021,Austin,Sol,Austin Sol,AUS,6,6,0,3,west,West
+134,aviators,2021,LA,Aviators,LA Aviators,LA,5,7,0,4,west,West
+135,spiders,2021,San Jose,Spiders,San Jose Spiders,SJ,4,8,0,5,west,West
+136,cascades,2021,Seattle,Cascades,Seattle Cascades,SEA,3,9,0,6,west,West
+137,radicals,2015,Madison,Radicals,Madison Radicals,MAD,15,2,0,1,midwest,Midwest
+138,thunderbirds,2015,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,13,3,0,2,midwest,Midwest
+139,union,2015,Chicago,Union,Chicago Union,CHI,8,6,1,3,midwest,Midwest
+140,alleycats,2015,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,7,7,0,4,midwest,Midwest
+141,windchill,2015,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,6,7,1,5,midwest,Midwest
+142,revolution,2015,Cincinnati,Revolution,Cincinnati Revolution,CIN,2,12,0,6,midwest,Midwest
+143,mechanix,2015,Detroit,Mechanix,Detroit Mechanix,DET,0,14,0,7,midwest,Midwest
+144,breeze,2021,DC,Breeze,DC Breeze,DC,10,3,0,3,atlantic,Atlantic
+145,empire,2021,New York,Empire,New York Empire,NY,12,3,0,2,atlantic,Atlantic
+146,hustle,2021,Atlanta,Hustle,Atlanta Hustle,ATL,9,4,0,4,atlantic,Atlantic
+147,flyers,2021,Raleigh,Flyers,Raleigh Flyers,RAL,11,4,0,1,atlantic,Atlantic
+148,glory,2021,Boston,Glory,Boston Glory,BOS,5,7,0,5,atlantic,Atlantic
+149,phoenix,2021,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,3,9,0,6,atlantic,Atlantic
+150,cannons,2021,Tampa Bay,Cannons,Tampa Bay Cannons,TB,2,10,0,7,atlantic,Atlantic
+151,thunderbirds,2021,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,1,11,0,8,atlantic,Atlantic
+152,union,2021,Chicago,Union,Chicago Union,CHI,11,3,0,1,central,Central
+153,windchill,2021,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,10,3,0,2,central,Central
+154,radicals,2021,Madison,Radicals,Madison Radicals,MAD,7,5,0,3,central,Central
+155,alleycats,2021,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,3,9,0,4,central,Central
+156,mechanix,2021,Detroit,Mechanix,Detroit Mechanix,DET,0,12,0,5,central,Central
+157,radicals,2018,Madison,Radicals,Madison Radicals,MAD,15,2,0,1,midwest,Midwest
+158,alleycats,2018,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,12,4,0,2,midwest,Midwest
+159,windchill,2018,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,8,7,0,3,midwest,Midwest
+160,union,2018,Chicago,Union,Chicago Union,CHI,5,9,0,4,midwest,Midwest
+161,thunderbirds,2018,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,4,10,0,5,midwest,Midwest
+162,mechanix,2018,Detroit,Mechanix,Detroit Mechanix,DET,0,14,0,6,midwest,Midwest
+163,legion,2018,Dallas,Legion,Dallas Legion,DAL,15,2,0,1,south,South
+164,flyers,2018,Raleigh,Flyers,Raleigh Flyers,RAL,11,5,0,2,south,South
+165,hustle,2018,Atlanta,Hustle,Atlanta Hustle,ATL,7,7,0,4,south,South
+166,sol,2018,Austin,Sol,Austin Sol,AUS,6,9,0,3,south,South
+167,cannons,2018,Tampa Bay,Cannons,Tampa Bay Cannons,TB,4,10,0,5,south,South
+168,nightwatch,2018,Nashville,Nightwatch,Nashville Nightwatch,NSH,3,11,0,6,south,South
+169,rush,2018,Toronto,Rush,Toronto Rush,TOR,13,2,0,2,east,East
+170,breeze,2018,DC,Breeze,DC Breeze,DC,8,6,1,3,east,East
+171,empire,2018,New York,Empire,New York Empire,NY,10,7,0,1,east,East
+172,royal,2018,Montreal,Royal,Montreal Royal,MTL,6,8,0,4,east,East
+173,phoenix,2018,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,5,8,1,5,east,East
+174,outlaws,2018,Ottawa,Outlaws,Ottawa Outlaws,OTT,3,11,0,6,east,East
+175,aviators,2018,LA,Aviators,LA Aviators,LA,12,4,0,1,west,West
+176,growlers,2018,San Diego,Growlers,San Diego Growlers,SD,7,8,0,2,west,West
+177,spiders,2018,San Jose,Spiders,San Jose Spiders,SJ,6,8,0,3,west,West
+178,flamethrowers,2018,San Francisco,FlameThrowers,San Francisco FlameThrowers,SF,5,9,0,5,west,West
+179,cascades,2018,Seattle,Cascades,Seattle Cascades,SEA,5,9,0,4,west,West
+180,rush,2014,Toronto,Rush,Toronto Rush,TOR,15,2,0,1,east,East
+181,empire,2014,New York,Empire,New York Empire,NY,11,5,0,2,east,East
+182,breeze,2014,DC,Breeze,DC Breeze,DC,10,5,0,3,east,East
+183,royal,2014,Montreal,Royal,Montreal Royal,MTL,6,8,0,4,east,East
+184,phoenix,2014,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,2,12,0,5,east,East
+185,dragons,2014,Rochester,Dragons,Rochester Dragons,ROC,1,13,0,6,east,East
+186,spiders,2014,San Jose,Spiders,San Jose Spiders,SJ,16,1,0,1,west,West
+187,flamethrowers,2014,San Francisco,FlameThrowers,San Francisco FlameThrowers,SF,11,4,0,2,west,West
+188,riptide,2014,Vancouver,Riptide,Vancouver Riptide,VAN,8,6,0,3,west,West
+189,cascades,2014,Seattle,Cascades,Seattle Cascades,SEA,3,11,0,4,west,West
+190,lions,2014,Salt Lake,Lions,Salt Lake Lions,SLC,0,14,0,5,west,West
+191,outlaws,2022,Ottawa,Outlaws,Ottawa Outlaws,OTT,2,10,0,7,east,East
+192,cascades,2022,Seattle,Cascades,Seattle Cascades,SEA,2,10,0,6,west,West
+193,mechanix,2023,Detroit,Mechanix,Detroit Mechanix,DET,0,8,0,6,central,Central
+194,royal,2022,Montreal,Royal,Montreal Royal,MTL,4,8,0,5,east,East
+195,nitro,2022,Portland,Nitro,Portland Nitro,POR,2,10,0,7,west,West
+196,union,2022,Chicago,Union,Chicago Union,CHI,13,2,0,1,central,Central
+197,windchill,2022,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,10,4,0,2,central,Central
+198,alleycats,2022,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,6,7,0,3,central,Central
+199,radicals,2022,Madison,Radicals,Madison Radicals,MAD,6,6,0,4,central,Central
+200,allstars2,2022,South-West,All-Stars,South-West All-Stars,SW,0,0,0,2,allstars,All Stars
+201,growlers,2022,San Diego,Growlers,San Diego Growlers,SD,9,4,0,3,west,West
+202,spiders,2022,Oakland,Spiders,Oakland Spiders,OAK,4,8,0,4,west,West
+203,aviators,2022,LA,Aviators,LA Aviators,LA,4,8,0,5,west,West
+204,thunderbirds,2022,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,4,8,0,5,central,Central
+205,cascades,2023,Seattle,Cascades,Seattle Cascades,SEA,2,8,0,6,west,West
+206,nitro,2023,Portland,Nitro,Portland Nitro,POR,0,8,0,7,west,West
+207,royal,2023,Montreal,Royal,Montreal Royal,MTL,0,10,0,6,east,East
+208,alleycats,2023,Indianapolis,AlleyCats,Indianapolis AlleyCats,IND,7,2,0,1,central,Central
+209,windchill,2023,Minnesota,Wind Chill,Minnesota Wind Chill,MIN,6,2,0,2,central,Central
+210,union,2023,Chicago,Union,Chicago Union,CHI,5,3,0,3,central,Central
+211,thunderbirds,2023,Pittsburgh,Thunderbirds,Pittsburgh Thunderbirds,PIT,4,4,0,4,central,Central
+212,phoenix,2022,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,6,7,0,3,east,East
+213,glory,2022,Boston,Glory,Boston Glory,BOS,4,8,0,4,east,East
+214,rush,2022,Toronto,Rush,Toronto Rush,TOR,4,8,0,6,east,East
+215,empire,2023,New York,Empire,New York Empire,NY,9,0,0,1,east,East
+216,summit,2022,Colorado,Summit,Colorado Summit,COL,12,2,0,1,west,West
+217,breeze,2023,DC,Breeze,DC Breeze,DC,6,3,0,2,east,East
+218,hustle,2023,Atlanta,Hustle,Atlanta Hustle,ATL,8,2,0,1,south,South
+219,sol,2023,Austin,Sol,Austin Sol,ATX,7,3,0,2,south,South
+220,shred,2023,Salt Lake,Shred,Salt Lake Shred,SLC,10,0,0,1,west,West
+221,summit,2023,Colorado,Summit,Colorado Summit,COL,8,3,0,2,west,West
+222,spiders,2023,Oakland,Spiders,Oakland Spiders,OAK,5,3,0,3,west,West
+223,growlers,2023,San Diego,Growlers,San Diego Growlers,SD,2,7,0,5,west,West
+224,glory,2023,Boston,Glory,Boston Glory,BOS,5,4,0,3,east,East
+225,flyers,2023,Carolina,Flyers,Carolina Flyers,CAR,6,3,0,3,south,South
+226,havoc,2023,Houston,Havoc,Houston Havoc,HTX,2,7,0,4,south,South
+227,legion,2023,Dallas,Legion,Dallas Legion,DAL,0,8,0,5,south,South
+228,phoenix,2023,Philadelphia,Phoenix,Philadelphia Phoenix,PHI,5,4,0,4,east,East
+229,shred,2022,Salt Lake,Shred,Salt Lake Shred,SLC,11,3,0,2,west,West
+230,rush,2023,Toronto,Rush,Toronto Rush,TOR,4,5,0,5,east,East

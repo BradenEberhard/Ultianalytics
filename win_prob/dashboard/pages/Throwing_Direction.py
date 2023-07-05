@@ -86,13 +86,13 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
     return fig
 
 @st.cache_data
-def get_player_stats(path='./data/raw/player_stat_by_year_0704.csv'):
+def get_players(path='./data/raw/players_0704'):
     return pd.read_csv(path)
 
 def main():
 
     throws_df = process_throws_df()
-    player_stat_by_year = get_player_stats()
+    players = get_players()
 
 
     modification_container = st.container()
@@ -100,7 +100,7 @@ def main():
         player_filter = st.multiselect('Year(s)', throws_df.thrower.unique())
         col1, col2 = st.columns(2)
         for player in player_filter:
-            player = (player, player_stat_by_year[player_stat_by_year.playerID==player].name.iloc[0])
+            player = (player, players[players.playerID==player].name.iloc[0])
             fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
             col1.plotly_chart(fig, use_container_width=True)
             fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
