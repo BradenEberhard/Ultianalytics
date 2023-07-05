@@ -51,7 +51,7 @@ def main():
 
     st.write(game_filter)
     game = games_df[games_df.name == game_filter]
-    st.write(game.gameID.values)
+    get_roster_stats(game.gameID.iloc[0])
 
 
 if __name__ == '__main__':
