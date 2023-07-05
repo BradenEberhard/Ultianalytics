@@ -103,7 +103,7 @@ def main():
         col1, col2 = st.columns(2)
         for player in player_filter:
             first_name, last_name = player.split(' ')
-            playerID = player[(player.firstName==first_name) & (player.lastName==last_name)].iloc[0].playerID
+            playerID = players[(players.firstName==first_name) & (players.lastName==last_name)].iloc[0].playerID
             player = (playerID, player)
             fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
             col1.plotly_chart(fig, use_container_width=True)
