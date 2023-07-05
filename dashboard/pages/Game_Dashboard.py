@@ -24,7 +24,7 @@ def main():
         team_filter = team_filter.lower()
         year_filter = st.selectbox('Year', sorted(teams_df[teams_df.teamID == team_filter].year))
         team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
-        st.write(team_games)
+        st.write(year_filter)
         team_games = team_games[team_games.startTimestamp.apply(lambda x:x[:4]) == year_filter]
         game_filter = st.selectbox('Game', team_games.gameID)
 
