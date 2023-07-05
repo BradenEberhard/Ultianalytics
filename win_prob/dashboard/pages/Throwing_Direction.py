@@ -108,7 +108,15 @@ def main():
         year_filter = st.multiselect('Year(s) on Team', years_to_date)
         year_filter = [int(x) for x in year_filter]
         new_players = new_players[new_players.year.isin(year_filter)]
-        player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+        all = st.checkbox("Select all")
+        with st.container():
+            # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+            if all:
+                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()),
+                                               sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+            else:
+                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+
 
         throw_year_filter = st.multiselect('Year(s) for Throws', years_to_date)
         new_throws_df = throws_df[throws_df.year.isin(throw_year_filter)]

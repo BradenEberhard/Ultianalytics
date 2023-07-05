@@ -98,6 +98,7 @@ During the model development process, other approaches such as Logistic Regressi
         team_filter = [x.lower() for x in team_filter]
         DATA = game_prob.data
         DATA = DATA[(DATA.home_teamID.isin(team_filter)) | (DATA.away_teamID.isin(team_filter))]
+        all = st.checkbox("Select all")
         with st.container():
             # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
             if all:
@@ -105,7 +106,7 @@ During the model development process, other approaches such as Logistic Regressi
                     [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)],[element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
             else:
                 team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
-        all = st.checkbox("Select all")
+
         for team in sorted(team_options):
             fig = plot_game(game_prob, team, features)
             st.plotly_chart(fig)
