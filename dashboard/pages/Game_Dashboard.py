@@ -51,7 +51,7 @@ def main():
 
     st.write(game_filter)
     game = games_df[games_df.name == game_filter]
-    st.write(game.gameID)
+    st.write(game.gameID.values)
 
 
 if __name__ == '__main__':
