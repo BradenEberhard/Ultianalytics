@@ -20,6 +20,7 @@ def get_games_df():
 def get_teams_df():
     teams = Teams()
     teams_df = teams.get_teams()
+    teams_df = teams_df[teams_df.year.astype(int) >= 2021]
     return teams_df
     
 
