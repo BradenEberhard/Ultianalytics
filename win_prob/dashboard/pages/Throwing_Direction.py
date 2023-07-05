@@ -104,7 +104,7 @@ def main():
         new_players = players[players.teamID.isin(teams_filter)]
         year_filter = st.multiselect('Year(s)', ['2021', '2022', '2023'])
         year_filter = [int(x) for x in year_filter]
-        new_players = players[players.year.isin(year_filter)]
+        new_players = new_players[new_players.year.isin(year_filter)]
 
         player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
         col1, col2 = st.columns(2)
