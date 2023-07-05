@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+@st.cache_data
 def process_throws_df(path='./data/raw/all_games_0704.csv'):
     print('check', path)
     throws_df = pd.read_csv(path)
@@ -82,9 +83,15 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
 
     return fig
 
+@st.cache_data
+def get_player_stats(path='./data/raw/player_stat_by_year.csv'):
+    return pd.read_csv(path)
+
 def main():
 
     throws_df = process_throws_df()
+    player_stat_by_year = get_player_stats()
+
 
     modification_container = st.container()
     with modification_container:
@@ -92,9 +99,9 @@ def main():
         col1, col2 = st.columns(2)
         for player in player_filter:
             fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
-            col1.write(fig)
+            col1.plotly_chart(fig, use_container_width=True)
             fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
-            col2.write(fig)
+            col2.plotly_chart(fig, use_container_width=True)
 
 
     
