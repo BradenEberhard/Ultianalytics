@@ -19,11 +19,10 @@ def main():
 
     games_df = get_games_df()
     teams_df = get_teams_df()
-    modification_container = st.container()
-    with modification_container:
-        with st.expander('Filters'):
-            team_filter = st.selectbox('Team(s)', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
-            st.write(team_filter.lower())
+    with st.expander('Filters'):
+        team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
+        if team_filter is not None:
+            st.selectbox('Year', teams_df[teams_df.teamID == team_filter].year)
 
 if __name__ == '__main__':
     main()
