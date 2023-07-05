@@ -93,14 +93,18 @@ def main():
 
     throws_df = process_throws_df()
     players = get_players()
+    players = players[players.playerID.isin(throws_df.thrower.unique())]
 
 
     modification_container = st.container()
+
     with modification_container:
-        player_filter = st.multiselect('Year(s)', throws_df.thrower.unique())
+        player_filter = st.multiselect('Year(s)', (players['firstName'] + ' ' + players['lastName']).unique())
         col1, col2 = st.columns(2)
         for player in player_filter:
-            player = (player, players[players.playerID==player].name.iloc[0])
+            first_name, last_name = player.split(' ')
+            playerID = player[(player.firstName==first_name) & (player.lastName==last_name)].iloc[0].playerID
+            player = (playerID, player)
             fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
             col1.plotly_chart(fig, use_container_width=True)
             fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
