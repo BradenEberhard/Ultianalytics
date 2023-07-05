@@ -4,6 +4,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+years_to_date = ['2021', '2022', '2023']
+
 @st.cache_data
 def process_throws_df(path='./data/raw/all_games_0704.csv'):
     print('check', path)
@@ -13,6 +15,7 @@ def process_throws_df(path='./data/raw/all_games_0704.csv'):
     throws_df['y_change'] = throws_df['receiver_y'] - throws_df['thrower_y']
     throws_df['radians'] = np.arctan2(throws_df.receiver_y - throws_df.thrower_y, throws_df.receiver_x - throws_df.thrower_x)
     throws_df['degrees'] = np.rad2deg(throws_df['radians'])
+    throws_df['year'] = throws_df.gameID.apply(lambda x:x[:4])
     return throws_df
 
 def create_player_bar_polar_chart(throws_df, player, column='thrower', bins=12):
@@ -102,11 +105,14 @@ def main():
         teams_filter = st.multiselect('Team(s)', sorted([x.capitalize() for x in players.teamID.unique()]))
         teams_filter = [x.lower() for x in teams_filter]
         new_players = players[players.teamID.isin(teams_filter)]
-        year_filter = st.multiselect('Year(s)', ['2021', '2022', '2023'])
+        year_filter = st.multiselect('Year(s) on Team', years_to_date)
         year_filter = [int(x) for x in year_filter]
         new_players = new_players[new_players.year.isin(year_filter)]
-
         player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+
+        throw_year_filter = st.multiselect('Year(s) on Team', years_to_date)
+        new_throws_df = new_throws_df[new_throws_df.year.isin(throw_year_filter)]
+
         col1, col2 = st.columns(2)
         for player in player_filter:
             first_name, last_name = player.split(' ')
@@ -116,8 +122,6 @@ def main():
             col1.plotly_chart(fig, use_container_width=True)
             fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
             col2.plotly_chart(fig, use_container_width=True)
-
-
     
 
 if __name__ == '__main__':
