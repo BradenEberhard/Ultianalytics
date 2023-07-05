@@ -11,8 +11,8 @@ import plotly.graph_objects as go
 
 def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
-    home_team = test_game.home_teamID.iloc[0]
-    away_team = test_game.away_teamID.iloc[0]
+    home_team = test_game.home_teamID.iloc[0].capitalize()
+    away_team = test_game.away_teamID.iloc[0].capitalize()
     test_game = test_game[features]
     test_game = game_prob.normalizer.transform(test_game)
     pad_width = ((max_length - len(test_game), 0), (0, 0))  # Pad at the beginning with zeros
