@@ -40,10 +40,12 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
         marker_color = count
         hover_text = [f"Total Count: {c}<br>Turnovers: {t} ({t/c*100:.1f}%)<extra></extra>" for c, t in zip(count, turnover_count)]
         colorscale='Blugrn'
+        title=f'{player[1]} Throws'
     else:
         marker_color = count
         hover_text = [f"Total Count: {c}<extra></extra>" for c in count]
         colorscale='YlOrRd'
+        title=f'{player[1]} Catches'
     hover_text = [text.replace('<br>trace=bar', '') for text in hover_text]
 
 
@@ -61,7 +63,7 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
 
     fig.update_layout(
         title={
-            'text': player[1],
+            'text': title,
             'x': 0.5,  # Center the title horizontally
             'xanchor': 'center',  # Anchor the title to the center
             'yanchor': 'top'  # Position the title at the top of the plot
