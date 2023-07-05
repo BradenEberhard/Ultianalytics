@@ -93,23 +93,24 @@ During the model development process, other approaches such as Logistic Regressi
 
     modification_container = st.container()
     with modification_container:
-        year_filter = st.multiselect('Year(s)', ['2021', '2022', '2023'])
-        team_filter = st.multiselect('Team(s)', ['Union', 'Shred', 'Spiders', 'Sol', 'Cascades', 'Mechanix', 'Windchill', 'Aviators', 'Royal', 'Breeze', 'Rush', 'Phoenix', 'Hustle', 'Alleycats', 'Legion', 'Havoc', 'Flyers', 'Nitro', 'Thunderbirds', 'Empire', 'Glory', 'Summit', 'Outlaws', 'Growlers', 'Radicals', 'Cannons'])
-        team_filter = [x.lower() for x in team_filter]
-        DATA = game_prob.data
-        DATA = DATA[(DATA.home_teamID.isin(team_filter)) | (DATA.away_teamID.isin(team_filter))]
-        all = st.checkbox("Select all")
-        with st.container():
-            # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
-            if all:
-                team_options = st.multiselect("Select one or more options:",
-                    [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)],[element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
-            else:
-                team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+        with st.expander('Filters'):
+            year_filter = st.multiselect('Year(s)', ['2021', '2022', '2023'])
+            team_filter = st.multiselect('Team(s)', ['Union', 'Shred', 'Spiders', 'Sol', 'Cascades', 'Mechanix', 'Windchill', 'Aviators', 'Royal', 'Breeze', 'Rush', 'Phoenix', 'Hustle', 'Alleycats', 'Legion', 'Havoc', 'Flyers', 'Nitro', 'Thunderbirds', 'Empire', 'Glory', 'Summit', 'Outlaws', 'Growlers', 'Radicals', 'Cannons'])
+            team_filter = [x.lower() for x in team_filter]
+            DATA = game_prob.data
+            DATA = DATA[(DATA.home_teamID.isin(team_filter)) | (DATA.away_teamID.isin(team_filter))]
+            all = st.checkbox("Select all")
+            with st.container():
+                # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+                if all:
+                    team_options = st.multiselect("Select one or more options:",
+                        [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)],[element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+                else:
+                    team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
 
-        for team in sorted(team_options):
-            fig = plot_game(game_prob, team, features)
-            st.plotly_chart(fig)
+            for team in sorted(team_options):
+                fig = plot_game(game_prob, team, features)
+                st.plotly_chart(fig)
 
 
 
