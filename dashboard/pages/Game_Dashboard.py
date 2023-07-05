@@ -42,7 +42,7 @@ def main():
     games_df = get_games_df()
     teams_df = get_teams_df()
     with st.expander('Filters'):
-        with st.form():
+        with st.form(''):
             team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
             team_filter = team_filter.lower()
             year_filter = st.selectbox('Year', sorted(teams_df[teams_df.teamID == team_filter].year.astype(int)))
