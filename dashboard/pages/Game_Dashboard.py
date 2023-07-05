@@ -49,6 +49,7 @@ def main():
             team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
             game_filter = st.selectbox('Game', sorted(team_games.name, key= lambda x:x[-8:]))
+            st.form_submit_button("Go")
 
     
     game = games_df[games_df.name == game_filter]
