@@ -110,7 +110,7 @@ def main():
         new_players = new_players[new_players.year.isin(year_filter)]
         player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
 
-        throw_year_filter = st.multiselect('Year(s) on Team', years_to_date)
+        throw_year_filter = st.multiselect('Year(s) for Throws', years_to_date)
         new_throws_df = new_throws_df[new_throws_df.year.isin(throw_year_filter)]
 
         col1, col2 = st.columns(2)
