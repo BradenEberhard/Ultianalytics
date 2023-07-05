@@ -89,7 +89,7 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
     return fig
 
 @st.cache_data
-def get_players(path='./data/raw/players_0704'):
+def get_players(path='./data/raw/players_0704.csv'):
     return pd.read_csv(path)
 
 def main():
@@ -123,6 +123,7 @@ def main():
 
         col1, col2 = st.columns(2)
         for player in player_filter:
+            st.write(player.split(' '))
             first_name, last_name = player.split(' ')
             playerID = players[(players.firstName==first_name) & (players.lastName==last_name)].iloc[0].playerID
             player = (playerID, player)
