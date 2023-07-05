@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 def process_throws_df(path='./data/raw/all_games_0704.csv'):
+    print('check', path)
     throws_df = pd.read_csv(path)
     throws_df.dropna(subset=['thrower_x', 'thrower_y'], inplace=True)
     throws_df['x_change'] = throws_df['receiver_x'] - throws_df['thrower_x']
