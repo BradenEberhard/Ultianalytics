@@ -36,6 +36,8 @@ def main():
         team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
         st.write(team_games)
         team_games = team_games[team_games.startTimestamp.apply(lambda x:x[:4]) == year_filter]
+        st.write(year_filter)
+        st.write(team_games)
         game_filter = st.selectbox('Game', team_games.name)
 
 if __name__ == '__main__':
