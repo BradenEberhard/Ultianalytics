@@ -19,9 +19,9 @@ def create_player_bar_polar_chart(throws_df, player, column='thrower', bins=12):
     if column not in ['thrower', 'receiver']:
         raise ValueError("Invalid column name. Choose either 'thrower' or 'receiver'.")
 
-    count, plot = np.histogram(throws_df[throws_df[column] == player].degrees, bins=bins, range=(-180, 180))
+    count, plot = np.histogram(throws_df[throws_df[column] == player[0]].degrees, bins=bins, range=(-180, 180))
     turnover_count, turnover_plot = np.histogram(
-        throws_df[(throws_df[column] == player) & throws_df.turnover].degrees, bins=bins, range=(-180, 180)
+        throws_df[(throws_df[column] == player[0]) & throws_df.turnover].degrees, bins=bins, range=(-180, 180)
     )
     fig = create_bar_polar_chart(count, plot, player, turnover_count, column)
     return fig
@@ -61,7 +61,7 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
 
     fig.update_layout(
         title={
-            'text': player,
+            'text': player[1],
             'x': 0.5,  # Center the title horizontally
             'xanchor': 'center',  # Anchor the title to the center
             'yanchor': 'top'  # Position the title at the top of the plot
@@ -98,6 +98,7 @@ def main():
         player_filter = st.multiselect('Year(s)', throws_df.thrower.unique())
         col1, col2 = st.columns(2)
         for player in player_filter:
+            player = (player, player_stat_by_year[player_stat_by_year.playerID==player].name.iloc[0])
             fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
             col1.plotly_chart(fig, use_container_width=True)
             fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
