@@ -99,7 +99,10 @@ def main():
     modification_container = st.container()
 
     with modification_container:
-        player_filter = st.multiselect('Year(s)', (players['firstName'] + ' ' + players['lastName']).unique())
+        teams_filter = st.multiselect('Team(s)', [x.capitalize() for x in players.teamID.unique()])
+        teams_filter = [x.lower() for x in teams_filter]
+        new_players = players[players.teamID.isin(teams_filter)]
+        player_filter = st.multiselect('Player(s)', (new_players['firstName'] + ' ' + new_players['lastName']).unique())
         col1, col2 = st.columns(2)
         for player in player_filter:
             first_name, last_name = player.split(' ')
