@@ -51,7 +51,7 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
         title=f'{player[1]} Catches'
     hover_text = [text.replace('<br>trace=bar', '') for text in hover_text]
 
-    title = title + f'Total: {np.sum(count)}'
+    title = title + f' Total: {np.sum(count)}'
     fig = go.Figure(data=go.Barpolar(
         r=count,
         theta=calculate_midpoints(plot),
@@ -98,9 +98,11 @@ def main():
     players = get_players()
     players = players[players.playerID.isin(throws_df.thrower.unique())]
 
+    with st.expander('Instructions'):
+        st.write('''Since game event data is only available starting in 2021 you can filter by the year after that point and by team. The first two filters make it easier to find the player(s) you want to see limiting the list to the people who played on a given team in a year. The next year filter determines which season(s) throws to include in the visualization. I recommend selecting players one at a time when possible as each additional player takes a few seconds more.''')
+
 
     modification_container = st.container()
-
     with modification_container:
         teams_filter = st.multiselect('Team(s)', sorted([x.capitalize() for x in players.teamID.unique()]))
         teams_filter = [x.lower() for x in teams_filter]
