@@ -1,5 +1,0 @@
-Win probability
-Transfer Learning - win probability
-Throwing percentage after timeouts
-point outcomes for inbounds vs out of bounds pull
-compare usau and ultiworld ratings (https://arxiv.org/pdf/2201.05249.pdf)
