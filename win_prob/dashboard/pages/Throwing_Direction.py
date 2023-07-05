@@ -111,16 +111,16 @@ def main():
         player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
 
         throw_year_filter = st.multiselect('Year(s) for Throws', years_to_date)
-        new_throws_df = new_throws_df[new_throws_df.year.isin(throw_year_filter)]
+        new_throws_df = throws_df[throws_df.year.isin(throw_year_filter)]
 
         col1, col2 = st.columns(2)
         for player in player_filter:
             first_name, last_name = player.split(' ')
             playerID = players[(players.firstName==first_name) & (players.lastName==last_name)].iloc[0].playerID
             player = (playerID, player)
-            fig = create_player_bar_polar_chart(throws_df, player, 'thrower')
+            fig = create_player_bar_polar_chart(new_throws_df, player, 'thrower')
             col1.plotly_chart(fig, use_container_width=True)
-            fig = create_player_bar_polar_chart(throws_df, player, 'receiver')
+            fig = create_player_bar_polar_chart(new_throws_df, player, 'receiver')
             col2.plotly_chart(fig, use_container_width=True)
     
 
