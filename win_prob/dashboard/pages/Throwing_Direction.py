@@ -84,7 +84,7 @@ def create_bar_polar_chart(count, plot, player, turnover_count, column):
     return fig
 
 @st.cache_data
-def get_player_stats(path='./data/raw/player_stat_by_year.csv'):
+def get_player_stats(path='./data/raw/player_stat_by_year_0704.csv'):
     return pd.read_csv(path)
 
 def main():
