@@ -75,7 +75,7 @@
 73,pshriwise,Pat,Shriwise,radicals,False,2013,
 74,pshriwise,Pat,Shriwise,allstars1,True,2000,
 75,jkloss,James,Kloss,havoc,True,2023,16
-76,tchukwume,Toya,Chukwumerije ,havoc,True,2023,15
+76,tchukwume,Toya,Chukwumerije,havoc,True,2023,15
 77,dasemota,Devon,Asemota,royal,True,2023,4
 78,pmans,Peter,Mans,windchill,True,2023,2
 79,mjohnson,Matthew,Johnson,windchill,True,2023,33
@@ -90,7 +90,7 @@
 88,hfisher,Henry,Fisher,flyers,True,2019,10
 89,hfisher,Henry,Fisher,allstars2,True,2000,
 90,rpesch,Ryan,Pesch,windchill,True,2023,35
-91,mgrovic,Miles ,Grovic,breeze,True,2023,65
+91,mgrovic,Miles,Grovic,breeze,True,2023,65
 92,ycohonner,Ywan,Cohonner,royal,True,2023,22
 93,ycohonner,Ywan,Cohonner,royal,True,2022,22
 94,ycohonner,Ywan,Cohonner,royal,True,2021,22
@@ -126,7 +126,7 @@
 124,jwinn,Justin,Winn,mechanix,True,2021,21
 125,swarrick,Sam,Warrick,royal,True,2023,51
 126,swarrick,Sam,Warrick,nitro,True,2022,97
-127,erudder,Elliott ,Rudder,havoc,True,2023,93
+127,erudder,Elliott,Rudder,havoc,True,2023,93
 128,cburt,Caiden,Burt,havoc,True,2023,92
 129,afegert,Ames,Fegert,havoc,True,2023,91
 130,mravanell,Milan,Ravenell,aviators,True,2023,89
@@ -436,7 +436,7 @@
 434,ajohnson1,Austin,Johnson,mechanix,True,2018,19
 435,jclark,Jay,Clark,glory,True,2023,2
 436,jclark,Jay,Clark,hustle,True,2015,7
-437,klew,Kyle ,Lew,spiders,True,2023,50
+437,klew,Kyle,Lew,spiders,True,2023,50
 438,cjohnson1,Christian,Johnson,union,True,2023,29
 439,cjohnson1,Christian,Johnson,flamethrowers,False,2017,
 440,cjohnson1,Christian,Johnson,flamethrowers,True,2016,29
@@ -490,9 +490,9 @@
 488,blevinsky,Ben,Levinsky,spiders,True,2021,17
 489,blevinsky,Ben,Levinsky,spiders,True,2019,99
 490,blevinsky,Ben,Levinsky,spiders,True,2018,94
-491,jqueckboe,Jordan,Queckboerner ,growlers,True,2023,33
-492,jqueckboe,Jordan,Queckboerner ,growlers,True,2022,33
-493,jqueckboe,Jordan,Queckboerner ,growlers,True,2021,33
+491,jqueckboe,Jordan,Queckboerner,growlers,True,2023,33
+492,jqueckboe,Jordan,Queckboerner,growlers,True,2022,33
+493,jqueckboe,Jordan,Queckboerner,growlers,True,2021,33
 494,jszmanda,Jan,Szmanda,growlers,True,2023,31
 495,cwu,Casey,Wu,growlers,True,2023,29
 496,cwu,Casey,Wu,growlers,True,2022,29
@@ -672,9 +672,9 @@
 670,gmay,Gavin,May,spiders,True,2023,0
 671,gmay,Gavin,May,spiders,True,2022,0
 672,cmah,Camden,Mah,spiders,True,2023,33
-673,emagsig,Evan ,Magsig,spiders,True,2023,32
-674,emagsig,Evan ,Magsig,spiders,True,2022,32
-675,emagsig,Evan ,Magsig,spiders,False,2021,
+673,emagsig,Evan,Magsig,spiders,True,2023,32
+674,emagsig,Evan,Magsig,spiders,True,2022,32
+675,emagsig,Evan,Magsig,spiders,False,2021,
 676,clung,Chris,Lung,spiders,True,2023,22
 677,clung,Chris,Lung,allstars2,False,2022,22
 678,clung,Chris,Lung,spiders,True,2022,22
@@ -1518,9 +1518,9 @@
 1516,wbrooks,Wyatt,Brooks,thunderbirds,True,2023,12
 1517,dsnead,David,Snead,thunderbirds,True,2023,11
 1518,jmolder,Joe,Molder,thunderbirds,True,2023,10
-1519,athompson,Andrew ,Thompson,thunderbirds,True,2023,9
-1520,athompson,Andrew ,Thompson,thunderbirds,True,2022,9
-1521,athompson,Andrew ,Thompson,thunderbirds,True,2021,27
+1519,athompson,Andrew,Thompson,thunderbirds,True,2023,9
+1520,athompson,Andrew,Thompson,thunderbirds,True,2022,9
+1521,athompson,Andrew,Thompson,thunderbirds,True,2021,27
 1522,thansen,Thomas,Hansen,thunderbirds,True,2023,8
 1523,thansen,Thomas,Hansen,thunderbirds,True,2022,8
 1524,thansen,Thomas,Hansen,thunderbirds,True,2021,88
@@ -1941,9 +1941,9 @@
 1939,bwalsh,Bryan,Walsh,mechanix,True,2022,77
 1940,bwalsh,Bryan,Walsh,mechanix,True,2021,77
 1941,bwalsh,Bryan,Walsh,revolution,True,2016,7
-1942,rmcdevitt,Rees,McDevitt ,mechanix,True,2023,34
-1943,rmcdevitt,Rees,McDevitt ,mechanix,True,2022,34
-1944,rmcdevitt,Rees,McDevitt ,mechanix,True,2021,34
+1942,rmcdevitt,Rees,McDevitt,mechanix,True,2023,34
+1943,rmcdevitt,Rees,McDevitt,mechanix,True,2022,34
+1944,rmcdevitt,Rees,McDevitt,mechanix,True,2021,34
 1945,jsimonell,Joe,Simonelli,mechanix,True,2023,97
 1946,jsimonell,Joe,Simonelli,windchill,True,2018,51
 1947,jsimonell,Joe,Simonelli,windchill,False,2013,
@@ -2035,9 +2035,9 @@
 2033,bpreiss,Benjamin,Preiss,breeze,True,2018,13
 2034,ywang,Yipeng,Wang,union,True,2023,38
 2035,ywang,Yipeng,Wang,mechanix,True,2022,38
-2036,tmitchuso,Tyler,Mitchuson ,union,True,2023,36
-2037,tmitchuso,Tyler,Mitchuson ,mechanix,True,2022,36
-2038,tmitchuso,Tyler,Mitchuson ,mechanix,True,2021,36
+2036,tmitchuso,Tyler,Mitchuson,union,True,2023,36
+2037,tmitchuso,Tyler,Mitchuson,mechanix,True,2022,36
+2038,tmitchuso,Tyler,Mitchuson,mechanix,True,2021,36
 2039,imoore,Isaiah,Moore,union,True,2023,30
 2040,mrivas,Milan,Rivas,union,True,2023,27
 2041,mrivas,Milan,Rivas,union,True,2022,27
@@ -3369,8 +3369,8 @@
 3366,upatel,Unmil,Patel,cannons,True,2019,65
 3367,againes1,Austin,Gaines,cannons,True,2022,24
 3368,againes1,Austin,Gaines,cannons,True,2021,24
-3369,ldiehl,Logan,Diehl ,cannons,True,2022,23
-3370,ldiehl,Logan,Diehl ,cannons,False,2021,5
+3369,ldiehl,Logan,Diehl,cannons,True,2022,23
+3370,ldiehl,Logan,Diehl,cannons,False,2021,5
 3371,jlane,Jacob,Lane,cannons,True,2022,22
 3372,jlane,Jacob,Lane,cannons,True,2021,22
 3373,jlane,Jacob,Lane,cannons,True,2019,64
@@ -3600,8 +3600,8 @@
 3597,mpannone,Mike,Pannone,thunderbirds,True,2016,25
 3598,mpannone,Mike,Pannone,thunderbirds,True,2015,25
 3599,mpannone,Mike,Pannone,dragons,False,2012,
-3600,sfil,Sawyer ,Fil,mechanix,True,2022,25
-3601,sfil,Sawyer ,Fil,mechanix,True,2021,25
+3600,sfil,Sawyer,Fil,mechanix,True,2022,25
+3601,sfil,Sawyer,Fil,mechanix,True,2021,25
 3602,kvanroosm,Kevin,van Roosmalen,mechanix,True,2022,21
 3603,mlemaitre,Matt,LeMaitre,mechanix,True,2022,17
 3604,mlemaitre,Matt,LeMaitre,mechanix,True,2021,19
@@ -4533,7 +4533,7 @@
 4530,kdew,Kyle,Dew,empire,True,2019,98
 4531,smatonis,Spencer,Matonis,thunderbirds,True,2021,17
 4532,rodum,Robby,Odum,aviators,True,2021,54
-4533,mlittle,Mat ,Little,glory,True,2021,11
+4533,mlittle,Mat,Little,glory,True,2021,11
 4534,aguerrero,Alex,Guerrero,cannons,False,2021,95
 4535,dtunnell,Dylan,Tunnell,hustle,False,2021,99
 4536,dtunnell,Dylan,Tunnell,hustle,True,2017,78
@@ -5622,7 +5622,7 @@
 5619,jbesser,Joseph,Besser,mechanix,False,2014,
 5620,kalzahran,Khalid,Al-Zahrani,outlaws,True,2018,71
 5621,kalzahran,Khalid,Al-Zahrani,outlaws,False,2017,
-5622,rwiseman,Robyn,Fennig ,radicals,True,2018,44
+5622,rwiseman,Robyn,Fennig,radicals,True,2018,44
 5623,ssohn,Sam,Sohn,alleycats,True,2018,28
 5624,ssohn,Sam,Sohn,alleycats,True,2017,28
 5625,ssohn,Sam,Sohn,alleycats,True,2016,28
@@ -7131,8 +7131,8 @@
 7128,dbrandolp,David,Brandolph,spinners,False,2012,
 7129,abonelli,Austin,Bonelli,phoenix,False,2015,
 7130,abonelli,Austin,Bonelli,hammerheads,False,2013,
-7131,unknown8,Snyder,,empire,False,2015,
-7132,unknown4,Flint,,empire,False,2015,
+7131,unknown8,Snyder,None,empire,False,2015,
+7132,unknown4,Flint,None,empire,False,2015,
 7133,unknown20,Ludwig,K,empire,False,2015,
 7134,dreed,Dan,Reed,nightwatch,False,2015,
 7135,whannon,Will,Hannon,nightwatch,False,2015,
