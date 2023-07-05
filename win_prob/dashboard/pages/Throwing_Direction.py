@@ -93,7 +93,7 @@ def get_players(path='./data/raw/players_0704.csv'):
     return pd.read_csv(path)
 
 def main():
-
+    st.title('Throwing Direction')
     throws_df = process_throws_df()
     players = get_players()
     players = players[players.playerID.isin(throws_df.thrower.unique())]
@@ -101,37 +101,41 @@ def main():
     with st.expander('Instructions'):
         st.write('''Since game event data is only available starting in 2021 you can filter by the year after that point and by team. The first two filters make it easier to find the player(s) you want to see limiting the list to the people who played on a given team in a year. The next year filter determines which season(s) throws to include in the visualization. I recommend selecting players one at a time when possible as each additional player takes a few seconds more.''')
 
+    with st.expander('Analysis'):
+        st.write('''while refraining from making any claims there are lots of trends you can see. Things ranging from who picks up the disc (having more throws than receptions), handlers vs cutters vs hybrids (based on distribution), throwing tendencies (flick vs backhand) and more.''')
+
 
     modification_container = st.container()
     with modification_container:
-        teams_filter = st.multiselect('Team(s)', sorted([x.capitalize() for x in players.teamID.unique()]))
-        teams_filter = [x.lower() for x in teams_filter]
-        new_players = players[players.teamID.isin(teams_filter)]
-        year_filter = st.multiselect('Year(s) on Team', years_to_date)
-        year_filter = [int(x) for x in year_filter]
-        new_players = new_players[new_players.year.isin(year_filter)]
-        all = st.checkbox("Select all")
-        with st.container():
-            # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
-            if all:
-                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()),
-                                               sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
-            else:
-                player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+        with st.expander('Filters'):
+            teams_filter = st.multiselect('Team(s)', sorted([x.capitalize() for x in players.teamID.unique()]))
+            teams_filter = [x.lower() for x in teams_filter]
+            new_players = players[players.teamID.isin(teams_filter)]
+            year_filter = st.multiselect('Year(s) on Team', years_to_date)
+            year_filter = [int(x) for x in year_filter]
+            new_players = new_players[new_players.year.isin(year_filter)]
+            all = st.checkbox("Select all")
+            with st.container():
+                # team_options = st.multiselect("Teams", [element for element in DATA.gameID.unique() if any(substring in element for substring in year_filter)])
+                if all:
+                    player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()),
+                                                sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
+                else:
+                    player_filter = st.multiselect('Player(s)', sorted((new_players['firstName'] + ' ' + new_players['lastName']).unique()))
 
 
-        throw_year_filter = st.multiselect('Year(s) for Throws', years_to_date)
-        new_throws_df = throws_df[throws_df.year.isin(throw_year_filter)]
+            throw_year_filter = st.multiselect('Year(s) for Throws', years_to_date)
+            new_throws_df = throws_df[throws_df.year.isin(throw_year_filter)]
 
-        col1, col2 = st.columns(2)
-        for player in player_filter:
-            first_name, last_name = player.split(' ')
-            playerID = players[(players.firstName==first_name) & (players.lastName==last_name)].iloc[0].playerID
-            player = (playerID, player)
-            fig = create_player_bar_polar_chart(new_throws_df, player, 'thrower')
-            col1.plotly_chart(fig, use_container_width=True)
-            fig = create_player_bar_polar_chart(new_throws_df, player, 'receiver')
-            col2.plotly_chart(fig, use_container_width=True)
+            col1, col2 = st.columns(2)
+            for player in player_filter:
+                first_name, last_name = player.split(' ')
+                playerID = players[(players.firstName==first_name) & (players.lastName==last_name)].iloc[0].playerID
+                player = (playerID, player)
+                fig = create_player_bar_polar_chart(new_throws_df, player, 'thrower')
+                col1.plotly_chart(fig, use_container_width=True)
+                fig = create_player_bar_polar_chart(new_throws_df, player, 'receiver')
+                col2.plotly_chart(fig, use_container_width=True)
     
 
 if __name__ == '__main__':
