@@ -202,7 +202,7 @@ def main():
         
         
         game = games_df[games_df.name == game_filter]
-        gameID = gameID
+        gameID = game.iloc[0].gameID
         game_throws = game_events.get_throws_from_id(gameID)
         st.write(get_box_scores(gameID))
         
