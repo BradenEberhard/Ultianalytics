@@ -7,6 +7,61 @@ from audl.stats.endpoints.gamestats import GameStats
 from audl.stats.endpoints.playergamestats import PlayerGameStats
 from probability_model import GameProbability
 import plotly.graph_objects as go
+from audl.stats.endpoints.gameevents import GameEventsProxy
+
+
+def get_bin_data(df, nbinsx, nbinsy):
+    hist, xedges, yedges = np.histogram2d(df['thrower_x'], df['thrower_y'], bins=[nbinsx, nbinsy])
+    x_coords = []
+    y_coords = []
+    counts = []
+    for i in range(nbinsx):
+        for j in range(nbinsy):
+            x = (xedges[i] + xedges[i+1]) / 2
+            y = (yedges[j] + yedges[j+1]) / 2
+            count = hist[i][j]
+            x_coords.append(x)
+            y_coords.append(y)
+            counts.append(count)
+    return x_coords, y_coords, counts
+
+
+def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
+    shots = game_throws[game_throws.is_home_team == is_home_team]
+    x_coords, y_coords, counts = get_bin_data(shots, nbinsx, nbinsy)
+    # Create the figure
+    fig = go.Figure()
+
+    # Add the main scatter plot
+    fig.add_trace(go.Scatter(
+        x=x_coords, y=y_coords, mode='markers', name='markers',
+        marker=dict(
+            size=counts, sizemode='area', sizeref = (2. * max(counts) / (50 ** 2)), sizemin=2.5,
+            color=counts,
+            line=dict(width=1, color='#333333'), symbol='circle',
+        ),
+        hovertemplate='Count: %{text}<extra></extra>',
+        text=[int(x) for x in counts]
+    ))
+
+    # Add black horizontal lines at y = 20 and y = 100
+    fig.add_shape(type='line', x0=-27, y0=20, x1=27, y1=20, line=dict(color='black', width=1))
+    fig.add_shape(type='line', x0=-27, y0=100, x1=27, y1=100, line=dict(color='black', width=1))
+
+    # Set the layout properties
+    fig.update_layout(
+        xaxis=dict(range=[-27, 27]),
+        yaxis=dict(range=[0, 120]),
+        showlegend=False,
+        width=450,
+        height=600,
+        margin=dict(t=50, b=50, l=50, r=50),
+    )
+    
+
+    # Show the plot
+    fig.show()
+
 
 def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
@@ -107,10 +162,11 @@ def get_teams_df():
     teams_df = teams_df[teams_df.year.astype(int) >= 2021]
     return teams_df
     
-def write_col(col, roster_stats, teamID):
+def write_col(col, roster_stats, teamID, is_home_team, game_throws):
     col.write(teamID.capitalize())
     write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
+    col.write(shot_plot(game_throws, is_home_team, 10, 15))
 
 
 def setup():
@@ -132,6 +188,7 @@ def main():
 
     games_df = get_games_df()
     teams_df = get_teams_df()
+    game_events = GameEventsProxy()
     game_filter = '<select>'
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
@@ -142,22 +199,27 @@ def main():
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     if game_filter != '<select>':
+        
+        
         game = games_df[games_df.name == game_filter]
-        st.write(get_box_scores(game.iloc[0].gameID))
+        gameID = gameID
+        game_throws = game_events.get_throws_from_id(gameID)
+        st.write(get_box_scores(gameID))
+        
 
         features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, game.iloc[0].gameID, features)
+        fig = plot_game(game_prob, gameID, features)
         st.plotly_chart(fig)
 
 
-        roster_stats = get_roster_stats(game.iloc[0].gameID)
+        roster_stats = get_roster_stats(gameID)
         col1, col2 = st.columns(2)
-        write_col(col1, roster_stats, game.iloc[0].homeTeamID)
-        write_col(col2, roster_stats, game.iloc[0].awayTeamID)
+        write_col(col1, roster_stats, game.iloc[0].homeTeamID, True, game_throws)
+        write_col(col2, roster_stats, game.iloc[0].awayTeamID, False, game_throws)
 
 if __name__ == '__main__':
     main()
