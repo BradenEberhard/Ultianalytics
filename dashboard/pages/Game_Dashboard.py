@@ -6,7 +6,7 @@ from audl.stats.endpoints.teams import Teams
 from audl.stats.endpoints.gamestats import GameStats
 from audl.stats.endpoints.playergamestats import PlayerGameStats
 from probability_model import GameProbability
-from plotly.graph_objects import go
+import plotly.graph_objects as go
 
 def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
