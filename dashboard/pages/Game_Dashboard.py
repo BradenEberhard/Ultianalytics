@@ -3,6 +3,7 @@ import pandas as pd
 from audl.stats.endpoints.games import Games
 from audl.stats.endpoints.teams import Teams
 from audl.stats.endpoints.gamestats import GameStats
+from audl.stats.endpoints.playergamestats import PlayerGameStats
 
 def get_name_from_id(row):
     date = pd.to_datetime(row.startTimestamp).date().strftime('%m/%d/%y')
@@ -19,8 +20,13 @@ def get_box_scores(gameID):
 
 @st.cache_data
 def get_roster_stats(gameID):
-    game_stats = GameStats(gameID)
-    return game_stats.get_roster_stats()
+    playergamestats = PlayerGameStats()
+    game_stats_df = playergamestats.get_request_as_df(f'playerGameStats?gameID={gameID}')
+    game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
+    game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
+    stats_cols = ['playerID', 'full_name', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
+    'blocks', 'callahans', 'oPointsPlayed', 'dPointsPlayed']
+    return game_stats_df[stats_cols]
 
 
 @st.cache_data
