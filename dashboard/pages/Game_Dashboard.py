@@ -52,6 +52,15 @@ def write_col(col, roster_stats, teamID):
 
 
 def main():
+    css = '''
+    <style>
+        [data-testid="stSidebar"]{
+            min-width: 400px;
+            max-width: 800px;
+        }
+    </style>
+    '''
+    st.markdown(css, unsafe_allow_html=True)
     st.title('Game Dashboard')
 
     games_df = get_games_df()
