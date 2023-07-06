@@ -5,4 +5,4 @@ matplotlib
 textalloc
 plotly
 mpld3
-git+https://github.com/BradenEberhard/audl.git --upgrade
+git+https://github.com/BradenEberhard/audl.git 
