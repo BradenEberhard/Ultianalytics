@@ -8,12 +8,13 @@ from audl.stats.endpoints.playergamestats import PlayerGameStats
 from probability_model import GameProbability
 import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
+from plotly.subplots import make_subplots
 
 ##TODO penalties, Scoreboard, histograms, team stat comparison, pulling data
 
 
 def get_bin_data(df, nbinsx, nbinsy):
-    hist, xedges, yedges = np.histogram2d(df['thrower_x'], df['thrower_y'], bins=[nbinsx, nbinsy])
+    hist, xedges, yedges = np.histogram2d(df['throwerX'], df['throwerY'], bins=[nbinsx, nbinsy])
     x_coords = []
     y_coords = []
     counts = []
@@ -26,10 +27,8 @@ def get_bin_data(df, nbinsx, nbinsy):
             y_coords.append(y)
             counts.append(count)
     return x_coords, y_coords, counts
-
-
-def shot_plot(teamID, nbinsx=10, nbinsy=15):
-    shots = throws_df[(throws_df.gameID.apply(lambda x:x[:4]) == '2023') & (throws_df['thrower_x'] != 0) & (throws_df['thrower_y'] != 40) & ((throws_df['home_teamID'] == teamID) | (throws_df['away_teamID'] == teamID))].dropna(subset=['thrower_x', 'thrower_y'])
+def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
+    shots = game_throws[game_throws.is_home_team == is_home_team].dropna(subset=['thrower_x', 'thrower_y'])
     x_coords, y_coords, counts = get_bin_data(shots, nbinsx, nbinsy)
     # Create the figure
     fig = make_subplots(rows=2, cols=2,
@@ -92,6 +91,40 @@ def shot_plot(teamID, nbinsx=10, nbinsy=15):
 
     # Show the plot
     fig.show()
+
+def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
+    shots = game_throws[game_throws.is_home_team == is_home_team]
+    x_coords, y_coords, counts = get_bin_data(shots, nbinsx, nbinsy)
+    # Create the figure
+    fig = go.Figure()
+
+    # Add the main scatter plot
+    fig.add_trace(go.Scatter(
+        x=x_coords, y=y_coords, mode='markers', name='markers',
+        marker=dict(
+            size=counts, sizemode='area', sizeref = (2. * max(counts) / (35 ** 2)), sizemin=2.5,
+            color=counts,
+            line=dict(width=1, color='#333333'), symbol='circle',
+        ),
+        hovertemplate='Count: %{text}<extra></extra>',
+        text=[int(x) for x in counts]
+    ))
+
+    # Add black horizontal lines at y = 20 and y = 100
+    fig.add_shape(type='line', x0=-27, y0=20, x1=27, y1=20, line=dict(color='black', width=1))
+    fig.add_shape(type='line', x0=-27, y0=100, x1=27, y1=100, line=dict(color='black', width=1))
+
+    # Set the layout properties
+    fig.update_layout(
+        title=f'Total Throws: {sum(counts)}',
+        xaxis=dict(range=[-27, 27]),
+        yaxis=dict(range=[0, 120]),
+        showlegend=False,
+        width=450,
+        height=600,
+        margin=dict(t=50, b=50, l=50, r=50),
+    )
+    return fig
 
 
 def plot_game(game_prob, gameID, features, max_length = 629):
