@@ -52,11 +52,12 @@ def write_col(col, roster_stats, teamID):
 
 
 def main():
+    st.set_page_config(layout='wide')
     css = '''
     <style>
         [data-testid="stSidebar"]{
-            min-width: 10px;
-            max-width: 100px;
+            min-width: 0px;
+            max-width: 200px;
         }
     </style>
     '''

@@ -93,6 +93,16 @@ def get_players(path='./data/raw/players_0704.csv'):
     return pd.read_csv(path)
 
 def main():
+    st.set_page_config(layout='wide')
+    css = '''
+    <style>
+        [data-testid="stSidebar"]{
+            min-width: 0px;
+            max-width: 200px;
+        }
+    </style>
+    '''
+    st.markdown(css, unsafe_allow_html=True)
     st.title('Throwing Direction')
     throws_df = process_throws_df()
     players = get_players()

@@ -69,6 +69,16 @@ def plot_game(game_prob, gameID, features, max_length = 629):
     return fig
 
 def main():
+    st.set_page_config(layout='wide')
+    css = '''
+    <style>
+        [data-testid="stSidebar"]{
+            min-width: 0px;
+            max-width: 200px;
+        }
+    </style>
+    '''
+    st.markdown(css, unsafe_allow_html=True)
     st.title("Win Probability Archive")
     with st.expander("Instructions"):
         st.write("""Since game event data is only available starting in 2021 you can filter by the year after that point and by team. Once both these fields are chosen you can pick which game(s) you would like to see. Click the checkbox to immediately select every possible game with the provided filters. Hover over the plots to see the score and time left in the quarter. Between my rudimentary front-end skills and the basic framework I am using each graph takes a few seconds to load.""")
