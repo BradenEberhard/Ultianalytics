@@ -27,8 +27,10 @@ def get_bin_data(df, nbinsx, nbinsy):
             y_coords.append(y)
             counts.append(count)
     return x_coords, y_coords, counts
+
+
 def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
-    shots = game_throws[game_throws.is_home_team == is_home_team].dropna(subset=['thrower_x', 'thrower_y'])
+    shots = game_throws[game_throws.is_home_team == is_home_team].dropna(subset=['throwerX', 'throwerY'])
     x_coords, y_coords, counts = get_bin_data(shots, nbinsx, nbinsy)
     # Create the figure
     fig = make_subplots(rows=2, cols=2,
@@ -41,14 +43,14 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
 
     # Add the bar chart
     fig.add_trace(go.Violin(
-        x=shots.thrower_x,
+        x=shots.throwerX,
         name='',
         hoverinfo='none',
         line_color='#26828E'
     ), row=1, col=1)
 
     fig.add_trace(go.Violin(
-        y=shots.thrower_y,
+        y=shots.throwerY,
         name='',
         hoverinfo='none',
         line_color='#26828E'
