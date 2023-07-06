@@ -24,7 +24,8 @@ def get_roster_stats(gameID):
     game_stats_df = playergamestats.get_request_as_df(f'playerGameStats?gameID={gameID}')
     game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
     game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
-    stats_cols = ['playerID', 'teamID', 'fullName', 'oPointsPlayed', 'dPointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
+    game_stats_df['pointsPlayed'] = game_stats_df['oPointsPlayed'] + game_stats_df['dPointsPlayed']
+    stats_cols = ['playerID', 'teamID', 'fullName', 'pointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
     'blocks', 'callahans']
     return game_stats_df[stats_cols]
 
@@ -46,7 +47,8 @@ def get_teams_df():
     
 def write_col(col, roster_stats, teamID):
     col.write(teamID.capitalize())
-    col.write(roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName'))
+    write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
+    col.write(write_stats[write_stats.pointsPlayed > 0])
 
 
 def main():
