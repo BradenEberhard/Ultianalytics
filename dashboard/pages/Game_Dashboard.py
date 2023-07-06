@@ -33,7 +33,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
     fig = go.Figure()
 
     # Add the main scatter plot
-    fig.add_trace(go.Scatter(title=f'Total Throws: {sum(counts)}',
+    fig.add_trace(go.Scatter(
         x=x_coords, y=y_coords, mode='markers', name='markers',
         marker=dict(
             size=counts, sizemode='area', sizeref = (2. * max(counts) / (35 ** 2)), sizemin=2.5,
@@ -50,6 +50,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
 
     # Set the layout properties
     fig.update_layout(
+        title=f'Total Throws: {sum(counts)}',
         xaxis=dict(range=[-27, 27]),
         yaxis=dict(range=[0, 120]),
         showlegend=False,
