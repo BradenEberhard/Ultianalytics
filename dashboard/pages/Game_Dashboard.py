@@ -65,11 +65,8 @@ def main():
         roster_stats = get_roster_stats(game.iloc[0].gameID)
         roster_stats[roster_stats.teamID == game.homeTeamID]
         col1, col2 = st.columns(2)
-        col1.write(roster_stats[roster_stats.teamID == game.homeTeamID])
-        col2.write(roster_stats[roster_stats.teamID == game.awayTeamID])
-
-    
-
+        col1.write(roster_stats[roster_stats.teamID == game.iloc[0].homeTeamID])
+        col2.write(roster_stats[roster_stats.teamID == game.iloc[0].awayTeamID])
 
 if __name__ == '__main__':
     main()
