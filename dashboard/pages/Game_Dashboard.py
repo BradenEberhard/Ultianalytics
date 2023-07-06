@@ -44,6 +44,10 @@ def get_teams_df():
     teams_df = teams_df[teams_df.year.astype(int) >= 2021]
     return teams_df
     
+def write_col(col, roster_stats, teamID):
+    col.write(teamID.capitalize())
+    col.write(roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName'))
+
 
 def main():
     st.title('Game Dashboard')
@@ -61,14 +65,12 @@ def main():
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     if game_filter != '<select>':
         game = games_df[games_df.name == game_filter]
-
-        st.write(game.iloc[0].homeTeamID)
         st.write(get_box_scores(game.iloc[0].gameID))
         roster_stats = get_roster_stats(game.iloc[0].gameID)
-        roster_stats[roster_stats.teamID == game.iloc[0].homeTeamID]
         col1, col2 = st.columns(2)
-        col1.write(roster_stats[roster_stats.teamID == game.iloc[0].homeTeamID])
-        col2.write(roster_stats[roster_stats.teamID == game.iloc[0].awayTeamID])
+
+        write_col(col1, roster_stats, game.iloc[0].homeTeamID)
+        write_col(col2, roster_stats, game.iloc[0].awayTeamID)
 
 if __name__ == '__main__':
     main()
