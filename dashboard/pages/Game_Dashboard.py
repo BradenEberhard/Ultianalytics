@@ -63,8 +63,9 @@ def main():
         game = games_df[games_df.name == game_filter]
         st.write(get_box_scores(game.iloc[0].gameID))
         roster_stats = get_roster_stats(game.iloc[0].gameID)
+        # roster_stats[roster_stats.teamID == game.home]
         col1, col2 = st.columns(2)
-        col1.write(team_games)
+        col1.write(game)
 
     
 
