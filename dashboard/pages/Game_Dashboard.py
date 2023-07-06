@@ -9,9 +9,11 @@ from probability_model import GameProbability
 import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
 
+##TODO penalties, Scoreboard, histograms, team stat comparison, pulling data
+
 
 def get_bin_data(df, nbinsx, nbinsy):
-    hist, xedges, yedges = np.histogram2d(df['throwerX'], df['throwerY'], bins=[nbinsx, nbinsy])
+    hist, xedges, yedges = np.histogram2d(df['thrower_x'], df['thrower_y'], bins=[nbinsx, nbinsy])
     x_coords = []
     y_coords = []
     counts = []
@@ -26,39 +28,70 @@ def get_bin_data(df, nbinsx, nbinsy):
     return x_coords, y_coords, counts
 
 
-def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
-    shots = game_throws[game_throws.is_home_team == is_home_team]
+def shot_plot(teamID, nbinsx=10, nbinsy=15):
+    shots = throws_df[(throws_df.gameID.apply(lambda x:x[:4]) == '2023') & (throws_df['thrower_x'] != 0) & (throws_df['thrower_y'] != 40) & ((throws_df['home_teamID'] == teamID) | (throws_df['away_teamID'] == teamID))].dropna(subset=['thrower_x', 'thrower_y'])
     x_coords, y_coords, counts = get_bin_data(shots, nbinsx, nbinsy)
     # Create the figure
-    fig = go.Figure()
+    fig = make_subplots(rows=2, cols=2,
+                    row_heights=[0.2, 0.8],
+                    column_widths=[0.7, 0.3],
+                    vertical_spacing = 0.02,
+                    horizontal_spacing = 0.02,
+                    shared_yaxes=True,
+                    shared_xaxes=False)
+
+    # Add the bar chart
+    fig.add_trace(go.Violin(
+        x=shots.thrower_x,
+        name='',
+        hoverinfo='none',
+        line_color='#26828E'
+    ), row=1, col=1)
+
+    fig.add_trace(go.Violin(
+        y=shots.thrower_y,
+        name='',
+        hoverinfo='none',
+        line_color='#26828E'
+    ), row=2, col=2)
 
     # Add the main scatter plot
     fig.add_trace(go.Scatter(
         x=x_coords, y=y_coords, mode='markers', name='markers',
         marker=dict(
-            size=counts, sizemode='area', sizeref = (2. * max(counts) / (35 ** 2)), sizemin=2.5,
-            color=counts,
+            size=counts, sizemode='area', sizeref=(2. * max(counts) / ((300 / nbinsx) ** 2)), sizemin=2.5,
+            color=counts,  # Set the color to the counts using the "viridis" color scheme
+            colorscale='viridis',  # Set the color scale to "viridis"
             line=dict(width=1, color='#333333'), symbol='circle',
+            colorbar=dict(title='Counts')  # Add a color bar with the title "Counts"
         ),
         hovertemplate='Count: %{text}<extra></extra>',
         text=[int(x) for x in counts]
-    ))
+    ), row = 2, col = 1)
 
     # Add black horizontal lines at y = 20 and y = 100
-    fig.add_shape(type='line', x0=-27, y0=20, x1=27, y1=20, line=dict(color='black', width=1))
-    fig.add_shape(type='line', x0=-27, y0=100, x1=27, y1=100, line=dict(color='black', width=1))
+    fig.add_shape(type='line', x0=-27, y0=20, x1=27, y1=20, line=dict(color='black', width=1), row=2, col=1)
+    fig.add_shape(type='line', x0=-27, y0=100, x1=27, y1=100, line=dict(color='black', width=1), row=2, col=1)
+    fig.add_shape(type='line', x0=-27, y0=0, x1=27, y1=0, line=dict(color='black', width=1), row=2, col=1)
+    fig.add_shape(type='line', x0=-27, y0=120, x1=27, y1=120, line=dict(color='black', width=1), row=2, col=1)
+    fig.add_shape(type='line', x0=-27, y0=0, x1=-27, y1=120, line=dict(color='black', width=1), row=2, col=1)
+    fig.add_shape(type='line', x0=27, y0=0, x1=27, y1=120, line=dict(color='black', width=1), row=2, col=1)
 
-    # Set the layout properties
     fig.update_layout(
-        title=f'Total Throws: {sum(counts)}',
-        xaxis=dict(range=[-27, 27]),
-        yaxis=dict(range=[0, 120]),
+        xaxis=dict(range=[-27, 27], showticklabels=False),  # Apply x-axis range to the scatter plot
+        yaxis=dict(range=[0, None]),  # Apply y-axis range to the scatter plot
+        xaxis2=dict(range=[-27, 27]),
+        yaxis2=dict(range=[0, 120]),  
         showlegend=False,
-        width=450,
+        width=600,
         height=600,
         margin=dict(t=50, b=50, l=50, r=50),
     )
-    return fig
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+
+    # Show the plot
+    fig.show()
 
 
 def plot_game(game_prob, gameID, features, max_length = 629):
