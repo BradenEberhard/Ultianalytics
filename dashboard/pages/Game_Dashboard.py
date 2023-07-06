@@ -11,7 +11,7 @@ from audl.stats.endpoints.gameevents import GameEventsProxy
 
 
 def get_bin_data(df, nbinsx, nbinsy):
-    hist, xedges, yedges = np.histogram2d(df['thrower_x'], df['thrower_y'], bins=[nbinsx, nbinsy])
+    hist, xedges, yedges = np.histogram2d(df['throwerX'], df['throwerY'], bins=[nbinsx, nbinsy])
     x_coords = []
     y_coords = []
     counts = []
