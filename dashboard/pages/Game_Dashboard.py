@@ -126,66 +126,6 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
     )
     return fig
 
-
-def plot_game(game_prob, gameID, features, max_length = 629):
-    test_game = game_prob.data[game_prob.data.gameID == gameID]
-    home_team = test_game.home_teamID.iloc[0].capitalize()
-    away_team = test_game.away_teamID.iloc[0].capitalize()
-    test_game = test_game[features]
-    test_game = game_prob.normalizer.transform(test_game)
-    pad_width = ((max_length - len(test_game), 0), (0, 0))  # Pad at the beginning with zeros
-    test_game = np.pad(test_game, pad_width, mode='constant', constant_values=-1).astype(np.float32)
-    out = game_prob.model.predict(test_game.reshape(1, 629, -1))
-    df = pd.DataFrame(game_prob.normalizer.inverse_transform(test_game), columns=features)
-    preds = out[np.array([df.times > 0])].flatten()
-    counter = 0
-    txts, xs, ys = [], [], []
-    for _, group_df in df[df.times>0].groupby('total_points'):
-        if group_df.total_points.sum() == 0:
-            continue
-        counter = counter + 1
-        row = group_df.iloc[0]
-        x = 48 - row.times/60
-        y = out.flatten()[min(group_df.index)]
-        minutes = (48 - x) % 12 // 1
-        seconds = round((48 - x) % 12 % 1 * 60)
-        txt = f'{home_team}: {int(row.home_team_score)} - {away_team}: {int(row.away_team_score)}<br>{int(minutes)}:{seconds:02d}'
-        txts.append(txt)
-        xs.append(x)
-        ys.append(y)
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter(
-        x=48 - df[df.times > 0].times/60,
-        y=preds,
-        hoverinfo="skip",
-        marker=dict(
-            color="blue"
-        ),
-        showlegend=False
-    ))
-    fig.add_trace(go.Scatter(
-        mode='markers',
-        x=xs,
-        y=ys,
-        hovertext=txts,
-        hoverinfo="text",
-        marker=dict(
-            color="black",
-            size=5
-        ),
-        showlegend=False,
-        customdata=txts
-    ))
-    fig.add_hline(y=0.5, line_width=1, line_color="grey")
-    fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
-    fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
-    fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
-    fig.update_layout(title=f'{away_team} at {home_team} on {gameID[:10]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
-                    yaxis_range=[0,1], xaxis_range=[0,48], 
-                    xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
-    return fig
-
 def get_name_from_id(row):
     date = pd.to_datetime(row.startTimestamp).date().strftime('%m/%d/%y')
     out_str = f'{row.awayTeamID.capitalize()} at {row.homeTeamID.capitalize()} on {date}'
