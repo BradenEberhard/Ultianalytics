@@ -57,10 +57,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
         height=600,
         margin=dict(t=50, b=50, l=50, r=50),
     )
-    
-
-    # Show the plot
-    fig.show()
+    return fig
 
 
 def plot_game(game_prob, gameID, features, max_length = 629):
