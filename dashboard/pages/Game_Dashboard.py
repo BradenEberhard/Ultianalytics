@@ -24,8 +24,8 @@ def get_roster_stats(gameID):
     game_stats_df = playergamestats.get_request_as_df(f'playerGameStats?gameID={gameID}')
     game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
     game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
-    stats_cols = ['playerID', 'fullName', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
-    'blocks', 'callahans', 'oPointsPlayed', 'dPointsPlayed']
+    stats_cols = ['playerID', 'fullName', 'oPointsPlayed', 'dPointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
+    'blocks', 'callahans']
     return game_stats_df[stats_cols]
 
 
@@ -62,7 +62,9 @@ def main():
     if game_filter != '<select>':
         game = games_df[games_df.name == game_filter]
         st.write(get_box_scores(game.iloc[0].gameID))
-        st.write(get_roster_stats(game.iloc[0].gameID))
+        roster_stats = get_roster_stats(game.iloc[0].gameID)
+        col1, col2 = st.columns(2)
+        col1.write(team_games)
 
     
 
