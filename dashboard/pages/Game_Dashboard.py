@@ -36,7 +36,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
     fig.add_trace(go.Scatter(
         x=x_coords, y=y_coords, mode='markers', name='markers',
         marker=dict(
-            size=counts, sizemode='area', sizeref = (2. * max(counts) / (50 ** 2)), sizemin=2.5,
+            size=counts, sizemode='area', sizeref = (2. * max(counts) / (35 ** 2)), sizemin=2.5,
             color=counts,
             line=dict(width=1, color='#333333'), symbol='circle',
         ),
