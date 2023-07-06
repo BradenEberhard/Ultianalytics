@@ -55,8 +55,8 @@ def main():
     css = '''
     <style>
         [data-testid="stSidebar"]{
-            min-width: 400px;
-            max-width: 800px;
+            min-width: 10px;
+            max-width: 100px;
         }
     </style>
     '''
