@@ -24,7 +24,7 @@ def get_roster_stats(gameID):
     game_stats_df = playergamestats.get_request_as_df(f'playerGameStats?gameID={gameID}')
     game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
     game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
-    stats_cols = ['playerID', 'full_name', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
+    stats_cols = ['playerID', 'fullName', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
     'blocks', 'callahans', 'oPointsPlayed', 'dPointsPlayed']
     return game_stats_df[stats_cols]
 
