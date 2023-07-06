@@ -45,14 +45,13 @@ def main():
     games_df = get_games_df()
     teams_df = get_teams_df()
     with st.expander('Filters'):
-        with st.form('form'):
-            team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
-            team_filter = team_filter.lower()
-            year_filter = st.selectbox('Year', ['<select>'] + sorted(teams_df[teams_df.teamID == team_filter].year.astype(int)), 0)
-            if year_filter != '<select>':
-                team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
-                team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
-                game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
+        team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
+        team_filter = team_filter.lower()
+        year_filter = st.selectbox('Year', ['<select>'] + sorted(teams_df[teams_df.teamID == team_filter].year.astype(int)), 0)
+        if year_filter != '<select>':
+            team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
+            team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
+            game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     if game_filter != '<select>':
         game = games_df[games_df.name == game_filter]
         st.write(get_box_scores(game.iloc[0].gameID))
