@@ -163,7 +163,7 @@ def write_col(col, roster_stats, teamID, is_home_team, game_throws):
     col.write(teamID.capitalize())
     write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
-    # col.write(shot_plot(game_throws, is_home_team, 10, 15))
+    col.plotly_chart(shot_plot(game_throws, is_home_team, 10, 15))
 
 
 def setup():
