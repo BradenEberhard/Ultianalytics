@@ -92,7 +92,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
     fig.update_yaxes(showgrid=False, zeroline=False)
 
     # Show the plot
-    fig.show()
+    return fig
 
 
 def plot_game(game_prob, gameID, features, max_length = 629):
