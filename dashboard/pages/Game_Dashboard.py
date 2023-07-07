@@ -158,7 +158,7 @@ def plot_game(game_prob, gameID, features, max_length = 629):
     fig.layout.images = [dict(
         source=home_logo,
         xref="x", yref="y",
-        x=0, y=0.5,
+        x=0, y=1,
         sizex=0.2, sizey=0.2,
         xanchor="left", yanchor="middle"
       )]
