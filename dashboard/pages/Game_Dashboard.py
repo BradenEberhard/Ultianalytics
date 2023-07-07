@@ -5,7 +5,7 @@ from audl.stats.endpoints.games import Games
 from audl.stats.endpoints.teams import Teams
 from audl.stats.endpoints.gamestats import GameStats
 from audl.stats.endpoints.playergamestats import PlayerGameStats
-from dashboard.probability_model import GameProbability
+from probability_model import GameProbability
 import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
