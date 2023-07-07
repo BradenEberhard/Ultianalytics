@@ -80,7 +80,7 @@ def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
     fig.add_shape(type='line', x0=27, y0=0, x1=27, y1=120, line=dict(color='black', width=1), row=2, col=1)
 
     fig.update_layout(
-        title=f'{teamID.capitalize()} Throws: {np.sum(counts)}',
+        title=f'{teamID.capitalize()} Throws: {int(np.sum(counts))}',
         xaxis=dict(range=[-27, 27], showticklabels=False),  # Apply x-axis range to the scatter plot
         yaxis=dict(range=[0, None]),  # Apply y-axis range to the scatter plot
         xaxis2=dict(range=[-27, 27]),
