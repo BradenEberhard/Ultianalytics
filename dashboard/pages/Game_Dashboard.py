@@ -159,15 +159,15 @@ def plot_game(game_prob, gameID, features, max_length = 629):
         source=home_logo,
         xref="paper", yref="paper",
         x=0, y=1,
-        sizex=0.1, sizey=0.1,
-        xanchor="left", yanchor="top"
+        sizex=0.2, sizey=0.2,
+        xanchor="auto", yanchor="auto"
       )]
     
     fig.layout.images = [dict(
-        source=home_logo,
+        source=away_logo,
         xref="paper", yref="paper",
         x=0, y=0,
-        sizex=0.1, sizey=0.1,
+        sizex=0.2, sizey=0.2,
         xanchor="left", yanchor="bottom"
       )]
     return fig
