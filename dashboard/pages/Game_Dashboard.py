@@ -160,7 +160,7 @@ def plot_game(game_prob, gameID, features, max_length = 629):
         xref="paper", yref="paper",
         x=0, y=1,
         sizex=0.2, sizey=0.2,
-        xanchor="auto", yanchor="auto"
+        xanchor="left", yanchor="auto"
       )]
     
     fig.layout.images = [dict(
