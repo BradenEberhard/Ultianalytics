@@ -9,6 +9,7 @@ from probability_model import GameProbability
 import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
+from PIL import Image
 
 ##TODO penalties, Scoreboard, histograms, team stat comparison, pulling data
 
@@ -91,7 +92,6 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
     fig.update_xaxes(showgrid=False, zeroline=False)
     fig.update_yaxes(showgrid=False, zeroline=False)
 
-    # Show the plot
     return fig
 
 
@@ -152,6 +152,24 @@ def plot_game(game_prob, gameID, features, max_length = 629):
     fig.update_layout(title=f'{away_team} at {home_team} on {gameID[:10]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
+    
+    home_logo = Image.open(f"../logos/{home_team}.png")
+    away_logo = Image.open(f"../logos/{away_team}.png")
+    fig.layout.images = [dict(
+        source=home_logo,
+        xref="paper", yref="paper",
+        x=0, y=1,
+        sizex=0.1, sizey=0.1,
+        xanchor="left", yanchor="top"
+      )]
+    
+    fig.layout.images = [dict(
+        source=home_logo,
+        xref="paper", yref="paper",
+        x=0, y=0,
+        sizex=0.1, sizey=0.1,
+        xanchor="left", yanchor="bottom"
+      )]
     return fig
 
 def get_name_from_id(row):
