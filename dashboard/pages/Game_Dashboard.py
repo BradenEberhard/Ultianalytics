@@ -214,8 +214,6 @@ def get_teams_df():
     return teams_df
     
 def write_col(col, roster_stats, teamID, is_home_team, game_throws):
-    logo = Image.open(f"./logos/{teamID.lower()}.png")
-    col.image(logo, width=150)
     write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
     col.plotly_chart(shot_plot(game_throws, is_home_team, teamID, 10, 15), use_container_width=True)
@@ -268,6 +266,13 @@ def main():
 
 
         roster_stats = get_roster_stats(gameID)
+        left_col, right_col = st.columns(2)
+        logo = Image.open(f"./logos/{game.iloc[0].homeTeamID.lower()}.png")
+        left_col.image(logo, width=150)
+
+        logo = Image.open(f"./logos/{game.iloc[0].awayTeamID.lower()}.png")
+        right_col.image(logo, width=150)
+
         col1, col2 = st.columns(2)
         write_col(col1, roster_stats, game.iloc[0].homeTeamID, True, game_throws)
         write_col(col2, roster_stats, game.iloc[0].awayTeamID, False, game_throws)
