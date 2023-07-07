@@ -157,7 +157,7 @@ def plot_game(game_prob, gameID, features, max_length = 629):
     away_logo = Image.open(f"./logos/{away_team.lower()}.png")
     fig.layout.images = [dict(
         source=home_logo,
-        xref="paper", yref="paper",
+        xref="x", yref="y",
         x=0, y=0.5,
         sizex=0.2, sizey=0.2,
         xanchor="left", yanchor="middle"
