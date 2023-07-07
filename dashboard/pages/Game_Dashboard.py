@@ -212,6 +212,8 @@ def get_teams_df():
     
 def write_col(col, roster_stats, teamID, is_home_team, game_throws):
     col.write(teamID.capitalize())
+    logo = Image.open(f"./logos/{teamID.lower()}.png")
+    col.write(logo)
     write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
     col.plotly_chart(shot_plot(game_throws, is_home_team, 10, 15), use_container_width=True)

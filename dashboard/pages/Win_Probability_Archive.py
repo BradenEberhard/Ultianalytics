@@ -8,6 +8,9 @@ import mpld3
 from mpld3 import plugins
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
+from PIL import Image
+import os.path
+
 
 def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
@@ -66,6 +69,23 @@ def plot_game(game_prob, gameID, features, max_length = 629):
     fig.update_layout(title=f'{away_team} at {home_team} on {gameID[:10]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
+    
+    if os.path.isfile(f"./logos/{home_team.lower()}.png") and os.path.isfile(f"./logos/{away_team.lower()}.png"):
+        home_logo = Image.open(f"./logos/{home_team.lower()}.png")
+        away_logo = Image.open(f"./logos/{away_team.lower()}.png")
+        fig.layout.images = [dict(
+            source=home_logo,
+            xref="paper", yref="paper",
+            x=0, y=1,
+            sizex=0.2, sizey=0.2,
+            xanchor="left", yanchor="top"
+        ), dict(
+            source=away_logo,
+            xref="paper", yref="paper",
+            x=0, y=0,
+            sizex=0.2, sizey=0.2,
+            xanchor="left", yanchor="bottom"
+        )]
     return fig
 
 def main():
