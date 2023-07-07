@@ -160,16 +160,16 @@ def plot_game(game_prob, gameID, features, max_length = 629):
         xref="paper", yref="paper",
         x=0, y=0,
         sizex=0.2, sizey=0.2,
-        xanchor="left", yanchor="middle"
-      )]
-    
-    fig.layout.images = [dict(
-        source=away_logo,
-        xref="paper", yref="paper",
-        x=0, y=0,
-        sizex=0.2, sizey=0.2,
         xanchor="left", yanchor="bottom"
       )]
+    
+    # fig.layout.images = [dict(
+    #     source=away_logo,
+    #     xref="paper", yref="paper",
+    #     x=0, y=0,
+    #     sizex=0.2, sizey=0.2,
+    #     xanchor="left", yanchor="bottom"
+    #   )]
     return fig
 
 def get_name_from_id(row):
