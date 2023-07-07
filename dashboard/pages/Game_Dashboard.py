@@ -98,7 +98,9 @@ def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
 
 def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
-    st.write(test_game)
+    if len(test_game) == 0:
+        st.write('no data')
+        return
     home_team = test_game.home_teamID.iloc[0].capitalize()
     away_team = test_game.away_teamID.iloc[0].capitalize()
     test_game = test_game[features]
