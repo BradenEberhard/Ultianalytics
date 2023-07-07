@@ -153,8 +153,8 @@ def plot_game(game_prob, gameID, features, max_length = 629):
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
     
-    home_logo = Image.open(f"../logos/{home_team}.png")
-    away_logo = Image.open(f"../logos/{away_team}.png")
+    home_logo = Image.open(f"../logos/{home_team.lower()}.png")
+    away_logo = Image.open(f"../logos/{away_team.lower()}.png")
     fig.layout.images = [dict(
         source=home_logo,
         xref="paper", yref="paper",
