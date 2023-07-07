@@ -232,6 +232,14 @@ def setup():
     st.title('Game Dashboard')
 
 
+def print_logos(game):
+    left_col, right_col = st.columns(2)
+    logo = Image.open(f"./logos/{game.iloc[0].homeTeamID.lower()}.png")
+    left_col.image(logo, width=150)
+
+    logo = Image.open(f"./logos/{game.iloc[0].awayTeamID.lower()}.png")
+    right_col.image(logo, width=150)
+
 def main():
     setup()
 
@@ -262,17 +270,11 @@ def main():
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
         fig = plot_game(game_prob, gameID, features)
-        st.plotly_chart(fig)
-
-
+        if fig is not None:
+            st.plotly_chart(fig)
         roster_stats = get_roster_stats(gameID)
-        left_col, right_col = st.columns(2)
-        logo = Image.open(f"./logos/{game.iloc[0].homeTeamID.lower()}.png")
-        left_col.image(logo, width=150)
-
-        logo = Image.open(f"./logos/{game.iloc[0].awayTeamID.lower()}.png")
-        right_col.image(logo, width=150)
-
+        
+        print_logos(game)
         col1, col2 = st.columns(2)
         write_col(col1, roster_stats, game.iloc[0].homeTeamID, True, game_throws)
         write_col(col2, roster_stats, game.iloc[0].awayTeamID, False, game_throws)
