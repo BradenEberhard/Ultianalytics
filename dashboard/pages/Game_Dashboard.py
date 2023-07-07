@@ -97,6 +97,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
 
 def plot_game(game_prob, gameID, features, max_length = 629):
     test_game = game_prob.data[game_prob.data.gameID == gameID]
+    st.write(test_game.home_teamID)
     home_team = test_game.home_teamID.iloc[0].capitalize()
     away_team = test_game.away_teamID.iloc[0].capitalize()
     test_game = test_game[features]
@@ -194,7 +195,6 @@ def get_roster_stats(gameID):
     'blocks', 'callahans']
     return game_stats_df[stats_cols]
 
-
 @st.cache_data
 def get_games_df():
     games = Games()
@@ -213,11 +213,10 @@ def get_teams_df():
 def write_col(col, roster_stats, teamID, is_home_team, game_throws):
     col.write(teamID.capitalize())
     logo = Image.open(f"./logos/{teamID.lower()}.png")
-    col.write(logo)
+    col.image(logo)
     write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
     col.plotly_chart(shot_plot(game_throws, is_home_team, 10, 15), use_container_width=True)
-
 
 def setup():
     st.set_page_config(layout='wide')
