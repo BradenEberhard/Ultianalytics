@@ -30,7 +30,7 @@ def get_bin_data(df, nbinsx, nbinsy):
     return x_coords, y_coords, counts
 
 
-def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
+def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
     shots = game_throws[game_throws.is_home_team == is_home_team].dropna(subset=['throwerX', 'throwerY'])
     x_coords, y_coords, counts = get_bin_data(shots, nbinsx, nbinsy)
     # Create the figure
@@ -80,6 +80,7 @@ def shot_plot(game_throws, is_home_team, nbinsx=10, nbinsy=15):
     fig.add_shape(type='line', x0=27, y0=0, x1=27, y1=120, line=dict(color='black', width=1), row=2, col=1)
 
     fig.update_layout(
+        title=f'{teamID.capitalize()} Throws: {np.sum(counts)}',
         xaxis=dict(range=[-27, 27], showticklabels=False),  # Apply x-axis range to the scatter plot
         yaxis=dict(range=[0, None]),  # Apply y-axis range to the scatter plot
         xaxis2=dict(range=[-27, 27]),
@@ -211,12 +212,11 @@ def get_teams_df():
     return teams_df
     
 def write_col(col, roster_stats, teamID, is_home_team, game_throws):
-    col.write(teamID.capitalize())
     logo = Image.open(f"./logos/{teamID.lower()}.png")
     col.image(logo)
     write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
-    col.plotly_chart(shot_plot(game_throws, is_home_team, 10, 15), use_container_width=True)
+    col.plotly_chart(shot_plot(game_throws, is_home_team, teamID, 10, 15), use_container_width=True)
 
 def setup():
     st.set_page_config(layout='wide')
