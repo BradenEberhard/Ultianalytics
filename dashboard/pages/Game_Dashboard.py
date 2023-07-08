@@ -254,7 +254,7 @@ def plot_pulls(gameID, game_events, col1, col2):
 
     pulls = game_events.get_pulls_from_id(gameID)
     home_team_pulls = pull_helper(pulls.is_home_team)
-    away_team_pulls = pull_helper(pulls.is_away_team)
+    away_team_pulls = pull_helper(~pulls.is_home_team)
     col1.write(home_team_pulls)
     col2.write(away_team_pulls)
 
