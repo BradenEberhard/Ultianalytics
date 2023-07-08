@@ -174,6 +174,7 @@ def plot_game(game_prob, gameID, features, max_length = 629):
       )]
     return fig
 
+
 def get_name_from_id(row):
     date = pd.to_datetime(row.startTimestamp).date().strftime('%m/%d/%y')
     out_str = f'{row.awayTeamID.capitalize()} at {row.homeTeamID.capitalize()} on {date}'
@@ -240,6 +241,24 @@ def print_logos(game):
     logo = Image.open(f"./logos/{game.iloc[0].awayTeamID.lower()}.png")
     right_col.image(logo, width=150)
 
+def plot_pulls(gameID, game_events, col1, col2):
+    def pull_helper(indexer):
+        team_pullers = pd.DataFrame(pulls[indexer].groupby('puller').puller.count())
+        team_pullers.index.name = None
+        team_pullers.columns = ['Pull Count']
+        team_pullers.sort_values('Pull Count', ascending = False)
+        team_pullers.loc['In Bounds'] = f'{pulls[indexer].in_bounds.sum()} ({pulls[indexer].in_bounds.mean()*100:.1f}%)'
+        rollers = (pulls[indexer].pullX == 26.66) | (pulls[indexer].pullX == -26.67)
+        team_pullers.loc['Roller'] = f'{rollers.sum()} ({rollers.mean()*100:.1f}%)'
+        return team_pullers
+
+    pulls = game_events.get_pulls_from_id(gameID)
+    home_team_pulls = pull_helper(pulls.is_home_team)
+    away_team_pulls = pull_helper(pulls.is_away_team)
+    col1.write(home_team_pulls)
+    col2.write(away_team_pulls)
+
+
 def main():
     setup()
 
@@ -276,6 +295,7 @@ def main():
         
         print_logos(game)
         col1, col2 = st.columns(2)
+        plot_pulls(gameID, game_events)
         write_col(col1, roster_stats, game.iloc[0].homeTeamID, True, game_throws)
         write_col(col2, roster_stats, game.iloc[0].awayTeamID, False, game_throws)
 
