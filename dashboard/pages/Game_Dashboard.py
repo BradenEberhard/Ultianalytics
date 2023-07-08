@@ -296,6 +296,7 @@ def main():
         print_logos(game)
         col1, col2 = st.columns(2)
         plot_pulls(gameID, game_events, col1, col2)
+        col1, col2 = st.columns(2)
         write_col(col1, roster_stats, game.iloc[0].homeTeamID, True, game_throws)
         write_col(col2, roster_stats, game.iloc[0].awayTeamID, False, game_throws)
 
