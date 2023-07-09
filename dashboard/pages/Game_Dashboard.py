@@ -14,6 +14,47 @@ from PIL import Image
 ##TODO penalties, Scoreboard, histograms, team stat comparison, pulling data
 
 
+class DataCache:
+    _instance = None
+
+    @staticmethod
+    def get_instance():
+        if DataCache._instance is None:
+            DataCache()
+        return DataCache._instance
+
+    def __init__(self):
+        if DataCache._instance is not None:
+            raise Exception("DataCache instance already exists.")
+        DataCache._instance = self
+
+    def get_box_scores(self):
+        box_scores = self.game_stats.get_boxscores()
+        box_scores.index.name = None
+        box_scores.index = [x.capitalize() for x in box_scores.index]
+        return box_scores
+    
+    def get_roster_stats(self):
+        game_stats_df = self.playergamestats.get_request_as_df(f'playerGameStats?gameID={self.gameID}')
+        game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
+        game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
+        game_stats_df['pointsPlayed'] = game_stats_df['oPointsPlayed'] + game_stats_df['dPointsPlayed']
+        stats_cols = ['playerID', 'teamID', 'fullName', 'pointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
+        'blocks', 'callahans']
+        self.get_roster_stats = game_stats_df[stats_cols]
+    
+    def set_game(self, gameID):
+        self.gameID = gameID
+        self.game_stats = GameStats(gameID)
+        self.game_events = GameEventsProxy()
+        self.player_game_stats = PlayerGameStats()
+        self.game_throws = self.game_events.get_throws_from_id(gameID)
+        self.box_scores = self.get_box_scores(gameID)
+        self.awayTeamID = self.game.iloc[0].homeTeamID.lower()
+        self.awayTeamID = self.game.iloc[0].awayTeamID.lower()
+        self.pulls = self.game_events.get_pulls_from_id(gameID)
+
+    
 def get_bin_data(df, nbinsx, nbinsy):
     hist, xedges, yedges = np.histogram2d(df['throwerX'], df['throwerY'], bins=[nbinsx, nbinsy])
     x_coords = []
@@ -181,25 +222,6 @@ def get_name_from_id(row):
     return out_str
 
 @st.cache_data
-def get_box_scores(gameID):
-    game_stats = GameStats(gameID)
-    box_scores = game_stats.get_boxscores()
-    box_scores.index.name = None
-    box_scores.index = [x.capitalize() for x in box_scores.index]
-    return box_scores
-
-@st.cache_data
-def get_roster_stats(gameID):
-    playergamestats = PlayerGameStats()
-    game_stats_df = playergamestats.get_request_as_df(f'playerGameStats?gameID={gameID}')
-    game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
-    game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
-    game_stats_df['pointsPlayed'] = game_stats_df['oPointsPlayed'] + game_stats_df['dPointsPlayed']
-    stats_cols = ['playerID', 'teamID', 'fullName', 'pointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
-    'blocks', 'callahans']
-    return game_stats_df[stats_cols]
-
-@st.cache_data
 def get_games_df():
     games = Games()
     games_df = games.get_games()
@@ -214,10 +236,10 @@ def get_teams_df():
     teams_df = teams_df[teams_df.year.astype(int) >= 2021]
     return teams_df
     
-def write_col(col, roster_stats, teamID, is_home_team, game_throws):
-    write_stats = roster_stats[roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
+def write_col(col, cache, is_home_team, teamID):
+    write_stats = cache.roster_stats[cache.roster_stats.teamID == teamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
     col.write(write_stats[write_stats.pointsPlayed > 0])
-    col.plotly_chart(shot_plot(game_throws, is_home_team, teamID, 10, 15), use_container_width=True)
+    col.plotly_chart(shot_plot(cache.game_throws, is_home_team, teamID, 10, 15), use_container_width=True)
 
 def setup():
     st.set_page_config(layout='wide')
@@ -233,15 +255,15 @@ def setup():
     st.title('Game Dashboard')
 
 
-def print_logos(game):
+def print_logos(cache):
     left_col, right_col = st.columns(2)
-    logo = Image.open(f"./logos/{game.iloc[0].homeTeamID.lower()}.png")
+    logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     left_col.image(logo, width=150)
 
-    logo = Image.open(f"./logos/{game.iloc[0].awayTeamID.lower()}.png")
+    logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     right_col.image(logo, width=150)
 
-def plot_pulls(gameID, game_events, col1, col2):
+def plot_pulls(cache, col1, col2):
     def pull_helper(indexer):
         team_pullers = pd.DataFrame(pulls[indexer].groupby('puller').puller.count())
         team_pullers.index.name = None
@@ -252,19 +274,42 @@ def plot_pulls(gameID, game_events, col1, col2):
         team_pullers.loc['Roller'] = f'{rollers.sum()} ({rollers.mean()*100:.1f}%)'
         return team_pullers
 
-    pulls = game_events.get_pulls_from_id(gameID)
+    pulls = cache.pulls
     home_team_pulls = pull_helper(pulls.is_home_team)
     away_team_pulls = pull_helper(~pulls.is_home_team)
     col1.write(home_team_pulls)
     col2.write(away_team_pulls)
 
+def get_team_stats(game_events, gameID):
+
+    home_pen, away_pen = game_events.get_penalties_from_id('2023-06-24-DC-BOS')
+    df = game_stats.get_team_stats()
+
+    def get_frac_string(row, names):
+        for name in names:
+            numerator = f'{name}Numer'
+            denominator = f'{name}Denom'
+            row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({row[numerator]/row[denominator]:.1f}%)'
+        return row
+
+    df = df.apply(get_frac_string, args=(['completions', 'hucks'],) ,axis=1)
+
+    def get_score_string(row, names):
+        for name in names:
+            numerator = f'{name}Scores'
+            denominator = f'{name}Possessions'
+            row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({row[numerator]/row[denominator]*100:.1f}%)'
+        return row
+
+    df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1).T
+    df['Penalties'] = [home_pen, away_pen]
+    return df
 
 def main():
     setup()
-
+    data_cache = DataCache.get_instance()
     games_df = get_games_df()
     teams_df = get_teams_df()
-    game_events = GameEventsProxy()
     game_filter = '<select>'
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
@@ -275,30 +320,25 @@ def main():
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     if game_filter != '<select>':
+        data_cache.game = games_df[games_df.name == game_filter]
+        data_cache.set_game(data_cache.game.iloc[0].gameID)
+        st.write(data_cache.box_scores)
         
-        
-        game = games_df[games_df.name == game_filter]
-        gameID = game.iloc[0].gameID
-        game_throws = game_events.get_throws_from_id(gameID)
-        st.write(get_box_scores(gameID))
-        
-
         features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, gameID, features)
+        fig = plot_game(game_prob, data_cache.gameID, features)
         if fig is not None:
             st.plotly_chart(fig)
-        roster_stats = get_roster_stats(gameID)
         
-        print_logos(game)
+        print_logos(data_cache)
         col1, col2 = st.columns(2)
-        plot_pulls(gameID, game_events, col1, col2)
+        plot_pulls(data_cache, col1, col2)
         col1, col2 = st.columns(2)
-        write_col(col1, roster_stats, game.iloc[0].homeTeamID, True, game_throws)
-        write_col(col2, roster_stats, game.iloc[0].awayTeamID, False, game_throws)
+        write_col(col1, data_cache, True, data_cache.homeTeamID)
+        write_col(col2, data_cache, False, data_cache.awayTeamID)
 
 if __name__ == '__main__':
     main()
