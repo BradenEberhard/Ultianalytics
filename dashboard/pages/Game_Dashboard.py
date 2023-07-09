@@ -42,6 +42,7 @@ class DataCache:
     def update_pullers(self):
         idxs = self.pulls.index
         new_idxs = []
+        print(idxs)
         for idx in idxs:
             if idx in self.name_dict:
                 new_idxs.append(self.name_dict[idx])
