@@ -159,20 +159,14 @@ def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
     return fig
 
 
-def plot_game(game_prob, gameID, max_length = 629):
+def plot_game(game_prob, cache, max_length = 629):
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
-    test_game = game_prob.data[game_prob.data.gameID == gameID]
+    test_game, teams = game_prob.process_new_game(cache.game, features)
     if len(test_game) == 0:
         st.write('no data')
         return
-    home_team = test_game.home_teamID.iloc[0].capitalize()
-    away_team = test_game.away_teamID.iloc[0].capitalize()
-    test_game = test_game[features]
-    test_game = game_prob.normalizer.transform(test_game)
-    pad_width = ((max_length - len(test_game), 0), (0, 0))  # Pad at the beginning with zeros
-    test_game = np.pad(test_game, pad_width, mode='constant', constant_values=-1).astype(np.float32)
     out = game_prob.model.predict(test_game.reshape(1, 629, -1))
     df = pd.DataFrame(game_prob.normalizer.inverse_transform(test_game), columns=features)
     preds = out[np.array([df.times > 0])].flatten()
@@ -187,7 +181,7 @@ def plot_game(game_prob, gameID, max_length = 629):
         y = out.flatten()[min(group_df.index)]
         minutes = (48 - x) % 12 // 1
         seconds = round((48 - x) % 12 % 1 * 60)
-        txt = f'{home_team}: {int(row.home_team_score)} - {away_team}: {int(row.away_team_score)}<br>{int(minutes)}:{seconds:02d}'
+        txt = f'{teams[0].capitalize()}: {int(row.home_team_score)} - {teams[1].capitalize()}: {int(row.away_team_score)}<br>{int(minutes)}:{seconds:02d}'
         txts.append(txt)
         xs.append(x)
         ys.append(y)
@@ -219,12 +213,12 @@ def plot_game(game_prob, gameID, max_length = 629):
     fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
-    fig.update_layout(title=f'{away_team} at {home_team} on {gameID[:10]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
+    fig.update_layout(title=f'{teams[1].capitalize()} at {teams[0].capitalize()} on {teams[2]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
     
-    home_logo = Image.open(f"./logos/{home_team.lower()}.png")
-    away_logo = Image.open(f"./logos/{away_team.lower()}.png")
+    home_logo = Image.open(f"./logos/{teams[0].lower()}.png")
+    away_logo = Image.open(f"./logos/{teams[1].lower()}.png")
     fig.layout.images = [dict(
         source=home_logo,
         xref="paper", yref="paper",
