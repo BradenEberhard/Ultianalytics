@@ -367,26 +367,27 @@ def main():
         data_cache.game = games_df[games_df.name == game_filter]
         if len(data_cache.game) == 0:
             st.header('Data Not Available')
-        data_cache.set_game(data_cache.game.iloc[0].gameID)
-        col6 = write_scoreboard(data_cache)
-        col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
-        col1, col2 = st.columns(2)
-        col2.write(data_cache.box_scores)
-        col1.write(get_team_stats(data_cache))
-        
-        game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
-        game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, data_cache)
-        if fig is not None:
-            st.plotly_chart(fig)
+        else:
+            data_cache.set_game(data_cache.game.iloc[0].gameID)
+            col6 = write_scoreboard(data_cache)
+            col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
+            col1, col2 = st.columns(2)
+            col2.write(data_cache.box_scores)
+            col1.write(get_team_stats(data_cache))
+            
+            game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
+            game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
+            fig = plot_game(game_prob, data_cache)
+            if fig is not None:
+                st.plotly_chart(fig)
 
-        
-        print_logos(data_cache)
-        col1, col2 = st.columns(2)
-        plot_pulls(data_cache, col1, col2)
-        col1, col2 = st.columns(2)
-        write_col(col1, data_cache, True, data_cache.homeTeamID)
-        write_col(col2, data_cache, False, data_cache.awayTeamID)
+            
+            print_logos(data_cache)
+            col1, col2 = st.columns(2)
+            plot_pulls(data_cache, col1, col2)
+            col1, col2 = st.columns(2)
+            write_col(col1, data_cache, True, data_cache.homeTeamID)
+            write_col(col2, data_cache, False, data_cache.awayTeamID)
 
 if __name__ == '__main__':
     main()
