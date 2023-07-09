@@ -33,6 +33,23 @@ class DataCache:
         'blocks', 'callahans']
         return game_stats_df[stats_cols]
     
+    def set_player_name_dict(self):
+        name_dict = {}
+        for row in self.roster_stats.iterrows():
+            name_dict[f'{row.playerID}'] = row.fullfullName
+        self.name_dict = name_dict
+    
+    def update_pullers(self):
+        idxs = self.pulls.index
+        new_idxs = []
+        for idx in idxs:
+            if idx in self.name_dict:
+                new_idxs.append(self.name_dict[idx])
+            else:
+                new_idxs.append(idx)
+        self.pulls.index = new_idxs
+
+
     def set_game(self, gameID):
         self.gameID = gameID
         self.game_stats = GameStats(gameID)
@@ -44,8 +61,10 @@ class DataCache:
         self.homeTeamID = self.game.iloc[0].homeTeamID.lower()
         self.awayTeamID = self.game.iloc[0].awayTeamID.lower()
         self.pulls = self.game_events.get_pulls_from_id(gameID)
+        self.update_pullers()
         self.penalties = self.game_events.get_penalties_from_id(gameID)
         self.team_stats = self.game_stats.get_team_stats()
+        self.set_player_name_dict()
 
     
 def get_bin_data(df, nbinsx, nbinsy):
@@ -266,7 +285,7 @@ def plot_pulls(cache, col1, col2):
         team_pullers.columns = ['Pull Count']
         team_pullers.sort_values('Pull Count', ascending = False)
         team_pullers.loc['In Bounds'] = f'{pulls[indexer].in_bounds.sum()} ({pulls[indexer].in_bounds.mean()*100:.1f}%)'
-        rollers = (pulls[indexer].pullX == 26.66) | (pulls[indexer].pullX == -26.67)
+        rollers = (pulls[indexer].pullX > 25) | (pulls[indexer].pullX < -25)
         team_pullers.loc['Roller'] = f'{rollers.sum()} ({rollers.mean()*100:.1f}%)'
         return team_pullers
 
