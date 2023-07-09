@@ -314,9 +314,10 @@ def get_team_stats(cache):
         return row
 
     df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1)
-    df.index = [cache.homeTeamID, cache.awayTeamID]
+    df.index = [cache.homeTeamID.capitalize(), cache.awayTeamID.capitalize()]
     cols = ['blocks', 'turnovers', 'completions', 'hucks', 'oLine', 'dLine', 'redZone']
     df = df[cols].T
+    df.index = [x.capitalize() for x in df.index]
     df.loc['Penalties'] = list(cache.penalties)
     return df
 
