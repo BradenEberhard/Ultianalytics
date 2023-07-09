@@ -313,7 +313,7 @@ def get_team_stats(cache):
             row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({row[numerator]/row[denominator]*100:.1f}%)'
         return row
 
-    df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1).T
+    df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1)
     # df['Penalties'] = list(cache.penalties)
     return df
 
