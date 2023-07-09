@@ -328,6 +328,7 @@ def get_team_stats(cache):
 
 def refresh_stats(cache):
     cache.set_game(cache.gameID)
+    write_scoreboard(cache)
 
 def write_scoreboard(cache):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
