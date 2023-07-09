@@ -365,8 +365,8 @@ def main():
     
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
-        if len(data_cache.game) == 0:
-            st.header('Data Not Available')
+        if data_cache.game.iloc[0].status == 'Upcoming':
+            st.header('Game is Upcoming')
         else:
             data_cache.set_game(data_cache.game.iloc[0].gameID)
             col6 = write_scoreboard(data_cache)
