@@ -163,7 +163,6 @@ def plot_game(game_prob, cache, max_length = 629):
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
-    st.write(cache.game_df)
     test_game, teams = game_prob.process_new_game(cache.game_df, features)
     home_team, away_team, date = teams[0][0], teams[0][1], teams[0][2]
     test_game = test_game.astype(np.float32)
@@ -336,7 +335,7 @@ def write_scoreboard(cache):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
-    
+    st.write(cache.box_scores)
     col2.header(cache.box_scores.iloc[1]['T'].astype(int))
     col3.header(cache.box_scores.iloc[0]['T'].astype(int))
 
