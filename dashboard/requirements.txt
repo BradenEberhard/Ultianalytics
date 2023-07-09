@@ -2,6 +2,7 @@ tensorflow
 pandas
 scikit-learn
 matplotlib
+streamlit-analytics
 textalloc
 plotly
 mpld3
