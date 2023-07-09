@@ -35,7 +35,7 @@ class DataCache:
         return box_scores
     
     def get_roster_stats(self):
-        game_stats_df = self.playergamestats.get_request_as_df(f'playerGameStats?gameID={self.gameID}')
+        game_stats_df = self.player_game_stats.get_request_as_df(f'playerGameStats?gameID={self.gameID}')
         game_stats_df = pd.merge(game_stats_df.player.apply(pd.Series), game_stats_df.drop('player', axis=1), left_index=True, right_index=True)
         game_stats_df['fullName'] = game_stats_df['firstName'] + ' ' + game_stats_df['lastName']
         game_stats_df['pointsPlayed'] = game_stats_df['oPointsPlayed'] + game_stats_df['dPointsPlayed']
