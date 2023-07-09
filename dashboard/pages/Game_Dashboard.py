@@ -171,7 +171,7 @@ def plot_game(game_prob, cache, max_length = 629):
         st.write('no data')
         return
     out = game_prob.model.predict(test_game.reshape(1, 629, -1))
-    df = pd.DataFrame(game_prob.normalizer.inverse_transform(test_game), columns=features)
+    df = pd.DataFrame(game_prob.normalizer.inverse_transform(test_game.reshape(629, -1)), columns=features)
     preds = out[np.array([df.times > 0])].flatten()
     counter = 0
     txts, xs, ys = [], [], []
