@@ -12,8 +12,11 @@ from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
 from PIL import Image
 
-##TODO Scoreboard
-
+##TODO team stats as bar percentage with win percent, possesion, penalties, draw passes on shot chart
+##TODO track website analytics
+##TODO player dashboard
+##TODO team dashboard
+##TODO transfer to Dash
 @st.cache_resource
 class DataCache:
     def __init__(self):
@@ -308,7 +311,7 @@ def get_team_stats(cache):
         for name in names:
             numerator = f'{name}Numer'
             denominator = f'{name}Denom'
-            row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({row[numerator]/row[denominator]:.1f}%)'
+            row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({(row[numerator]/row[denominator])*100:.1f}%)'
         return row
 
     df = df.apply(get_frac_string, args=(['completions', 'hucks'],) ,axis=1)
