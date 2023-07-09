@@ -347,7 +347,7 @@ def write_scoreboard(cache):
 
 def main():
     setup()
-    data_cache, teams_df, games_df, game_filter = DataCache(), get_teams_df, get_games_df(), '<select>'
+    data_cache, teams_df, games_df, game_filter = DataCache(), get_teams_df(), get_games_df(), '<select>'
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
         team_filter = team_filter.lower()
