@@ -331,24 +331,32 @@ def write_scoreboard(cache):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
-    col2.header(cache.box_scores.loc[cache.homeTeamID.capitalize()]['T'].astype(int))
-    col3.header(cache.box_scores.loc[cache.awayTeamID.capitalize()]['T'].astype(int))
+    try:
+        home_score = cache.box_scores.loc[cache.homeTeamID.capitalize()]['T'].astype(int)
+    except:
+        home_score = 0
+    try:
+        away_score = cache.box_scores.loc[cache.awayTeamID.capitalize()]['T'].astype(int)
+    except:
+        away_score = 0
+    
+    col2.header(home_score)
+    col3.header(away_score)
 
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     col4.image(logo, width=50)
-    time_left = cache.game_df.times.iloc[-1]
-    minutes = time_left % 12 // 1
-    seconds = round(time_left % 12 % 1 * 60)
-    status = cache.game.iloc[0].status
+    # time_left = cache.game_df.times.iloc[-1]
+    # minutes = time_left % 12 // 1
+    # seconds = round(time_left % 12 % 1 * 60)
+    # status = cache.game.iloc[0].status
     if status != 'Final':
-        status = f'{status} {minutes}:{seconds}'
+        status = f'{status}'
     col5.header(cache.game.iloc[0].status)
     return col6
 
 def main():
     setup()
     data_cache, teams_df, games_df, game_filter = DataCache(), get_teams_df(), get_games_df(), '<select>'
-    streamlit_analytics.start_tracking(firestore_key_file="firestore-key.json", firestore_collection_name="stats")
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', sorted([x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x]))
         team_filter = team_filter.lower()
@@ -357,7 +365,6 @@ def main():
             team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
-    streamlit_analytics.stop_tracking()
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
         if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
