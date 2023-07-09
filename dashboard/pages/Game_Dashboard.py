@@ -43,13 +43,11 @@ class DataCache:
         idxs = self.pulls.puller
         new_idxs = []
         for idx in idxs:
-            st.write(idx)
             if idx in self.name_dict:
                 new_idxs.append(self.name_dict[idx])
             else:
                 new_idxs.append(idx)
-        self.pulls.index = new_idxs
-        st.write(self.name_dict)
+        self.pulls.puller = new_idxs
 
     def set_game(self, gameID):
         self.gameID = gameID
