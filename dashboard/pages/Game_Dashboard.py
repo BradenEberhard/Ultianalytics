@@ -40,7 +40,7 @@ class DataCache:
         self.name_dict = name_dict
     
     def update_pullers(self):
-        idxs = self.pulls.index
+        idxs = self.pulls.puller
         new_idxs = []
         for idx in idxs:
             st.write(idx)
