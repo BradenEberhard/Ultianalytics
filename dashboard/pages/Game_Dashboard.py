@@ -336,7 +336,9 @@ def main():
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
         data_cache.set_game(data_cache.game.iloc[0].gameID)
-        st.write(data_cache.box_scores)
+        col1, col2 = st.columns(2)
+        col2.write(data_cache.box_scores)
+        col1.write(get_team_stats(data_cache))
         
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
@@ -344,7 +346,6 @@ def main():
         if fig is not None:
             st.plotly_chart(fig)
 
-        st.write(get_team_stats(data_cache))
         
         print_logos(data_cache)
         col1, col2 = st.columns(2)
