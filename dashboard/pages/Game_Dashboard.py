@@ -50,8 +50,8 @@ class DataCache:
         self.pulls.puller = new_idxs
 
     def update_game(self):
-        self.game_events_proxy.get_request('games?gameIDs=2023-07-08-PIT-CHI')
-        self.game = pd.DataFrame(self.game_events_proxy.current_request)
+        self.game_events.get_request('games?gameIDs=2023-07-08-PIT-CHI')
+        self.game = pd.DataFrame(self.game_events.current_request)
 
     def set_game(self, gameID):
         self.gameID = gameID
