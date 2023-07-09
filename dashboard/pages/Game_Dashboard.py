@@ -348,7 +348,7 @@ def write_scoreboard(cache):
     # time_left = cache.game_df.times.iloc[-1]
     # minutes = time_left % 12 // 1
     # seconds = round(time_left % 12 % 1 * 60)
-    # status = cache.game.iloc[0].status
+    status = cache.game.iloc[0].status
     if status != 'Final':
         status = f'{status}'
     col5.header(cache.game.iloc[0].status)
