@@ -331,7 +331,7 @@ def write_scoreboard(cache):
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
     
-    col2.write(cache.game.iloc[0].homeScore)
+    col2.write(cache.game.iloc[0].homeScore.astype(str))
     col3.write(cache.game.iloc[0].awayScore)
 
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
