@@ -335,9 +335,8 @@ def write_scoreboard(cache):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
-    st.write(cache.box_scores)
-    col2.header(cache.box_scores.loc[cache.homeTeamID.lower()]['T'].astype(int))
-    col3.header(cache.box_scores.loc[cache.awayTeamID.lower()]['T'].astype(int))
+    col2.header(cache.box_scores.loc[cache.homeTeamID.capitalize()]['T'].astype(int))
+    col3.header(cache.box_scores.loc[cache.awayTeamID.capitalize()]['T'].astype(int))
 
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     col4.image(logo, width=50)
