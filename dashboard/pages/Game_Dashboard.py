@@ -5,7 +5,8 @@ from audl.stats.endpoints.games import Games
 from audl.stats.endpoints.teams import Teams
 from audl.stats.endpoints.gamestats import GameStats
 from audl.stats.endpoints.playergamestats import PlayerGameStats
-from probability_model import GameProbability
+from audl.stats.endpoints.gameevents import GameEvents
+from probability_model import GameProbability, process_games
 import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
@@ -69,6 +70,11 @@ class DataCache:
         self.pulls = self.game_events.get_pulls_from_id(gameID)
         self.update_pullers()
         self.update_game()
+
+        game_events = GameEvents(gameID, self.game_events)
+        game_events.process_game_events()
+        game_df = game_events.get_events_df(True, True, True)
+        self.game = process_games(game_df)
 
     
 def get_bin_data(df, nbinsx, nbinsy):
@@ -347,7 +353,7 @@ def write_scoreboard(cache):
 
 def main():
     setup()
-    data_cache, games_df, teams_df, game_filter = DataCache(), get_games_df(), get_teams_df(), '<select>'
+    data_cache, teams_df, game_filter = DataCache(), get_teams_df(), '<select>'
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
         team_filter = team_filter.lower()
@@ -358,8 +364,6 @@ def main():
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     
     if game_filter != '<select>':
-        data_cache.game = games_df[games_df.name == game_filter]
-        data_cache.set_game(data_cache.game.iloc[0].gameID)
         col6 = write_scoreboard(data_cache)
         col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
         col1, col2 = st.columns(2)

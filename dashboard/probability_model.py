@@ -347,3 +347,57 @@ class GameProbability():
         ax.set_title(gameID)
         ax.set_ylim([0,1])
         return fig, ax
+    
+def process_games(GAMES):
+    features = ['thrower_x', 'thrower_y', 'start_on_offense', 'point_start_time', 'possession_num', 'possession_throw', 'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score', 'away_team_score', 'gameID', 'total_points', 'home_teamID', 'away_teamID']
+
+    GAMES['total_points'] = GAMES['home_team_score'] + GAMES['away_team_score']
+    GAMES = GAMES[GAMES.game_quarter < 5] ##TODO include overtimes
+    GAMES['point_start_time'] = 720 - GAMES['point_start_time']
+    GAMES = GAMES[features]
+
+    games = []
+    for gameID in GAMES.gameID.unique():
+        GAME = GAMES[GAMES.gameID == gameID]
+        points = []
+        prev_point_time = 720
+        current_quarter = 1
+        prev_df = None
+        error_points = 0
+        for group_keys, group_df in GAME.groupby(['total_points', 'game_quarter']):
+            if prev_df is None:
+                prev_df = group_df
+                continue
+
+            prev_point_time = prev_df.point_start_time.max()
+            if (current_quarter != group_df.game_quarter.max()):
+                current_quarter = group_df.game_quarter.max()
+                current_point_time = 0
+            else:
+                current_point_time = group_df.point_start_time.max()
+            if current_point_time >= prev_point_time:
+                error_points = error_points + 1
+                continue
+            times = np.linspace(prev_point_time, current_point_time + 1, len(prev_df))
+            prev_df['times'] = times
+            points.append(prev_df)
+            prev_df = group_df
+            if group_keys == (GAME.home_team_score.max()+GAME.away_team_score.max(), 4):
+                times = np.linspace(current_point_time, 0, len(prev_df))
+                prev_df['times'] = times
+                points.append(prev_df)
+        GAME_POINTS = pd.concat(points)
+        GAME_POINTS.times = GAME_POINTS.times + ((4 - GAME_POINTS.game_quarter)*720)
+        try:
+            # if error_points > 0:
+            #     print(f'{error_points} errors with {GAME_POINTS.gameID.iloc[0]}')
+            assert GAME_POINTS.times.is_monotonic_decreasing, f'timing is off somewhere for game: {GAME_POINTS.gameID.iloc[0]}'
+            home_team_win = GAME_POINTS[['away_team_score', 'home_team_score']].max().values.argmax() if GAME_POINTS['home_team_score'].max() != GAME_POINTS['away_team_score'].max() else -2
+            GAME_POINTS['home_team_win'] = home_team_win
+            games.append(GAME_POINTS)
+        except AssertionError as e:
+            print(e)
+
+        PROCESSED_GAMES = pd.concat(games).drop(['point_start_time', 'start_on_offense'], axis=1)
+        PROCESSED_GAMES['score_diff'] = PROCESSED_GAMES['home_team_score'] - PROCESSED_GAMES['away_team_score']
+    return PROCESSED_GAMES[PROCESSED_GAMES.home_team_win >= 0]
