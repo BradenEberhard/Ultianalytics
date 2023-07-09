@@ -11,7 +11,7 @@ from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
 from PIL import Image
 
-##TODO penalties, Scoreboard, histograms, team stat comparison, pulling data
+##TODO Scoreboard
 
 @st.cache_resource
 class DataCache:
@@ -49,6 +49,10 @@ class DataCache:
                 new_idxs.append(idx)
         self.pulls.puller = new_idxs
 
+    def update_game(self):
+        self.game_events_proxy.get_request('games?gameIDs=2023-07-08-PIT-CHI')
+        self.game = pd.DataFrame(self.game_events_proxy.current_request)
+
     def set_game(self, gameID):
         self.gameID = gameID
         self.game_stats = GameStats(gameID)
@@ -64,6 +68,7 @@ class DataCache:
         self.set_player_name_dict()
         self.pulls = self.game_events.get_pulls_from_id(gameID)
         self.update_pullers()
+        self.update_game()
 
     
 def get_bin_data(df, nbinsx, nbinsy):
@@ -320,6 +325,16 @@ def get_team_stats(cache):
     df.index = [x.capitalize() for x in df.index]
     df.loc['Penalties'] = list(cache.penalties)
     return df
+
+def write_scoreboard(cache):
+    col1, col2, col3 = st.columns(3)
+    logo = Image.open(f"./logos/{cache.homeTeamID}.png")
+    col1.image(logo, width=50)
+    logo = Image.open(f"./logos/{cache.awayTeamID}.png")
+    col3.image(logo, width=50)
+    col2.write(cache.game[['homeScore', 'awayScore']])
+
+
 
 def main():
     setup()
