@@ -334,8 +334,8 @@ def write_scoreboard(cache):
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
     
-    col2.header(cache.box_scores.iloc[1]['T'])
-    col3.header(cache.box_scores.iloc[0]['T'])
+    col2.header(cache.box_scores.iloc[1]['T'].astype(int))
+    col3.header(cache.box_scores.iloc[0]['T'].astype(int))
 
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     col4.image(logo, width=50)
