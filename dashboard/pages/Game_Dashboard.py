@@ -214,6 +214,7 @@ def plot_game(game_prob, cache, max_length = 629):
     fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
+    str.write(teams)
     fig.update_layout(title=f'{teams[0][1].capitalize()} at {teams[0][0].capitalize()} on {teams[1]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
