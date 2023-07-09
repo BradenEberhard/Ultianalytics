@@ -328,7 +328,6 @@ def get_team_stats(cache):
 
 def refresh_stats(cache):
     cache.set_game(cache.gameID)
-    write_scoreboard(cache)
 
 def write_scoreboard(cache):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -342,7 +341,7 @@ def write_scoreboard(cache):
     col4.image(logo, width=50)
     col5.header(cache.game.iloc[0].status)
 
-    col6.button('Refresh', on_click=refresh_stats, args=(cache,))
+    return col6
 
 
 
@@ -361,7 +360,8 @@ def main():
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
         data_cache.set_game(data_cache.game.iloc[0].gameID)
-        write_scoreboard(data_cache)
+        col6 = write_scoreboard(data_cache)
+        col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
         col1, col2 = st.columns(2)
         col2.write(data_cache.box_scores)
         col1.write(get_team_stats(data_cache))
