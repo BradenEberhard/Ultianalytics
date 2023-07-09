@@ -281,7 +281,7 @@ def plot_pulls(cache, col1, col2):
     def pull_helper(indexer):
         team_pullers = pd.DataFrame(pulls[indexer].groupby('puller').puller.count())
         team_pullers.index.name = None
-        team_pullers = team_pullers.sort_values('puller')
+        team_pullers = team_pullers.sort_values('puller', ascending = False)
         team_pullers.columns = ['Pull Count']
         team_pullers.sort_values('Pull Count', ascending = False)
         team_pullers.loc['In Bounds'] = f'{pulls[indexer].in_bounds.sum()} ({pulls[indexer].in_bounds.mean()*100:.1f}%)'
