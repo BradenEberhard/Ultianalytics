@@ -317,7 +317,7 @@ def get_team_stats(cache):
     df.index = [cache.homeTeamID, cache.awayTeamID]
     cols = ['blocks', 'turnovers', 'completions', 'hucks', 'oLine', 'dLine', 'redZone']
     df = df[cols].T
-    df['Penalties'] = list(cache.penalties)
+    df.loc['Penalties'] = list(cache.penalties)
     return df
 
 def main():
