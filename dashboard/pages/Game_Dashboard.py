@@ -349,13 +349,14 @@ def main():
     setup()
     data_cache, teams_df, games_df, game_filter = DataCache(), get_teams_df(), get_games_df(), '<select>'
     with st.expander('Filters'):
-        team_filter = st.selectbox('Team', sorted([x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x]))
-        team_filter = team_filter.lower()
-        year_filter = st.selectbox('Year', ['<select>'] + sorted(teams_df[teams_df.teamID == team_filter].year.astype(int)), 0)
-        if year_filter != '<select>':
-            team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
-            team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
-            game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
+        with streamlit_analytics.track():
+            team_filter = st.selectbox('Team', sorted([x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x]))
+            team_filter = team_filter.lower()
+            year_filter = st.selectbox('Year', ['<select>'] + sorted(teams_df[teams_df.teamID == team_filter].year.astype(int)), 0)
+            if year_filter != '<select>':
+                team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
+                team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
+                game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
