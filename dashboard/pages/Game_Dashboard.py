@@ -13,10 +13,7 @@ from plotly.subplots import make_subplots
 from PIL import Image
 
 ##TODO team stats as bar percentage with win percent, possesion, penalties, draw passes on shot chart
-##TODO track website analytics
-##TODO player dashboard
-##TODO team dashboard
-##TODO transfer to Dash
+
 @st.cache_resource
 class DataCache:
     def __init__(self):
@@ -79,7 +76,6 @@ class DataCache:
         game_df = game_events.get_events_df(True, True, True)
         self.game_df = process_games(game_df)
 
-    
 def get_bin_data(df, nbinsx, nbinsy):
     hist, xedges, yedges = np.histogram2d(df['throwerX'], df['throwerY'], bins=[nbinsx, nbinsy])
     x_coords = []
@@ -94,7 +90,6 @@ def get_bin_data(df, nbinsx, nbinsy):
             y_coords.append(y)
             counts.append(count)
     return x_coords, y_coords, counts
-
 
 def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
     shots = game_throws[game_throws.is_home_team == is_home_team].dropna(subset=['throwerX', 'throwerY'])
@@ -161,8 +156,7 @@ def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
 
     return fig
 
-
-def plot_game(game_prob, cache, max_length = 629):
+def plot_game(game_prob, cache):
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
@@ -239,7 +233,6 @@ def plot_game(game_prob, cache, max_length = 629):
       )]
     return fig
 
-
 def get_name_from_id(row):
     date = pd.to_datetime(row.startTimestamp).date().strftime('%m/%d/%y')
     out_str = f'{row.awayTeamID.capitalize()} at {row.homeTeamID.capitalize()} on {date}'
@@ -277,7 +270,6 @@ def setup():
     '''
     st.markdown(css, unsafe_allow_html=True)
     st.title('Game Dashboard')
-
 
 def print_logos(cache):
     left_col, right_col = st.columns(2)
@@ -352,13 +344,11 @@ def write_scoreboard(cache):
     col5.header(cache.game.iloc[0].status)
     return col6
 
-
-
 def main():
     setup()
     data_cache, teams_df, games_df, game_filter = DataCache(), get_teams_df(), get_games_df(), '<select>'
     with st.expander('Filters'):
-        team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
+        team_filter = st.selectbox('Team', sorted([x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x]))
         team_filter = team_filter.lower()
         year_filter = st.selectbox('Year', ['<select>'] + sorted(teams_df[teams_df.teamID == team_filter].year.astype(int)), 0)
         if year_filter != '<select>':

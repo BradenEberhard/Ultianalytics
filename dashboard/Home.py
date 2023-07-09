@@ -9,6 +9,12 @@ from mpld3 import plugins
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 
+##TODO track website analytics
+##TODO player dashboard
+##TODO team dashboard
+##TODO transfer to Dash
+##TODO detailed README
+
 def main():
     st.title("AUDL Dashboard")
     st.caption("Braden Eberhard, braden.ultimate@gmail.com, 2023")
@@ -19,9 +25,6 @@ def main():
     with st.expander("Throwing Direction"):
         st.write("""This page condenses each players throws into a polar histogram and shows usage, efficiency and trends in throwing.""")
         
-
-    
-
 
 
 if __name__ == '__main__':
