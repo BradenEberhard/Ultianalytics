@@ -13,7 +13,7 @@ from PIL import Image
 
 ##TODO penalties, Scoreboard, histograms, team stat comparison, pulling data
 
-
+@st.cache_resource
 class DataCache:
     _instance = None
 
@@ -54,6 +54,8 @@ class DataCache:
         self.homeTeamID = self.game.iloc[0].homeTeamID.lower()
         self.awayTeamID = self.game.iloc[0].awayTeamID.lower()
         self.pulls = self.game_events.get_pulls_from_id(gameID)
+        self.penalties = self.game_events.get_penalties_from_id(gameID)
+        self.team_stats = self.game_stats.get_team_stats()
 
     
 def get_bin_data(df, nbinsx, nbinsy):
@@ -138,7 +140,10 @@ def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
     return fig
 
 
-def plot_game(game_prob, gameID, features, max_length = 629):
+def plot_game(game_prob, gameID, max_length = 629):
+    features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
+       'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
+       'away_team_score','total_points', 'times', 'score_diff']
     test_game = game_prob.data[game_prob.data.gameID == gameID]
     if len(test_game) == 0:
         st.write('no data')
@@ -281,11 +286,8 @@ def plot_pulls(cache, col1, col2):
     col1.write(home_team_pulls)
     col2.write(away_team_pulls)
 
-def get_team_stats(game_events, gameID):
-
-    home_pen, away_pen = game_events.get_penalties_from_id('2023-06-24-DC-BOS')
-    df = game_stats.get_team_stats()
-
+def get_team_stats(cache):
+    df = cache.team_stats
     def get_frac_string(row, names):
         for name in names:
             numerator = f'{name}Numer'
@@ -303,15 +305,12 @@ def get_team_stats(game_events, gameID):
         return row
 
     df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1).T
-    df['Penalties'] = [home_pen, away_pen]
+    df['Penalties'] = list(cache.penalties)
     return df
 
 def main():
     setup()
-    data_cache = DataCache.get_instance()
-    games_df = get_games_df()
-    teams_df = get_teams_df()
-    game_filter = '<select>'
+    data_cache, games_df, teams_df, game_filter = DataCache.get_instance(), get_games_df(), get_teams_df(), '<select>'
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
         team_filter = team_filter.lower()
@@ -320,19 +319,19 @@ def main():
             team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
+    
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
         data_cache.set_game(data_cache.game.iloc[0].gameID)
         st.write(data_cache.box_scores)
         
-        features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
-       'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
-       'away_team_score','total_points', 'times', 'score_diff']
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, data_cache.gameID, features)
+        fig = plot_game(game_prob, data_cache.gameID)
         if fig is not None:
             st.plotly_chart(fig)
+
+        st.write(get_team_stats(data_cache))
         
         print_logos(data_cache)
         col1, col2 = st.columns(2)
