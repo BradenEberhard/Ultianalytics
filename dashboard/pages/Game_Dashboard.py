@@ -366,7 +366,7 @@ def main():
         
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, data_cache.gameID)
+        fig = plot_game(game_prob, data_cache)
         if fig is not None:
             st.plotly_chart(fig)
 
