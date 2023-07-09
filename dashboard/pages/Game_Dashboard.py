@@ -279,7 +279,7 @@ def print_logos(cache):
 
 def plot_pulls(cache, col1, col2):
     def pull_helper(indexer):
-        team_pullers = pd.DataFrame(pulls[indexer].groupby('puller').puller.count()).sort_values()
+        team_pullers = pd.DataFrame(pulls[indexer].groupby('puller').puller.count())
         team_pullers.index.name = None
         team_pullers = team_pullers.sort_values('puller')
         team_pullers.columns = ['Pull Count']
