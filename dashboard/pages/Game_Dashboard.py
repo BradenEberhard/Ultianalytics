@@ -331,7 +331,7 @@ def main():
         if fig is not None:
             st.plotly_chart(fig)
 
-        st.write(get_team_stats(data_cache))
+        # st.write(get_team_stats(data_cache))
         
         print_logos(data_cache)
         col1, col2 = st.columns(2)
