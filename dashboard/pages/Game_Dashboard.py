@@ -60,11 +60,11 @@ class DataCache:
         self.roster_stats = self.get_roster_stats()
         self.homeTeamID = self.game.iloc[0].homeTeamID.lower()
         self.awayTeamID = self.game.iloc[0].awayTeamID.lower()
-        self.pulls = self.game_events.get_pulls_from_id(gameID)
-        self.update_pullers()
         self.penalties = self.game_events.get_penalties_from_id(gameID)
         self.team_stats = self.game_stats.get_team_stats()
         self.set_player_name_dict()
+        self.pulls = self.game_events.get_pulls_from_id(gameID)
+        self.update_pullers()
 
     
 def get_bin_data(df, nbinsx, nbinsy):
