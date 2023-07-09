@@ -41,7 +41,7 @@ class DataCache:
         game_stats_df['pointsPlayed'] = game_stats_df['oPointsPlayed'] + game_stats_df['dPointsPlayed']
         stats_cols = ['playerID', 'teamID', 'fullName', 'pointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
         'blocks', 'callahans']
-        self.roster_stats = game_stats_df[stats_cols]
+        return game_stats_df[stats_cols]
     
     def set_game(self, gameID):
         self.gameID = gameID
@@ -50,6 +50,7 @@ class DataCache:
         self.player_game_stats = PlayerGameStats()
         self.game_throws = self.game_events.get_throws_from_id(gameID)
         self.box_scores = self.get_box_scores()
+        self.roster_stats = self.get_roster_stats()
         self.homeTeamID = self.game.iloc[0].homeTeamID.lower()
         self.awayTeamID = self.game.iloc[0].awayTeamID.lower()
         self.pulls = self.game_events.get_pulls_from_id(gameID)
