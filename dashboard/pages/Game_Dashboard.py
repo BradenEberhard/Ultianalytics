@@ -41,7 +41,7 @@ class DataCache:
         game_stats_df['pointsPlayed'] = game_stats_df['oPointsPlayed'] + game_stats_df['dPointsPlayed']
         stats_cols = ['playerID', 'teamID', 'fullName', 'pointsPlayed', 'assists', 'goals', 'hockeyAssists', 'completions', 'throwaways', 'stalls', 'yardsReceived', 'yardsThrown', 'hucksCompleted', 'drops',
         'blocks', 'callahans']
-        self.get_roster_stats = game_stats_df[stats_cols]
+        self.roster_stats = game_stats_df[stats_cols]
     
     def set_game(self, gameID):
         self.gameID = gameID
