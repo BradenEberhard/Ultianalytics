@@ -360,8 +360,8 @@ def main():
     streamlit_analytics.stop_tracking()
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
-        if data_cache.game.iloc[0].status == 'Upcoming':
-            st.header('Game is Upcoming')
+        if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
+            st.header(f'Game is {data_cache.game.iloc[0].status}')
         else:
             data_cache.set_game(data_cache.game.iloc[0].gameID)
             col6 = write_scoreboard(data_cache)
