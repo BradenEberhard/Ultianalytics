@@ -1,3 +1,4 @@
+streamlit==0.1.*
 tensorflow
 pandas
 scikit-learn
