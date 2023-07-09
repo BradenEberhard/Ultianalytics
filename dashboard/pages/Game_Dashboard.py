@@ -326,8 +326,11 @@ def get_team_stats(cache):
     df.loc['Penalties'] = list(cache.penalties)
     return df
 
+def refresh_stats(cache):
+    cache.set_game(cache.gameID)
+
 def write_scoreboard(cache):
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
     
@@ -337,6 +340,8 @@ def write_scoreboard(cache):
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     col4.image(logo, width=50)
     col5.header(cache.game.iloc[0].status)
+
+    col6.button('Refresh', on_click=refresh_stats, args=(cache,))
 
 
 
