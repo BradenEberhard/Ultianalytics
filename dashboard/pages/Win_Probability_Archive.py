@@ -9,7 +9,8 @@ from mpld3 import plugins
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 from PIL import Image
-import os.path
+import os.path 
+import streamlit_analytics
 
 
 def plot_game(game_prob, gameID, features, max_length = 629):
@@ -145,4 +146,6 @@ During the model development process, other approaches such as Logistic Regressi
 
 
 if __name__ == '__main__':
+    streamlit_analytics.start_tracking(load_from_json="./analytics.json")
     main()
+    streamlit_analytics.stop_tracking(save_to_json="./analytics.json")

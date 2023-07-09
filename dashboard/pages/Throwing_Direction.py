@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit_analytics
 
 years_to_date = ['2021', '2022', '2023']
 
@@ -149,4 +150,6 @@ def main():
     
 
 if __name__ == '__main__':
+    streamlit_analytics.start_tracking(load_from_json="./analytics.json")
     main()
+    streamlit_analytics.stop_tracking(save_to_json="./analytics.json")
