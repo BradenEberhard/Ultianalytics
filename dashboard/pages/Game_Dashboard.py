@@ -340,7 +340,7 @@ def write_scoreboard(cache):
 
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     col4.image(logo, width=50)
-    time_left = 720 - cache.game_df.point_start_time.iloc[-1]
+    time_left = cache.game_df.times.iloc[-1]
     minutes = time_left % 12 // 1
     seconds = round(time_left % 12 % 1 * 60)
     status = cache.game.iloc[0].status
