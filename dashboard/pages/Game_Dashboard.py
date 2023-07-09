@@ -36,7 +36,7 @@ class DataCache:
     def set_player_name_dict(self):
         name_dict = {}
         for row in self.roster_stats.iterrows():
-            name_dict[f'{row.playerID}'] = row.fullName
+            name_dict[f'{row.playerID}'] = row['fullName']
         self.name_dict = name_dict
     
     def update_pullers(self):
@@ -48,7 +48,6 @@ class DataCache:
             else:
                 new_idxs.append(idx)
         self.pulls.index = new_idxs
-
 
     def set_game(self, gameID):
         self.gameID = gameID
