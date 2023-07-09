@@ -16,9 +16,7 @@ from PIL import Image
 @st.cache_resource
 class DataCache:
     def __init__(self):
-        if DataCache._instance is not None:
-            raise Exception("DataCache instance already exists.")
-        DataCache._instance = self
+        pass
 
     def get_box_scores(self):
         box_scores = self.game_stats.get_boxscores()
