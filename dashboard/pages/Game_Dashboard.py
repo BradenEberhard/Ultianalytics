@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit_analytics
 import pandas as pd
 import numpy as np
 from audl.stats.endpoints.games import Games
@@ -383,4 +384,6 @@ def main():
             write_col(col2, data_cache, False, data_cache.awayTeamID)
 
 if __name__ == '__main__':
+    streamlit_analytics.start_tracking('./analytics.json')
     main()
+    streamlit_analytics.stop_tracking('./analytics.json')
