@@ -163,8 +163,8 @@ def plot_game(game_prob, cache, max_length = 629):
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
-    st.write(cache.game_df)
     test_game, teams = game_prob.process_new_game(cache.game_df, features)
+    test_game = test_game.astype(np.float32)
     if len(test_game) == 0:
         st.write('no data')
         return
