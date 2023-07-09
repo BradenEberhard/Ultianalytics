@@ -43,7 +43,8 @@ class DataCache:
         idxs = self.pulls.index
         new_idxs = []
         for idx in idxs:
-            if idx in self.name_dict.keys():
+            st.write(idx)
+            if idx in self.name_dict:
                 new_idxs.append(self.name_dict[idx])
             else:
                 new_idxs.append(idx)
