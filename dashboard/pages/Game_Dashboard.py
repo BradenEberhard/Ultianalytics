@@ -359,6 +359,8 @@ def main():
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
     
     if game_filter != '<select>':
+        data_cache.game = games_df[games_df.name == game_filter]
+        data_cache.set_game(data_cache.game.iloc[0].gameID)
         col6 = write_scoreboard(data_cache)
         col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
         col1, col2 = st.columns(2)
