@@ -173,7 +173,6 @@ def plot_game(game_prob, cache, max_length = 629):
     preds = out[np.array([df.times > 0])].flatten()
     counter = 0
     txts, xs, ys = [], [], []
-    st.write(teams)
     for _, group_df in df[df.times>0].groupby('total_points'):
         if group_df.total_points.sum() == 0:
             continue
@@ -183,7 +182,7 @@ def plot_game(game_prob, cache, max_length = 629):
         y = out.flatten()[min(group_df.index)]
         minutes = (48 - x) % 12 // 1
         seconds = round((48 - x) % 12 % 1 * 60)
-        txt = f'{teams[0].capitalize()}: {int(row.home_team_score)} - {teams[1].capitalize()}: {int(row.away_team_score)}<br>{int(minutes)}:{seconds:02d}'
+        txt = f'{teams[0][0].capitalize()}: {int(row.home_team_score)} - {teams[0][1].capitalize()}: {int(row.away_team_score)}<br>{int(minutes)}:{seconds:02d}'
         txts.append(txt)
         xs.append(x)
         ys.append(y)
@@ -215,12 +214,12 @@ def plot_game(game_prob, cache, max_length = 629):
     fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
-    fig.update_layout(title=f'{teams[1].capitalize()} at {teams[0].capitalize()} on {teams[2]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
+    fig.update_layout(title=f'{teams[1].capitalize()} at {teams[0].capitalize()} on {teams[1]}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
     
-    home_logo = Image.open(f"./logos/{teams[0].lower()}.png")
-    away_logo = Image.open(f"./logos/{teams[1].lower()}.png")
+    home_logo = Image.open(f"./logos/{teams[0][0].lower()}.png")
+    away_logo = Image.open(f"./logos/{teams[0][1].lower()}.png")
     fig.layout.images = [dict(
         source=home_logo,
         xref="paper", yref="paper",
