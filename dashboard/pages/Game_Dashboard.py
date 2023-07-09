@@ -351,6 +351,7 @@ def main():
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
         data_cache.set_game(data_cache.game.iloc[0].gameID)
+        write_scoreboard(data_cache)
         col1, col2 = st.columns(2)
         col2.write(data_cache.box_scores)
         col1.write(get_team_stats(data_cache))
