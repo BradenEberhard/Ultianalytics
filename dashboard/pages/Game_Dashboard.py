@@ -327,12 +327,15 @@ def get_team_stats(cache):
     return df
 
 def write_scoreboard(cache):
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     col1.image(logo, width=50)
+    
+    col2.write(cache.game.iloc[0].homeScore)
+    col3.write(cache.game.iloc[0].awayScore)
+
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
-    col3.image(logo, width=50)
-    col2.write(cache.game[['homeScore', 'awayScore']])
+    col4.image(logo, width=50)
 
 
 
