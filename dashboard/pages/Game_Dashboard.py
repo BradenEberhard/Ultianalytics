@@ -13,7 +13,7 @@ from PIL import Image
 
 ##TODO Scoreboard
 
-@st.cache_resource
+# @st.cache_resource
 class DataCache:
     def __init__(self):
         pass
