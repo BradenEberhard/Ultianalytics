@@ -13,7 +13,7 @@ from PIL import Image
 
 ##TODO Scoreboard
 
-# @st.cache_resource
+@st.cache_resource
 class DataCache:
     def __init__(self):
         pass
@@ -50,7 +50,7 @@ class DataCache:
         self.pulls.puller = new_idxs
 
     def update_game(self):
-        self.game_events.get_request('games?gameIDs=2023-07-08-PIT-CHI')
+        self.game_events.get_request(f'games?gameIDs={self.gameID}')
         self.game = pd.DataFrame(self.game_events.current_request)
 
     def set_game(self, gameID):
