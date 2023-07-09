@@ -74,7 +74,7 @@ class DataCache:
         game_events = GameEvents(gameID, self.game_events)
         game_events.process_game_events()
         game_df = game_events.get_events_df(True, True, True)
-        self.game = process_games(game_df)
+        self.game_df = process_games(game_df)
 
     
 def get_bin_data(df, nbinsx, nbinsy):
@@ -163,8 +163,8 @@ def plot_game(game_prob, cache, max_length = 629):
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
-    st.write(cache.game)
-    test_game, teams = game_prob.process_new_game(cache.game, features)
+    st.write(cache.game_df)
+    test_game, teams = game_prob.process_new_game(cache.game_df, features)
     if len(test_game) == 0:
         st.write('no data')
         return
