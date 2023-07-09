@@ -398,5 +398,6 @@ def main():
             write_col(col2, data_cache, False, data_cache.awayTeamID)
 
 if __name__ == '__main__':
+    streamlit_analytics.start_tracking()
     main()
-    
+    streamlit_analytics.stop_tracking(save_to_json="./analytics.json")
