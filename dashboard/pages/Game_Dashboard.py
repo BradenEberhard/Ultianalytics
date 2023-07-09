@@ -304,7 +304,10 @@ def get_team_stats(cache):
         for name in names:
             numerator = f'{name}Numer'
             denominator = f'{name}Denom'
-            row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({(row[numerator]/row[denominator])*100:.1f}%)'
+            if row[denominator] == 0:
+                row[f'{name}'] = '0/0 (0%)'
+            else:
+                row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({(row[numerator]/row[denominator])*100:.1f}%)'
         return row
 
     df = df.apply(get_frac_string, args=(['completions', 'hucks'],) ,axis=1)
@@ -313,7 +316,10 @@ def get_team_stats(cache):
         for name in names:
             numerator = f'{name}Scores'
             denominator = f'{name}Possessions'
-            row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({row[numerator]/row[denominator]*100:.1f}%)'
+            if row[denominator] == 0:
+                row[f'{name}'] = '0/0 (0%)'
+            else:
+                row[f'{name}'] = f'{row[numerator]}/{row[denominator]} ({row[numerator]/row[denominator]*100:.1f}%)'
         return row
 
     df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1)
