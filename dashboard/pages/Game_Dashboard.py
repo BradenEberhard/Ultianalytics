@@ -173,6 +173,7 @@ def plot_game(game_prob, cache, max_length = 629):
     preds = out[np.array([df.times > 0])].flatten()
     counter = 0
     txts, xs, ys = [], [], []
+    st.write(teams)
     for _, group_df in df[df.times>0].groupby('total_points'):
         if group_df.total_points.sum() == 0:
             continue
