@@ -15,14 +15,6 @@ from PIL import Image
 
 @st.cache_resource
 class DataCache:
-    _instance = None
-
-    @staticmethod
-    def get_instance():
-        if DataCache._instance is None:
-            DataCache()
-        return DataCache._instance
-
     def __init__(self):
         if DataCache._instance is not None:
             raise Exception("DataCache instance already exists.")
@@ -310,7 +302,7 @@ def get_team_stats(cache):
 
 def main():
     setup()
-    data_cache, games_df, teams_df, game_filter = DataCache.get_instance(), get_games_df(), get_teams_df(), '<select>'
+    data_cache, games_df, teams_df, game_filter = DataCache(), get_games_df(), get_teams_df(), '<select>'
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', [x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x])
         team_filter = team_filter.lower()
