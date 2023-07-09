@@ -49,7 +49,7 @@ class DataCache:
         self.game_events = GameEventsProxy()
         self.player_game_stats = PlayerGameStats()
         self.game_throws = self.game_events.get_throws_from_id(gameID)
-        self.box_scores = self.get_box_scores(gameID)
+        self.box_scores = self.get_box_scores()
         self.awayTeamID = self.game.iloc[0].homeTeamID.lower()
         self.awayTeamID = self.game.iloc[0].awayTeamID.lower()
         self.pulls = self.game_events.get_pulls_from_id(gameID)
