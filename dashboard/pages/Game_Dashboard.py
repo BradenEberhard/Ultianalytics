@@ -164,7 +164,7 @@ def plot_game(game_prob, cache, max_length = 629):
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
     test_game, teams = game_prob.process_new_game(cache.game_df, features)
-    home_team, away_team, date = teams[0][0], teams[0][1], teams[0][2][0]
+    home_team, away_team, date = teams[0][0], teams[0][1], teams[0][2][0][:10]
     test_game = test_game.astype(np.float32)
     if len(test_game) == 0:
         st.write('no data')
@@ -365,6 +365,8 @@ def main():
     
     if game_filter != '<select>':
         data_cache.game = games_df[games_df.name == game_filter]
+        if len(data_cache.game) == 0:
+            st.header('Data Not Available')
         data_cache.set_game(data_cache.game.iloc[0].gameID)
         col6 = write_scoreboard(data_cache)
         col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
