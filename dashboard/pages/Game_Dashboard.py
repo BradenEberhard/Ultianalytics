@@ -314,7 +314,7 @@ def get_team_stats(cache):
         return row
 
     df = df.apply(get_score_string, args=(['oLine', 'dLine', 'redZone'],) ,axis=1).T
-    df['Penalties'] = list(cache.penalties)
+    # df['Penalties'] = list(cache.penalties)
     return df
 
 def main():
