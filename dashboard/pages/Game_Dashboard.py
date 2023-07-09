@@ -164,7 +164,7 @@ def plot_game(game_prob, cache, max_length = 629):
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
        'away_team_score','total_points', 'times', 'score_diff']
     test_game, teams = game_prob.process_new_game(cache.game_df, features)
-    home_team, away_team, date = teams[0][0], teams[0][1], teams[0][2]
+    home_team, away_team, date = teams[0][0], teams[0][1], teams[0][2][0]
     test_game = test_game.astype(np.float32)
     if len(test_game) == 0:
         st.write('no data')
@@ -340,8 +340,13 @@ def write_scoreboard(cache):
 
     logo = Image.open(f"./logos/{cache.awayTeamID}.png")
     col4.image(logo, width=50)
+    time_left = 720 - cache.game_df.point_start_time.iloc[-1]
+    minutes = time_left % 12 // 1
+    seconds = round(time_left % 12 % 1 * 60)
+    status = cache.game.iloc[0].status
+    if status != 'Final':
+        status = f'{status} {minutes}:{seconds}'
     col5.header(cache.game.iloc[0].status)
-
     return col6
 
 
