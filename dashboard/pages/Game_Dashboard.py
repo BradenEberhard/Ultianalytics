@@ -35,7 +35,7 @@ class DataCache:
     
     def set_player_name_dict(self):
         name_dict = {}
-        for row in self.roster_stats.iterrows():
+        for _, row in self.roster_stats.iterrows():
             name_dict[f'{row.playerID}'] = row['fullName']
         self.name_dict = name_dict
     
