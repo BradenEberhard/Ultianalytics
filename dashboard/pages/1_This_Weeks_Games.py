@@ -289,6 +289,7 @@ def plot_pulls(cache, col1, col2):
         team_pullers['In Bounds'] = pulls[indexer].in_bounds.sum()
         rollers = (pulls[indexer].pullX > 25) | (pulls[indexer].pullX < -25)
         team_pullers['Roller'] = rollers.sum()
+        team_pullers['In Bounds'] = team_pullers['In Bounds'] - team_pullers['Roller']
         team_pullers['Out of Bounds'] = (~pulls[indexer].in_bounds).sum()
 
         pullers = pd.DataFrame(pulls[indexer].groupby('puller').puller.count())
