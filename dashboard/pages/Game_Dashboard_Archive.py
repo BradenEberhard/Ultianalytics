@@ -276,11 +276,16 @@ def setup():
 
 def print_logos(cache):
     left_col, right_col = st.columns(2)
-    logo = Image.open(f"./logos/{cache.homeTeamID}.png")
-    left_col.image(logo, width=150)
-
-    logo = Image.open(f"./logos/{cache.awayTeamID}.png")
-    right_col.image(logo, width=150)
+    try:
+        logo = Image.open(f"./logos/{cache.homeTeamID}.png")
+        left_col.image(logo, width=150)
+    except FileNotFoundError as e:
+        pass
+    try:
+        logo = Image.open(f"./logos/{cache.awayTeamID}.png")
+        left_col.image(logo, width=150)
+    except FileNotFoundError as e:
+        pass
 
 def plot_pulls(cache, col1, col2):
     def pull_helper(indexer):
