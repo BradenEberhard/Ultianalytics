@@ -7,4 +7,4 @@ textalloc
 plotly
 mpld3
 git+https://github.com/BradenEberhard/audl.git
-streamlit-analytics
+git+https://github.com/BradenEberhard/streamlit-analytics
