@@ -17,6 +17,7 @@ import plotly.express as px
 
 ##TODO Roster Stats dropdown
 ##TODO Percent stats as slider compared to league average
+##TODO If game is live update every 30 seconds
 
 @st.cache_resource
 class DataCache:
@@ -405,16 +406,24 @@ def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
     if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
         st.header(f'Game is {data_cache.game.iloc[0].status}')
+        if data_cache.game.iloc[0].status != 'Final':
+            st.button('Refresh', on_click=refresh_stats, args=(data_cache,))
     else:
         data_cache.set_game(data_cache.game.iloc[0].gameID)
         col6 = write_scoreboard(data_cache)
-        col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
+        if data_cache.game.iloc[0].status != 'Final':
+            col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
 
 
         l_col, r_col = st.columns(2)
         l_col.plotly_chart(shot_plot(data_cache.game_throws, True, data_cache.homeTeamID, 10, 15), use_container_width=True)
         r_col.plotly_chart(shot_plot(data_cache.game_throws, False, data_cache.awayTeamID, 10, 15), use_container_width=True)
+        plot_pulls(data_cache, l_col, r_col)
 
+        write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.homeTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
+        l_col.write(write_stats[write_stats.pointsPlayed > 0])
+        write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.awayTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
+        r_col.write(write_stats[write_stats.pointsPlayed > 0])
         
         # print_logos(data_cache)
         # col1, col2 = st.columns(2)
@@ -502,8 +511,7 @@ def main():
         game_filter = st.selectbox('Game', ['<select>'] + list(this_weeks_games['name']), 0)
     if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
-        col1, col2 = st.columns(2)
-        plot_pulls(data_cache, col1, col2)
+        
     
 if __name__ == '__main__':
     streamlit_analytics.start_tracking()
