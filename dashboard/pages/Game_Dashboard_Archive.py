@@ -400,9 +400,9 @@ def main():
             team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
             game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
+    if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
 
-        
 
 if __name__ == '__main__':
     main()

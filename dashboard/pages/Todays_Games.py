@@ -396,7 +396,7 @@ def main():
         today_games = games_df[games_df.dates == today]
         game_filter = st.selectbox('Game', ['<select>'] + list(today_games['name']), 0)
     if game_filter != '<select>':
-        display_game(data_cache, games_df, game_filter)        
+        display_game(data_cache, games_df, game_filter)
 
 if __name__ == '__main__':
     streamlit_analytics.start_tracking(load_from_json="./analytics.json")
