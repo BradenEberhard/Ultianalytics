@@ -18,7 +18,7 @@ import streamlit_analytics
 ##TODO detailed README
 
 def main():
-    with streamlit_analytics.track(save_to_json="./analytics.json"):
+    with streamlit_analytics.track(firestore_key_file="firebase-key.json", firestore_collection_name="counts"):
         st.title("AUDL Dashboard")
         st.caption("Braden Eberhard, braden.ultimate@gmail.com, 2023")
         st.subheader("Overview")
