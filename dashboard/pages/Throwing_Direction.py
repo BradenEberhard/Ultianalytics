@@ -150,6 +150,6 @@ def main():
     
 
 if __name__ == '__main__':
-    streamlit_analytics.start_tracking(load_from_json="./analytics.json")
+    streamlit_analytics.start_tracking(firestore_key_file="firebase-key.json", firestore_collection_name="counts")
     main()
-    streamlit_analytics.stop_tracking(save_to_json="./analytics.json")
+    streamlit_analytics.stop_tracking(firestore_key_file="firebase-key.json", firestore_collection_name="counts")
