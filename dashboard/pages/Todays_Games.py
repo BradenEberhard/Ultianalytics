@@ -447,9 +447,9 @@ def main():
     data_cache, games_df, game_filter = DataCache(), get_games_df(), '<select>'
     with st.expander('Today\'s Game(s)'):
         today = pd.Timestamp.today().strftime('%Y-%m-%d')
-        yesterday = pd.Timestamp.today().strftime('%Y-%m-%d') - timedelta(hours=24)
+        yesterday = pd.Timestamp.today() - timedelta(hours=24)
         games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
-        today_games = games_df[games_df.dates == today]
+        today_games = games_df[(games_df.dates) == today | (games_df.dates == yesterday.strftime('%Y-%m-%d'))]
         game_filter = st.selectbox('Game', ['<select>'] + list(today_games['name']), 0)
     if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
