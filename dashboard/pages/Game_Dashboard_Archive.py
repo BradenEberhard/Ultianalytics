@@ -285,7 +285,7 @@ def print_logos(cache):
         pass
     try:
         logo = Image.open(f"./logos/{cache.awayTeamID}.png")
-        left_col.image(logo, width=150)
+        right_col.image(logo, width=150)
     except FileNotFoundError as e:
         pass
 
