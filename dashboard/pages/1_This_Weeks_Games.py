@@ -277,7 +277,7 @@ def setup():
     st.title('Game Dashboard')
 
 def print_logos(cache):
-    left_col, right_col = st.columns(2)
+    left_col, _, right_col = st.columns([2, 8, 2])
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     left_col.image(logo, width=150)
 
