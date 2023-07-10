@@ -6,4 +6,5 @@ matplotlib
 textalloc
 plotly
 mpld3
+streamlit-analytics
 git+https://github.com/BradenEberhard/audl.git

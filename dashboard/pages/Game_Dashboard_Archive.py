@@ -416,4 +416,6 @@ def main():
         display_game(data_cache, games_df, game_filter)
 
 if __name__ == '__main__':
+    streamlit_analytics.start_tracking()
     main()
+    streamlit_analytics.stop_tracking()

@@ -30,4 +30,6 @@ def main():
         st.write("""This page condenses each players throws into a polar histogram and shows usage, efficiency and trends in throwing.""")
        
 if __name__ == '__main__':
+    streamlit_analytics.start_tracking()
     main()
+    streamlit_analytics.stop_tracking()
