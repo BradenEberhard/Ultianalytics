@@ -12,6 +12,8 @@ import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
 from PIL import Image
+from datetime import datetime
+
 
 ##TODO team stats as bar percentage with win percent, possesion, penalties, draw passes on shot chart
 
@@ -360,9 +362,45 @@ def write_scoreboard(cache):
     col5.header(cache.game.iloc[0].status)
     return col6
 
+
+def display_game(data_cache, games_df, game_filter):
+    data_cache.game = games_df[games_df.name == game_filter]
+    if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
+        st.header(f'Game is {data_cache.game.iloc[0].status}')
+    else:
+        data_cache.set_game(data_cache.game.iloc[0].gameID)
+        col6 = write_scoreboard(data_cache)
+        col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
+        col1, col2 = st.columns(2)
+        col2.write(data_cache.box_scores)
+        col1.write(get_team_stats(data_cache))
+        
+        game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
+        game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
+        fig = plot_game(game_prob, data_cache)
+        if fig is not None:
+            st.plotly_chart(fig)
+
+        
+        print_logos(data_cache)
+        col1, col2 = st.columns(2)
+        plot_pulls(data_cache, col1, col2)
+        col1, col2 = st.columns(2)
+        write_col(col1, data_cache, True, data_cache.homeTeamID)
+        write_col(col2, data_cache, False, data_cache.awayTeamID)
+
+def update_change(filter):
+    
+    st.session_state.last_change = filter
+
 def main():
     setup()
     data_cache, teams_df, games_df, game_filter = DataCache(), get_teams_df(), get_games_df(), '<select>'
+    with st.expander('Today\'s Game(s)'):
+        today = datetime.today().strftime('%Y-%m-%d')
+        games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
+        today_games = games_df[games_df.dates == today]
+        st.selectbox('Game', ['<select>'] + list(today_games['name']), 0, on_change=update_change, key='current_game', args=('current_game',))
     with st.expander('Filters'):
         team_filter = st.selectbox('Team', sorted([x.capitalize() for x in teams_df.teamID.unique() if 'allstar' not in x]))
         team_filter = team_filter.lower()
@@ -370,32 +408,13 @@ def main():
         if year_filter != '<select>':
             team_games = games_df[(games_df.homeTeamID == team_filter) | (games_df.awayTeamID == team_filter)]
             team_games = team_games[team_games.startTimestamp.apply(lambda x:int(x[:4])) == year_filter]
-            game_filter = st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0)
-    if game_filter != '<select>':
-        data_cache.game = games_df[games_df.name == game_filter]
-        if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
-            st.header(f'Game is {data_cache.game.iloc[0].status}')
-        else:
-            data_cache.set_game(data_cache.game.iloc[0].gameID)
-            col6 = write_scoreboard(data_cache)
-            col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
-            col1, col2 = st.columns(2)
-            col2.write(data_cache.box_scores)
-            col1.write(get_team_stats(data_cache))
-            
-            game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
-            game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-            fig = plot_game(game_prob, data_cache)
-            if fig is not None:
-                st.plotly_chart(fig)
-
-            
-            print_logos(data_cache)
-            col1, col2 = st.columns(2)
-            plot_pulls(data_cache, col1, col2)
-            col1, col2 = st.columns(2)
-            write_col(col1, data_cache, True, data_cache.homeTeamID)
-            write_col(col2, data_cache, False, data_cache.awayTeamID)
+            st.selectbox('Game', ['<select>'] + sorted(team_games.name, key= lambda x:x[-8:]), 0, on_change=update_change, key='archive_game', args=('archive_game',))
+    try:
+        if st.session_state.last_change is not None:
+            display_game(data_cache, games_df, st.session_state[st.session_state.last_change])
+    except AttributeError as e:
+        pass
+        
 
 if __name__ == '__main__':
     streamlit_analytics.start_tracking(load_from_json="./analytics.json")
