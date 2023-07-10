@@ -405,6 +405,4 @@ def main():
         
 
 if __name__ == '__main__':
-    streamlit_analytics.start_tracking(load_from_json="./analytics.json")
     main()
-    streamlit_analytics.stop_tracking(save_to_json="./analytics.json")
