@@ -12,7 +12,7 @@ import plotly.graph_objects as go
 from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
 from PIL import Image
-from datetime import datetime
+from datetime import datetime, timedelta
 import plotly.express as px
 
 ##TODO Pulls as a graphic
@@ -447,7 +447,7 @@ def main():
     data_cache, games_df, game_filter = DataCache(), get_games_df(), '<select>'
     with st.expander('Today\'s Game(s)'):
         today = pd.Timestamp.today().strftime('%Y-%m-%d')
-        st.write(today)
+        yesterday = pd.Timestamp.today().strftime('%Y-%m-%d') - timedelta(hours=24)
         games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
         today_games = games_df[games_df.dates == today]
         game_filter = st.selectbox('Game', ['<select>'] + list(today_games['name']), 0)
