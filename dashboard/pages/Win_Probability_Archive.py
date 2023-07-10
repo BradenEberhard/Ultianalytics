@@ -145,6 +145,4 @@ During the model development process, other approaches such as Logistic Regressi
 
 
 if __name__ == '__main__':
-    streamlit_analytics.start_tracking(firestore_key_file="firebase-key.json", firestore_collection_name="counts")
     main()
-    streamlit_analytics.stop_tracking(firestore_key_file="firebase-key.json", firestore_collection_name="counts")
