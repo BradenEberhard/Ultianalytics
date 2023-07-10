@@ -13,8 +13,11 @@ from audl.stats.endpoints.gameevents import GameEventsProxy
 from plotly.subplots import make_subplots
 from PIL import Image
 from datetime import datetime
+import plotly.express as px
 
-##TODO team stats as bar percentage with win percent, possesion, penalties, draw passes on shot chart
+##TODO Pulls as a graphic
+##TODO Roster Stats dropdown
+##TODO Percent stats as slider compared to league average
 
 @st.cache_resource
 class DataCache:
@@ -214,7 +217,7 @@ def plot_game(game_prob, cache):
     fig.add_vline(x=12, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=24, line_width=1, line_dash="dash", line_color="black")
     fig.add_vline(x=36, line_width=1, line_dash="dash", line_color="black")
-    fig.update_layout(title=f'{away_team.capitalize()} at {home_team.capitalize()} on {date}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
+    fig.update_layout(title=f'{away_team.capitalize()} at {home_team.capitalize()}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
     
@@ -288,7 +291,7 @@ def plot_pulls(cache, col1, col2):
         team_pullers = team_pullers.sort_values('puller', ascending = False)
         team_pullers.columns = ['Pull Count']
         team_pullers.sort_values('Pull Count', ascending = False)
-        team_pullers.loc['In Bounds'] = f'{pulls[indexer].in_bounds.sum()} ({pulls[indexer].in_bounds.mean()*100:.1f}%)'
+        team_pullers.loc['In Bounds'] = f'{pulls[indexer].in_bounds.sum()}/{len(pulls[indexer])} ({pulls[indexer].in_bounds.mean()*100:.1f}%)'
         rollers = (pulls[indexer].pullX > 25) | (pulls[indexer].pullX < -25)
         team_pullers.loc['Roller'] = f'{rollers.sum()} ({rollers.mean()*100:.1f}%)'
         return team_pullers
@@ -335,36 +338,19 @@ def refresh_stats(cache):
     cache.set_game(cache.gameID)
 
 def write_scoreboard(cache):
-    col1, col2, col3, col4, col5, col6 = st.columns(6)
-    try:
-        logo = Image.open(f"./logos/{cache.homeTeamID}.png")
-        col1.image(logo, width=50)
-    except FileNotFoundError as e:
-        pass
-    try:
-        home_score = cache.box_scores.loc[cache.homeTeamID.capitalize()]['T'].astype(int)
-    except:
-        home_score = 0
-    try:
-        away_score = cache.box_scores.loc[cache.awayTeamID.capitalize()]['T'].astype(int)
-    except:
-        away_score = 0
-    
-    col2.header(home_score)
-    col3.header(away_score)
-    try:
-        logo = Image.open(f"./logos/{cache.awayTeamID}.png")
-        col4.image(logo, width=50)
-    except FileNotFoundError as e:
-        pass
-    # time_left = cache.game_df.times.iloc[-1]
-    # minutes = time_left % 12 // 1
-    # seconds = round(time_left % 12 % 1 * 60)
+    left_col, middle_col, right_col = st.columns([4, 6, 1])
     status = cache.game.iloc[0].status
     if status != 'Final':
         status = f'{status}'
-    col5.header(cache.game.iloc[0].status)
-    return col6
+    right_col.header(status)
+    plot_team_stats(cache, middle_col)
+
+    game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
+    game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
+    fig = plot_game(game_prob, cache)
+    if fig is not None:
+        left_col.plotly_chart(fig, use_container_width=True)
+    return right_col
 
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
@@ -374,23 +360,87 @@ def display_game(data_cache, games_df, game_filter):
         data_cache.set_game(data_cache.game.iloc[0].gameID)
         col6 = write_scoreboard(data_cache)
         col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
-        col1, col2 = st.columns(2)
-        col2.write(data_cache.box_scores)
-        col1.write(get_team_stats(data_cache))
-        
-        game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
-        game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, data_cache)
-        if fig is not None:
-            st.plotly_chart(fig)
+
+
+        l_col, r_col = st.columns(2)
+        l_col.plotly_chart(shot_plot(data_cache.game_throws, True, data_cache.homeTeamID, 10, 15), use_container_width=True)
+        r_col.plotly_chart(shot_plot(data_cache.game_throws, False, data_cache.awayTeamID, 10, 15), use_container_width=True)
 
         
-        print_logos(data_cache)
-        col1, col2 = st.columns(2)
-        plot_pulls(data_cache, col1, col2)
-        col1, col2 = st.columns(2)
-        write_col(col1, data_cache, True, data_cache.homeTeamID)
-        write_col(col2, data_cache, False, data_cache.awayTeamID)
+        # print_logos(data_cache)
+        # col1, col2 = st.columns(2)
+        # plot_pulls(data_cache, col1, col2)
+        # col1, col2 = st.columns(2)
+        # write_col(col1, data_cache, True, data_cache.homeTeamID)
+        # write_col(col2, data_cache, False, data_cache.awayTeamID)
+
+def plot_team_stats(cache, col):
+    try:
+        home_score = cache.box_scores.loc[cache.homeTeamID.capitalize()]['T'].astype(int)
+    except:
+        home_score = 0
+    try:
+        away_score = cache.box_scores.loc[cache.awayTeamID.capitalize()]['T'].astype(int)
+    except:
+        away_score = 0
+
+    df = cache.team_stats[['completionsNumer', 'hucksNumer', 'blocks', 'turnovers', 'redZonePossessions']]
+    df.index = [cache.homeTeamID.capitalize(), cache.awayTeamID.capitalize()]
+    df['Penalties'] = cache.penalties
+    
+    df = df.T
+    df[f'{cache.homeTeamID.capitalize()}_prob'] = df.apply(lambda x: round((x.iloc[0]/x.sum())*100, 1), axis=1)
+    df[f'{cache.awayTeamID.capitalize()}_prob'] = 100 - df[f'{cache.homeTeamID.capitalize()}_prob']
+    df['Category'] = ['Completions', 'Hucks', 'Blocks', 'Turnovers', 'Red Zone Possessions', 'Penalties']
+    df.index = df.Category
+    df = df.reindex(['Completions', 'Hucks', 'Blocks', 'Turnovers', 'Red Zone Possessions', 'Penalties'])
+    mark_color=['#31688E', '#35B779']
+    fig = go.Figure()
+    for i, team in enumerate([cache.homeTeamID.capitalize(), cache.awayTeamID.capitalize()]):
+        fig.add_trace(go.Bar( 
+        x=df[f'{team}_prob'], y=df['Category'],
+        showlegend=False,
+        orientation='h',
+        marker=dict(
+            color=mark_color[i]
+        ),
+        width=0.8,
+        text=df[team],
+        textposition='inside', insidetextanchor='middle',
+        hoverinfo='skip'
+    ))
+    fig.update_layout(
+                  title=dict(text=f'{home_score} - {away_score}', x=0.5, y=1, yanchor="bottom",font=dict(size=50), automargin=True, yref='paper'),
+                  yaxis_title='',
+                  xaxis_title='',
+                  barmode='stack',
+                  yaxis=dict(autorange="reversed"),
+                  xaxis=dict(
+        showticklabels=False  # Remove the x-axis tick labels
+    ))
+
+    home_logo = Image.open(f"./logos/{cache.homeTeamID.lower()}.png")
+    away_logo = Image.open(f"./logos/{cache.awayTeamID.lower()}.png")
+    fig.add_layout_image(
+        dict(
+            source=home_logo,
+            xref="paper", yref="paper",
+            x=0, y=1,
+            sizex=0.3, sizey=0.3,
+            xanchor="left", yanchor="bottom"
+        )
+    )
+
+    fig.add_layout_image(
+        dict(
+            source=away_logo,
+            xref="paper", yref="paper",
+            x=1, y=1,
+            sizex=0.3, sizey=0.3,
+            xanchor="right", yanchor="bottom"
+        )
+    )
+    col.plotly_chart(fig, use_container_width=True)
 
 def main():
     setup()
@@ -402,6 +452,8 @@ def main():
         game_filter = st.selectbox('Game', ['<select>'] + list(today_games['name']), 0)
     if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
+
+
         
 if __name__ == '__main__':
     streamlit_analytics.start_tracking()
