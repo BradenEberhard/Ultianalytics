@@ -218,22 +218,24 @@ def plot_game(game_prob, cache):
     fig.update_layout(title=f'{away_team.capitalize()} at {home_team.capitalize()} on {date}', title_x=0.5, xaxis_title="Time Passed", yaxis_title="Win Probability",
                     yaxis_range=[0,1], xaxis_range=[0,48], 
                     xaxis = dict(tick0=0,dtick=12,tickvals=[0, 12, 24, 36], ticktext=['Q1', 'Q2', 'Q3', 'Q4']), yaxis = dict(tick0=0,dtick=0.1))
-    
-    home_logo = Image.open(f"./logos/{home_team.lower()}.png")
-    away_logo = Image.open(f"./logos/{away_team.lower()}.png")
-    fig.layout.images = [dict(
-        source=home_logo,
-        xref="paper", yref="paper",
-        x=0, y=1,
-        sizex=0.2, sizey=0.2,
-        xanchor="left", yanchor="top"
-      ), dict(
-        source=away_logo,
-        xref="paper", yref="paper",
-        x=0, y=0,
-        sizex=0.2, sizey=0.2,
-        xanchor="left", yanchor="bottom"
-      )]
+    try:
+        home_logo = Image.open(f"./logos/{home_team.lower()}.png")
+        away_logo = Image.open(f"./logos/{away_team.lower()}.png")
+        fig.layout.images = [dict(
+            source=home_logo,
+            xref="paper", yref="paper",
+            x=0, y=1,
+            sizex=0.2, sizey=0.2,
+            xanchor="left", yanchor="top"
+        ), dict(
+            source=away_logo,
+            xref="paper", yref="paper",
+            x=0, y=0,
+            sizex=0.2, sizey=0.2,
+            xanchor="left", yanchor="bottom"
+        )]
+    except FileNotFoundError as e:
+        pass
     return fig
 
 def get_name_from_id(row):
