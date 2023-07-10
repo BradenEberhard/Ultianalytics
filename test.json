@@ -1,0 +1,17 @@
+{
+    "loaded_from_firestore":true,
+    "total_pageviews":1,
+    "total_script_runs":1,
+    "total_time_seconds":0.000429,
+    "per_day":{
+    "days":["2023-07-09","2023-07-10"],
+    "pageviews":[0, 1],
+    "script_runs":[0, 1]
+    },
+    "widgets":{
+    "Game":{
+    "<select>":1
+    }
+    },
+    "start_time":"10 Jul 2023, 01:45:21"
+}
