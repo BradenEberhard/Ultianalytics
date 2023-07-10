@@ -392,6 +392,7 @@ def main():
     data_cache, games_df, game_filter = DataCache(), get_games_df(), '<select>'
     with st.expander('Today\'s Game(s)'):
         today = datetime.today().strftime('%Y-%m-%d')
+        today = '2023-07-08'
         games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
         st.write(games_df.sort_values('dates'))
         st.write(today)
