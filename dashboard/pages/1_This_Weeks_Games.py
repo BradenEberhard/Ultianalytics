@@ -419,11 +419,11 @@ def display_game(data_cache, games_df, game_filter):
         l_col.plotly_chart(shot_plot(data_cache.game_throws, True, data_cache.homeTeamID, 10, 15), use_container_width=True)
         r_col.plotly_chart(shot_plot(data_cache.game_throws, False, data_cache.awayTeamID, 10, 15), use_container_width=True)
         plot_pulls(data_cache, l_col, r_col)
-
-        write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.homeTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
-        l_col.write(write_stats[write_stats.pointsPlayed > 0])
-        write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.awayTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
-        r_col.write(write_stats[write_stats.pointsPlayed > 0])
+        with st.expander('Roster Stats'):
+            write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.homeTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
+            l_col.write(write_stats[write_stats.pointsPlayed > 0])
+            write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.awayTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
+            r_col.write(write_stats[write_stats.pointsPlayed > 0])
         
         # print_logos(data_cache)
         # col1, col2 = st.columns(2)
