@@ -393,7 +393,7 @@ def main():
     with st.expander('Today\'s Game(s)'):
         today = datetime.today().strftime('%Y-%m-%d')
         games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
-        st.write(games_df)
+        st.write(games_df.sort_values('dates'))
         st.write(today)
         today_games = games_df[games_df.dates == today]
         st.write(today_games)
