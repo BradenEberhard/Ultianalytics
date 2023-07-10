@@ -449,7 +449,7 @@ def main():
         today = datetime.today().strftime('%Y-%m-%d')
         yesterday = datetime.today() - timedelta(hours=24)
         games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
-        today_games = games_df[(games_df.dates) == today | (games_df.dates == yesterday.strftime('%Y-%m-%d'))]
+        today_games = games_df[(games_df.dates == today) | (games_df.dates == yesterday.strftime('%Y-%m-%d'))]
         game_filter = st.selectbox('Game', ['<select>'] + list(today_games['name']), 0)
     if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
