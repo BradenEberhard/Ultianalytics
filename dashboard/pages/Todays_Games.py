@@ -336,8 +336,11 @@ def refresh_stats(cache):
 
 def write_scoreboard(cache):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
-    logo = Image.open(f"./logos/{cache.homeTeamID}.png")
-    col1.image(logo, width=50)
+    try:
+        logo = Image.open(f"./logos/{cache.homeTeamID}.png")
+        col1.image(logo, width=50)
+    except FileNotFoundError as e:
+        pass
     try:
         home_score = cache.box_scores.loc[cache.homeTeamID.capitalize()]['T'].astype(int)
     except:
@@ -349,9 +352,11 @@ def write_scoreboard(cache):
     
     col2.header(home_score)
     col3.header(away_score)
-
-    logo = Image.open(f"./logos/{cache.awayTeamID}.png")
-    col4.image(logo, width=50)
+    try:
+        logo = Image.open(f"./logos/{cache.awayTeamID}.png")
+        col4.image(logo, width=50)
+    except FileNotFoundError as e:
+        pass
     # time_left = cache.game_df.times.iloc[-1]
     # minutes = time_left % 12 // 1
     # seconds = round(time_left % 12 % 1 * 60)
