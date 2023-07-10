@@ -14,7 +14,6 @@ from plotly.subplots import make_subplots
 from PIL import Image
 from datetime import datetime
 
-
 ##TODO team stats as bar percentage with win percent, possesion, penalties, draw passes on shot chart
 
 @st.cache_resource
@@ -362,7 +361,6 @@ def write_scoreboard(cache):
     col5.header(cache.game.iloc[0].status)
     return col6
 
-
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
     if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
@@ -395,12 +393,11 @@ def main():
     with st.expander('Today\'s Game(s)'):
         today = datetime.today().strftime('%Y-%m-%d')
         games_df['dates'] = [pd.to_datetime(x).date().strftime('%Y-%m-%d') for x in games_df.startTimestamp]
+        st.write(games_df)
         today_games = games_df[games_df.dates == today]
         game_filter = st.selectbox('Game', ['<select>'] + list(today_games['name']), 0)
     if game_filter != '<select>':
-        display_game(data_cache, games_df, game_filter)
-
-        
+        display_game(data_cache, games_df, game_filter)        
 
 if __name__ == '__main__':
     streamlit_analytics.start_tracking(load_from_json="./analytics.json")
