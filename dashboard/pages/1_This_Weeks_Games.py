@@ -493,7 +493,7 @@ def plot_team_stats(cache, col):
 def main():
     setup()
     data_cache, games_df, game_filter = DataCache(), get_games_df(), '<select>'
-    with st.expander('Today\'s Game(s)'):
+    with st.expander('This Week\'s Game(s)'):
         today = datetime.today().date()
         last_week = datetime.today().date() - timedelta(days=7)
         games_df['dates'] = [pd.to_datetime(x).date() for x in games_df.startTimestamp]

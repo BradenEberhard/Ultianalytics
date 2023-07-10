@@ -28,7 +28,7 @@ def main():
     with st.expander("Throwing Direction"):
         st.write("""This page condenses each players throws into a polar histogram and shows usage, efficiency and trends in throwing.""")
     with st.expander("Game Dashboard Archive"):
-        st.write("""This page condenses each players throws into a polar histogram and shows usage, efficiency and trends in throwing.""")
+        st.write("""'This Weeks Games' and 'Game Dashboard Archive' both use a similar dashboard to display a games breakdown. This includes: team stats, pulls, win probability, and shot charts.""")
        
 if __name__ == '__main__':
     streamlit_analytics.start_tracking()
