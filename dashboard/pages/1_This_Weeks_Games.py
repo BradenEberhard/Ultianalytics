@@ -489,7 +489,7 @@ def plot_team_stats(cache, col):
     df = df.T
     df[f'{cache.homeTeamID.capitalize()}_prob'] = df.apply(lambda x: round((x.iloc[0]/x.sum())*100, 1), axis=1)
     df[f'{cache.awayTeamID.capitalize()}_prob'] = 100 - df[f'{cache.homeTeamID.capitalize()}_prob']
-    df['Category'] = ['Completions', 'Hucks', 'Blocks', 'Turnovers', 'Red Zone Possessions', 'Penalties']
+    df['Category'] = ['Completions', 'Hucks', 'Blocks', 'Turnovers', 'Red Zone\nPossessions', 'Penalties']
     df.index = df.Category
     df = df.reindex(['Completions', 'Hucks', 'Blocks', 'Turnovers', 'Red Zone Possessions', 'Penalties'])
     mark_color=['#31688E', '#35B779']
