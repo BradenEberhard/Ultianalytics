@@ -436,7 +436,7 @@ def write_scoreboard(cache):
     if status != 'Final':
         status = f'{status}'
     m.header(f'Game Status: {status}')
-    left_col, right_col = st.columns([3, 6])
+    left_col, right_col = st.columns([4, 6])
     plot_team_stats(cache, left_col)
     right_col.plotly_chart(plot_team_percents(cache), use_container_width=True)
     return r, r2
