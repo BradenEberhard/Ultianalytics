@@ -15,8 +15,8 @@ from PIL import Image
 from datetime import datetime, timedelta
 import plotly.express as px
 from audl.stats.endpoints.teamstats import TeamStats
-from streamlit_elements_fluence import elements
-from streamlit_elements import event
+from streamlit_autorefresh import st_autorefresh
+
 
 
 ##TODO If game is live update every 30 seconds
@@ -431,7 +431,7 @@ def refresh_stats(cache):
     cache.set_game(cache.gameID)
 
 def write_scoreboard(cache):
-    _, m, r = st.columns(3)
+    _, m, r, r2 = st.columns([3, 2, 1, 1])
     status = cache.game.iloc[0].status
     if status != 'Final':
         status = f'{status}'
@@ -439,7 +439,7 @@ def write_scoreboard(cache):
     left_col, right_col = st.columns([3.5, 6.5])
     plot_team_stats(cache, left_col)
     right_col.plotly_chart(plot_team_percents(cache), use_container_width=True)
-    return r
+    return r, r2
 
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
@@ -449,8 +449,11 @@ def display_game(data_cache, games_df, game_filter):
             st.button('Refresh', on_click=refresh_stats, args=(data_cache,))
     else:
         data_cache.set_game(data_cache.game.iloc[0].gameID)
-        col6 = write_scoreboard(data_cache)
+        col6, col7 = write_scoreboard(data_cache)
         col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
+        continuous_refresh = col7.button('Continuous Refresh (every 30 seconds)', on_click=refresh_stats, args=(data_cache,))
+        if continuous_refresh:
+            count = st_autorefresh(interval=1000*30, limit=100, key="game_refresh")
 
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
@@ -548,6 +551,8 @@ def main():
         game_filter = st.selectbox('Game', ['<select>'] + list(this_weeks_games['name']), 0)
     if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
+        
+
 
         
     
