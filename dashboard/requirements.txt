@@ -7,4 +7,6 @@ textalloc
 plotly
 mpld3
 streamlit-analytics
+streamlit-elements-fluence
+streamlit_elements
 git+https://github.com/BradenEberhard/audl.git

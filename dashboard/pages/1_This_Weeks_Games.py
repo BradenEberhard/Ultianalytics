@@ -14,9 +14,11 @@ from plotly.subplots import make_subplots
 from PIL import Image
 from datetime import datetime, timedelta
 import plotly.express as px
+from audl.stats.endpoints.teamstats import TeamStats
+from streamlit_elements_fluence import elements
+from streamlit_elements import event
 
-##TODO Roster Stats dropdown
-##TODO Percent stats as slider compared to league average
+
 ##TODO If game is live update every 30 seconds
 
 @st.cache_resource
@@ -161,6 +163,47 @@ def shot_plot(game_throws, is_home_team, teamID, nbinsx=10, nbinsy=15):
 
     return fig
 
+def plot_team_percents(cache):
+    team_stats = cache.team_stats
+    stat_cols = ['completionPercentage', 'holdPercentage', 'oLineConversionPercentage', 'breakPercentage', 'dLineConversionPercentage', 'huckPercentage', 'redZoneConversionPercentage']
+    team_stats.columns = [x.replace('Perc', 'Percentage').replace('completions', 'completion').replace('hucks', 'huck') for x in team_stats.columns]
+    games = Games()
+    season_stats = pd.DataFrame(games.get_season_stats())[['teamID', 'teamName'] + stat_cols]
+
+    home_team_stats = team_stats.iloc[0][stat_cols] * 100
+    away_team_stats = team_stats.iloc[1][stat_cols] * 100
+    homeTeamID = cache.homeTeamID.capitalize()
+    awayTeamID = cache.awayTeamID.capitalize()
+
+    fig = go.Figure()
+
+    for col in stat_cols:
+        fig.add_trace(go.Box(x=season_stats[col].astype(float), orientation='h', name=col, marker=dict(color='#36454F'), hoverinfo='none',))
+    fig.add_trace(go.Scatter(x=home_team_stats, y=stat_cols, mode='markers', marker=dict(color='#16693C'), name='Home Team Averages',
+                            text=season_stats[stat_cols].median(),
+                            hovertemplate="<br>".join([
+                                f"{homeTeamID}"+": %{x:.1f}%",
+                                "League Average: %{text:.1f}%"
+                                "<extra></extra>",
+                            ])))
+    fig.add_trace(go.Scatter(x=away_team_stats, y=stat_cols, mode='markers', marker=dict(color='#0D0887'), name='Home Team Averages',
+                            text=season_stats[stat_cols].median(),
+                            hovertemplate="<br>".join([
+                                f"{awayTeamID}"+": %{x:.1f}%",
+                                "League Average: %{text:.1f}%"
+                                "<extra></extra>",
+                            ])))
+
+    custom_labels = ['Red Zone Conversion', 'Huck Completion %', 'D Line Conversion', 'Break %', 'O Line Conversion', 'Hold %', 'Completion %']
+
+    fig.update_layout(title='Percentage Statistics', title_x=0.5,
+        showlegend=False,
+        yaxis_ticktext=custom_labels,
+        yaxis_tickvals=list(range(len(custom_labels)))
+    )
+
+    return fig
+
 def plot_game(game_prob, cache):
     features = ['thrower_x', 'thrower_y', 'possession_num', 'possession_throw',
        'game_quarter', 'quarter_point', 'is_home_team', 'home_team_score',
@@ -277,7 +320,7 @@ def setup():
     st.title('Game Dashboard')
 
 def print_logos(cache):
-    left_col, _, right_col = st.columns([2, 8, 2])
+    left_col, _, right_col = st.columns([2, 7, 2])
     logo = Image.open(f"./logos/{cache.homeTeamID}.png")
     left_col.image(logo, width=150)
 
@@ -388,19 +431,15 @@ def refresh_stats(cache):
     cache.set_game(cache.gameID)
 
 def write_scoreboard(cache):
-    left_col, middle_col, right_col = st.columns([4, 6, 1])
+    _, m, r = st.columns(3)
     status = cache.game.iloc[0].status
     if status != 'Final':
         status = f'{status}'
-    right_col.header(status)
-    plot_team_stats(cache, middle_col)
-
-    game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
-    game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-    fig = plot_game(game_prob, cache)
-    if fig is not None:
-        left_col.plotly_chart(fig, use_container_width=True)
-    return right_col
+    m.header(f'Game Status: {status}')
+    left_col, right_col = st.columns([3.5, 6.5])
+    plot_team_stats(cache, left_col)
+    right_col.plotly_chart(plot_team_percents(cache), use_container_width=True)
+    return r
 
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
@@ -411,10 +450,13 @@ def display_game(data_cache, games_df, game_filter):
     else:
         data_cache.set_game(data_cache.game.iloc[0].gameID)
         col6 = write_scoreboard(data_cache)
-        if data_cache.game.iloc[0].status != 'Final':
-            col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
+        col6.button('Refresh', on_click=refresh_stats, args=(data_cache,))
 
-
+        game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
+        game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
+        fig = plot_game(game_prob, data_cache)
+        if fig is not None:
+            st.plotly_chart(fig, use_container_width=True)
         l_col, r_col = st.columns(2)
         l_col.plotly_chart(shot_plot(data_cache.game_throws, True, data_cache.homeTeamID, 10, 15), use_container_width=True)
         r_col.plotly_chart(shot_plot(data_cache.game_throws, False, data_cache.awayTeamID, 10, 15), use_container_width=True)
@@ -426,13 +468,6 @@ def display_game(data_cache, games_df, game_filter):
             l2_col.write(write_stats[write_stats.pointsPlayed > 0])
             write_stats = data_cache.roster_stats[data_cache.roster_stats.teamID == data_cache.awayTeamID].drop(['playerID','teamID'], axis=1).set_index('fullName')
             r2_col.write(write_stats[write_stats.pointsPlayed > 0])
-        
-        # print_logos(data_cache)
-        # col1, col2 = st.columns(2)
-        # plot_pulls(data_cache, col1, col2)
-        # col1, col2 = st.columns(2)
-        # write_col(col1, data_cache, True, data_cache.homeTeamID)
-        # write_col(col2, data_cache, False, data_cache.awayTeamID)
 
 def plot_team_stats(cache, col):
     try:
@@ -470,7 +505,7 @@ def plot_team_stats(cache, col):
         hoverinfo='skip'
     ))
     fig.update_layout(
-                  title=dict(text=f'{home_score} - {away_score}', x=0.5, y=1, yanchor="bottom",font=dict(size=50), automargin=True, yref='paper'),
+                  title=dict(text=f'{home_score} - {away_score}', x=0.52, y=1, yanchor="bottom",font=dict(size=32), automargin=True, yref='paper'),
                   yaxis_title='',
                   xaxis_title='',
                   barmode='stack',
@@ -486,8 +521,8 @@ def plot_team_stats(cache, col):
             source=home_logo,
             xref="paper", yref="paper",
             x=0, y=1,
-            sizex=0.3, sizey=0.3,
-            xanchor="left", yanchor="bottom"
+            sizex=0.25, sizey=0.25,
+            xanchor="center", yanchor="bottom"
         )
     )
 
@@ -496,7 +531,7 @@ def plot_team_stats(cache, col):
             source=away_logo,
             xref="paper", yref="paper",
             x=1, y=1,
-            sizex=0.3, sizey=0.3,
+            sizex=0.25, sizey=0.25,
             xanchor="right", yanchor="bottom"
         )
     )
@@ -513,6 +548,7 @@ def main():
         game_filter = st.selectbox('Game', ['<select>'] + list(this_weeks_games['name']), 0)
     if game_filter != '<select>':
         display_game(data_cache, games_df, game_filter)
+
         
     
 if __name__ == '__main__':
