@@ -19,7 +19,6 @@ import streamlit_analytics
 
 def main():
     st.title("AUDL Dashboard")
-    st.caption("braden.ultimate@gmail.com, 2023")
     st.header("""General Information""")
     st.write("""Welcome to my fun project using the AUDL's data API to visualize different aspects of ultimate frisbee. To get started, choose any of the features from the sidebar and start exploring! Look through past games, examine individual throwers tendencies or follow along with live games. 
                  If you're looking for deeper insights, you can read more about each page below.""")
@@ -34,7 +33,7 @@ def main():
     with st.expander("""Where can I see more?"""):
         st.write("""Interested in more stats in ultimate? One of my good friends has been doing a blog using the same data: https://analysisbycomet.substack.com""")
     with st.expander("""Contact Me"""):
-        st.write("""I'm happy to hear from you for whatever reason. Have feedback, questions on methods, or want to contribute you can contact me at braden.ultimate@gmail.com or look at the code yourself https://github.com/BradenEberhard/Ultianalytics""")
+        st.write("""I'm happy to hear from you for whatever reason. If you have feedback, questions on methods, or want to contribute you can contact me at braden.ultimate@gmail.com or look at the code yourself https://github.com/BradenEberhard/Ultianalytics""")
  
 if __name__ == '__main__':
     streamlit_analytics.start_tracking()
