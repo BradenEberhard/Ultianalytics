@@ -9,7 +9,6 @@ from mpld3 import plugins
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 import streamlit_analytics
-from streamlit_elements import elements, mui, html
 
 
 ##TODO track website analytics
