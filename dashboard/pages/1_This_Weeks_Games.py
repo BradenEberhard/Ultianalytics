@@ -286,7 +286,6 @@ def get_name_from_id(row):
     out_str = f'{row.awayTeamID.capitalize()} at {row.homeTeamID.capitalize()} on {date}'
     return out_str
 
-@st.cache_data
 def get_games_df():
     games = Games()
     games_df = games.get_games()
