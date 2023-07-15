@@ -447,6 +447,8 @@ def display_game(data_cache, games_df, game_filter):
         st.write(data_cache.game.iloc[0].status)
         st.header(f'Game is {data_cache.game.iloc[0].status}')
         if data_cache.game.iloc[0].status != 'Final':
+            st.write(data_cache.game.iloc[0].status)
+            st.write(data_cache.gameID)
             st.button('Refresh', on_click=refresh_stats, args=(data_cache,))
     else:
         data_cache.set_game(data_cache.game.iloc[0].gameID)
