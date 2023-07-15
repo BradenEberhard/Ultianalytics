@@ -442,7 +442,6 @@ def write_scoreboard(cache):
 
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
-    st.write(data_cache.game)
     if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
         st.header(f'Game is {data_cache.game.iloc[0].status}')
         if data_cache.game.iloc[0].status != 'Final':
