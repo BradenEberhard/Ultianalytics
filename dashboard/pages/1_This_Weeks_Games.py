@@ -444,7 +444,6 @@ def write_scoreboard(cache):
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
     if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
-        st.write(data_cache.game.iloc[0].status)
         st.header(f'Game is {data_cache.game.iloc[0].status}')
         if data_cache.game.iloc[0].status != 'Final':
             st.button('Refresh', on_click=refresh_stats, args=(data_cache,))
@@ -552,6 +551,7 @@ def main():
         game_filter = st.selectbox('Game', ['<select>'] + list(this_weeks_games['name']), 0)
     if game_filter != '<select>':
         st.write(game_filter)
+        st.write(games_df)
         display_game(data_cache, games_df, game_filter)
         
 
