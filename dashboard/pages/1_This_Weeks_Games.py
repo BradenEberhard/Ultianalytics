@@ -447,8 +447,6 @@ def display_game(data_cache, games_df, game_filter):
         st.write(data_cache.game.iloc[0].status)
         st.header(f'Game is {data_cache.game.iloc[0].status}')
         if data_cache.game.iloc[0].status != 'Final':
-            st.write(data_cache.game.iloc[0].status)
-            st.write(data_cache.gameID)
             st.button('Refresh', on_click=refresh_stats, args=(data_cache,))
     else:
         data_cache.set_game(data_cache.game.iloc[0].gameID)
@@ -553,6 +551,7 @@ def main():
         this_weeks_games = games_df[(games_df.dates <= today) & (games_df.dates >= last_week)]
         game_filter = st.selectbox('Game', ['<select>'] + list(this_weeks_games['name']), 0)
     if game_filter != '<select>':
+        st.write(game_filter)
         display_game(data_cache, games_df, game_filter)
         
 
