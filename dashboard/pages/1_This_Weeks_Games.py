@@ -21,7 +21,6 @@ from streamlit_autorefresh import st_autorefresh
 
 ##TODO If game is live update every 30 seconds
 
-@st.cache_resource
 class DataCache:
     def __init__(self):
         pass
@@ -444,6 +443,7 @@ def write_scoreboard(cache):
 def display_game(data_cache, games_df, game_filter):
     data_cache.game = games_df[games_df.name == game_filter]
     if data_cache.game.iloc[0].status == 'Upcoming' or data_cache.game.iloc[0].status == 'About to Start':
+        st.write(data_cache.game.iloc[0].status)
         st.header(f'Game is {data_cache.game.iloc[0].status}')
         if data_cache.game.iloc[0].status != 'Final':
             st.button('Refresh', on_click=refresh_stats, args=(data_cache,))
