@@ -194,7 +194,7 @@ def plot_team_percents(cache):
                                 "<extra></extra>",
                             ])))
 
-    custom_labels = ['Completion %', 'Huck Completion %', 'D Line Conversion', 'Break %', 'O Line Conversion', 'Hold %', 'Red Zone Conversion']
+    custom_labels = ['Completion %', 'O Line Conversion', 'Hold %', 'Break %', 'D Line Conversion', 'Huck Completion %', 'Red Zone Conversion']
 
     fig.update_layout(title='Percentage Statistics', title_x=0.5,
         showlegend=False,
