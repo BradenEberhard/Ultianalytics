@@ -550,8 +550,6 @@ def main():
         this_weeks_games = games_df[(games_df.dates <= today) & (games_df.dates >= last_week)]
         game_filter = st.selectbox('Game', ['<select>'] + list(this_weeks_games['name']), 0)
     if game_filter != '<select>':
-        st.write(game_filter)
-        st.write(games_df)
         display_game(data_cache, games_df, game_filter)
         
 
