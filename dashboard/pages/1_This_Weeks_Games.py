@@ -21,6 +21,7 @@ from streamlit_autorefresh import st_autorefresh
 
 ##TODO If game is live update every 30 seconds
 
+@st.cache_resource
 class DataCache:
     def __init__(self):
         pass
