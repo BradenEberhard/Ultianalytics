@@ -456,9 +456,12 @@ def display_game(data_cache, games_df, game_filter):
 
         game_prob = GameProbability('./data/processed/throwing_0627.csv', normalizer_path='./win_prob/saved_models/normalizer.pkl')
         game_prob.load_model(model_path='./win_prob/saved_models/accuracy_loss_model.h5')
-        fig = plot_game(game_prob, data_cache)
-        if fig is not None:
-            st.plotly_chart(fig, use_container_width=True)
+        try:
+            fig = plot_game(game_prob, data_cache)
+            if fig is not None:
+                st.plotly_chart(fig, use_container_width=True)
+        except:
+            st.write('error with event data, try again in a few minutes')
         l_col, r_col = st.columns(2)
         l_col.plotly_chart(shot_plot(data_cache.game_throws, True, data_cache.homeTeamID, 10, 15), use_container_width=True)
         r_col.plotly_chart(shot_plot(data_cache.game_throws, False, data_cache.awayTeamID, 10, 15), use_container_width=True)
